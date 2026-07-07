@@ -1,0 +1,659 @@
+# scripts/create_kpi_questions.py
+import json
+from pathlib import Path
+
+questions = [
+    # ==================== VENDOR ENGLISH (15 questions) ====================
+    {
+        "question": "How do I register as a new vendor on the e-procurement portal?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "ground_truth_context": "Go to the e-procurement website. Click on 'Register' or 'New User'. Fill in personal, company details, select a login ID, password, and register. Then verify and register your DSC (Digital Signature Certificate) to activate the account."
+    },
+    {
+        "question": "What are the system configuration requirements for using the e-proc portal?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "Preferred_System_Configuration_V_2.pdf",
+        "ground_truth_context": "Requires Windows 7, 8, or 10, Internet Explorer 9+ or Edge/Chrome with IE tab, Java Runtime Environment (JRE) installed, and a valid Class 2 or Class 3 Digital Signature Certificate (DSC)."
+    },
+    {
+        "question": "How can I configure my Microsoft Edge browser for digital signature compatibility?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "EDGE_Browser_Setup_V1.0.pdf",
+        "ground_truth_context": "Configure Edge browser by opening settings, navigating to Default Browser, selecting 'Allow sites to be reloaded in Internet Explorer mode', adding the portal URL to the list of IE mode pages, and running Edge in IE compatibility mode."
+    },
+    {
+        "question": "What is the procedure to pay the EMD fee online via Challan?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "EMD_CHALLAN_PAYMENT_V1.0.pdf",
+        "ground_truth_context": "Select payment mode as Challan/NEFT/RTGS on the portal, generate and download the EMD Challan containing virtual account details, visit any bank branch, execute the transaction using the details, and verify transaction status on the portal."
+    },
+    {
+        "question": "How do I check the status of my online EMD refund?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "Online_EMD_Refund_Notice.pdf",
+        "ground_truth_context": "Log in to the portal, navigate to 'My Account' or 'EMD Refund Status', view the list of participated tenders, and check the refund status, transaction reference number, and date of release."
+    },
+    {
+        "question": "How can I submit a bid for an active tender on the portal?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "CHiPS_Bid_Submission_Manual_English.pdf",
+        "ground_truth_context": "Log in, search for the tender, add it to 'My Tenders', upload required technical documents, submit commercial/price bid, sign the bid using your DSC, and click on final submit before the closing deadline."
+    },
+    {
+        "question": "What documents are required to complete vendor registration?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "ground_truth_context": "Requires PAN Card, GST Registration Certificate, Company Incorporation or Partnership deed, Bank Account details/cancelled cheque, Address Proof, and DSC details."
+    },
+    {
+        "question": "What should I do if my DSC (Digital Signature Certificate) is not detected by the system?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "DSC Tutorial.pdf",
+        "ground_truth_context": "Install proper USB token drivers, check if Java is installed and up-to-date, verify that Java browser plugins are enabled, add portal URL to Java exception site list, and configure browser security settings."
+    },
+    {
+        "question": "How can I participate in an online reverse auction on the platform?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "AuctionManual_FA.pdf",
+        "ground_truth_context": "Log in, click on the Reverse Auction link for eligible tenders, accept terms, view the current lowest bid, and submit lower bids in specified decrements before the countdown timer expires."
+    },
+    {
+        "question": "Can a vendor modify their bid after final submission but before the closing date?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "ground_truth_context": "Yes, bidders can withdraw or modify their submitted bids as many times as needed before the bid submission closing date and time. However, once the closing time passes, no modifications are permitted."
+    },
+    {
+        "question": "What is the fee for registering as a vendor on the Chhattisgarh e-procurement portal?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "ground_truth_context": "Vendor registration fee is online and typically free or set to a minor transaction charge as specified on the portal help desk pages."
+    },
+    {
+        "question": "What is the process of generating a bid decryption key?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "CHiPS_Bid_Submission_Manual_English.pdf",
+        "ground_truth_context": "During bid submission, the portal automatically encrypts the bid data using the portal's public key. The decryption key is managed securely and bids can only be decrypted when officers initiate bid opening."
+    },
+    {
+        "question": "What are the common reasons for EMD payment transaction failure?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "EMD_CHALLAN_PAYMENT_V1.0.pdf",
+        "ground_truth_context": "Common reasons include incorrect virtual account details, mismatch of payment amount, transaction initiated after the deadline, network failures, or banking gateway timeouts."
+    },
+    {
+        "question": "How can I download the tender documents from the portal?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "ground_truth_context": "Go to Active Tenders list, search the tender by ID or description, click on it, and select download option for tender NIT and technical/financial templates without needing a login."
+    },
+    {
+        "question": "Who should I contact if I face technical issues while uploading my commercial bid?",
+        "language": "en",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "faq.txt",
+        "ground_truth_context": "Contact the e-Procurement Help Desk via phone at the toll-free numbers provided on the portal or email them at support.eproc@cg.gov.in."
+    },
+
+    # ==================== VENDOR HINDI (15 questions) ====================
+    {
+        "question": "ई-प्रोक्योरमेंट पोर्टल पर नया विक्रेता पंजीकरण कैसे करें?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "ground_truth_context": "ई-प्रोक्योरमेंट वेबसाइट पर जाएं। 'रजिस्टर' या 'नया उपयोगकर्ता' पर क्लिक करें। व्यक्तिगत और कंपनी विवरण भरें, एक लॉगिन आईडी और पासवर्ड चुनें। फिर अपने खाते को सक्रिय करने के लिए अपने डीएससी (डिजिटल सिग्नेचर सर्टिफिकेट) को सत्यापित और पंजीकृत करें।"
+    },
+    {
+        "question": "पोर्टल का उपयोग करने के लिए सिस्टम कॉन्फ़िगरेशन आवश्यकताएं क्या हैं?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "Preferred_System_Configuration_V_2.pdf",
+        "ground_truth_context": "विंडोज 7, 8 या 10, इंटरनेट एक्सप्लोरर 9+ या आईई टैब के साथ एज/क्रोम, जावा रनटाइम एनवायरनमेंट (JRE) स्थापित होना और एक वैध क्लास 2 या क्लास 3 डिजिटल सिग्नेचर सर्टिफिकेट (DSC) की आवश्यकता होती है।"
+    },
+    {
+        "question": "डिजिटल सिग्नेचर के लिए माइक्रोसॉफ्ट एज ब्राउज़र को कैसे सेटअप करें?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "EDGE_Browser_Setup_V1.0.pdf",
+        "ground_truth_context": "एज ब्राउज़र सेटिंग्स खोलें, डिफ़ॉल्ट ब्राउज़र पर जाएं, 'Allow sites to be reloaded in Internet Explorer mode' का चयन करें, पोर्टल URL जोड़ें और एज को IE संगतता मोड में चलाएं।"
+    },
+    {
+        "question": "चालान के माध्यम से ऑनलाइन ईएमडी शुल्क का भुगतान कैसे करें?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "EMD_CHALLAN_PAYMENT_V1.0.pdf",
+        "ground_truth_context": "पोर्टल पर चालान/एनईएफटी/आरटीजीएस भुगतान मोड चुनें, वर्चुअल अकाउंट विवरण वाला ईएमडी चालान डाउनलोड करें, किसी भी बैंक में जाकर भुगतान करें और पोर्टल पर स्थिति सत्यापित करें।"
+    },
+    {
+        "question": "ऑनलाइन ईएमडी रिफंड की स्थिति की जांच कैसे की जा सकती है?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "Online_EMD_Refund_Notice.pdf",
+        "ground_truth_context": "पोर्टल पर लॉग इन करें, 'माई अकाउंट' या 'ईएमडी रिफंड स्टेटस' पर जाएं, निविदा देखें और रिफंड की स्थिति, लेनदेन संदर्भ संख्या और जारी करने की तिथि जांचें।"
+    },
+    {
+        "question": "पोर्टल पर सक्रिय निविदा के लिए बोली कैसे जमा करें?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "CHiPS_Bid_Submission_Manual_English.pdf",
+        "ground_truth_context": "लॉग इन करें, निविदा खोजें, उसे 'माई टेंडर' में जोड़ें, आवश्यक तकनीकी दस्तावेज अपलोड करें, कमर्शियल बोली भरें, डीएससी का उपयोग करके डिजिटल रूप से हस्ताक्षर करें और अंतिम सबमिट बटन पर क्लिक करें।"
+    },
+    {
+        "question": "विक्रेता पंजीकरण पूरा करने के लिए किन दस्तावेजों की आवश्यकता होती है?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "ground_truth_context": "पैन कार्ड, जीएसटी पंजीकरण प्रमाण पत्र, कंपनी निगमन या साझेदारी विलेख, बैंक खाता विवरण/रद्द चेक, पते का प्रमाण और डीएससी विवरण की आवश्यकता होती है।"
+    },
+    {
+        "question": "यदि सिस्टम द्वारा मेरा डीएससी (DSC) नहीं पहचाना जा रहा है तो मुझे क्या करना चाहिए?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "DSC Tutorial.pdf",
+        "ground_truth_context": "उचित यूएसबी टोकन ड्राइवर इंस्टॉल करें, जावा संस्करण की जांच करें और इसे अपडेट करें, ब्राउज़र में जावा प्लगइन्स सक्षम करें, पोर्टल URL को जावा अपवाद साइट सूची में जोड़ें, और सुरक्षा सेटिंग्स कॉन्फ़िगर करें।"
+    },
+    {
+        "question": "प्लेटफॉर्म पर ऑनलाइन रिवर्स ऑक्शन में कैसे भाग लें?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "AuctionManual_FA.pdf",
+        "ground_truth_context": "लॉग इन करें, योग्य निविदाओं के लिए रिवर्स ऑक्शन लिंक पर क्लिक करें, शर्तें स्वीकार करें, वर्तमान न्यूनतम बोली देखें, और समय सीमा समाप्त होने से पहले कम बोलियां जमा करें।"
+    },
+    {
+        "question": "क्या कोई विक्रेता अंतिम जमा करने के बाद लेकिन अंतिम तिथि से पहले अपनी बोली में संशोधन कर सकता है?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "ground_truth_context": "हां, बोलीदाता बोली जमा करने की अंतिम तिथि और समय से पहले जितनी बार चाहें उतनी बार अपनी प्रस्तुत बोलियों को वापस ले सकते हैं या संशोधित कर सकते हैं। अंतिम समय बीतने के बाद कोई संशोधन नहीं किया जा सकता।"
+    },
+    {
+        "question": "छत्तीसगढ़ ई-प्रोक्योरमेंट पोर्टल पर पंजीकरण शुल्क कितना है?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "ground_truth_context": "विक्रेता पंजीकरण शुल्क ऑनलाइन है और आमतौर पर यह निःशुल्क होता है या पोर्टल के सहायता पृष्ठों पर निर्दिष्ट अनुसार मामूली लेनदेन शुल्क होता है।"
+    },
+    {
+        "question": "बोली डिक्रिप्शन कुंजी (bid decryption key) जनरेट करने की प्रक्रिया क्या है?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "CHiPS_Bid_Submission_Manual_English.pdf",
+        "ground_truth_context": "बोली जमा करने के दौरान, पोर्टल स्वचालित रूप से पोर्टल की सार्वजनिक कुंजी का उपयोग करके बोली डेटा को एन्क्रिप्ट करता है। बोली खोलने की प्रक्रिया शुरू होने पर ही अधिकारी द्वारा इसे डिक्रिप्ट किया जाता है।"
+    },
+    {
+        "question": "ईएमडी भुगतान विफलता के सामान्य कारण क्या हैं?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "EMD_CHALLAN_PAYMENT_V1.0.pdf",
+        "ground_truth_context": "सामान्य कारणों में गलत वर्चुअल खाता विवरण, भुगतान राशि का मेल न खाना, समय सीमा के बाद भुगतान शुरू करना, नेटवर्क विफलताएं या बैंक गेटवे का टाइमआउट होना शामिल है।"
+    },
+    {
+        "question": "पोर्टल से निविदा दस्तावेज कैसे डाउनलोड करें?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "ground_truth_context": "सक्रिय निविदा सूची पर जाएं, टेंडर आईडी या विवरण द्वारा खोजें, उस पर क्लिक करें और बिना लॉग इन किए निविदा एनआईटी और तकनीकी/वित्तीय टेम्पलेट डाउनलोड करें।"
+    },
+    {
+        "question": "कमर्शियल बिड अपलोड करते समय तकनीकी समस्या आने पर किससे संपर्क करें?",
+        "language": "hi",
+        "role": "vendor",
+        "category": "vendor_manuals",
+        "source_file": "faq.txt",
+        "ground_truth_context": "पोर्टल पर दिए गए टोल-फ्री नंबरों पर फोन के माध्यम से ई-प्रोक्योरमेंट हेल्प डेस्क से संपर्क करें या support.eproc@cg.gov.in पर ईमेल करें।"
+    },
+
+    # ==================== GOVT OFFICER ENGLISH (25 questions) ====================
+    {
+        "question": "What does Rule 144 of the GFR specify regarding the fundamental principles of public buying?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Rule 144 outlines basic procurement principles: transparency, fairness, competition, efficiency, economy, and accountability. Every authority has the responsibility to ensure public funds are spent in a public-spirited manner."
+    },
+    {
+        "question": "Is procurement of goods and services through the GeM portal mandatory under GFR Rule 149?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Yes, GFR Rule 149 mandates the procurement of common use Goods and Services through GeM, if available there, by all government ministries/departments."
+    },
+    {
+        "question": "What is the financial limit for purchasing goods without quotations under Rule 154?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Rule 154 permits the purchase of goods without inviting quotations up to a value of Rs. 50,000 (fifty thousand rupees) on each occasion."
+    },
+    {
+        "question": "What is the purchase limit and composition of a Local Purchase Committee under Rule 155?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Rule 155 governs purchase of goods from Rs. 50,000 to Rs. 2,50,000 through a Local Purchase Committee of three members. The committee must survey the market and recommend a supplier."
+    },
+    {
+        "question": "When is an Advertised Tender Enquiry mandatory under GFR Rule 161?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Rule 161 states that Advertised Tender Enquiry (Open Tender) is the standard method for procurement of goods above Rs. 25 Lakhs (twenty-five lakh rupees)."
+    },
+    {
+        "question": "What are the conditions and value limits for using a Limited Tender Enquiry under Rule 162?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Rule 162 permits Limited Tender Enquiry for estimated values up to Rs. 25 Lakhs. Enquiries must be sent directly to at least 3 registered suppliers."
+    },
+    {
+        "question": "Under what specific proprietary conditions can a Single Tender Enquiry be used under GFR Rule 166?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Rule 166 allows Single Tender Enquiry when only a particular firm manufactures the required goods, in emergencies, or when standardization is necessary."
+    },
+    {
+        "question": "What is the standard percentage range for Bid Security (EMD) under GFR Rule 170?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Rule 170 mandates Bid Security (EMD) between 2% and 5% of the estimated value of goods. For GeM, the default is 1%."
+    },
+    {
+        "question": "Are Micro and Small Enterprises (MSEs) exempt from submitting Bid Security (EMD) under GFR?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Yes, Micro and Small Enterprises (MSEs) registered with DIC, NSIC, or Udyam, as well as recognized Startups, are completely exempt from submitting EMD."
+    },
+    {
+        "question": "What is the standard percentage range for Performance Security under Rule 171?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Rule 171 sets Performance Security between 3% and 10% of the value of the contract. This was amended from 5-10% to 3-10%."
+    },
+    {
+        "question": "Does the GFR regulate the procurement of services, and if so, in which chapter?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Yes, Chapter 6 (Rules 177 to 196) of GFR explicitly regulates the Procurement of Services: Rules 177-192 cover Consulting Services, and Rules 193-196 cover Outsourcing of Services."
+    },
+    {
+        "question": "What is the difference between consulting and non-consulting services under GFR guidelines?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Consulting services involve advisory, intellectual, or professional work (Rules 177-192). Non-consulting services consist of physical services, outsourcing labor, facility management, and maintenance (Rules 193-196)."
+    },
+    {
+        "question": "What are the rules regarding the extension of bid opening dates?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "Corrigendum_Instructions_to_department_users_and_bidders.pdf",
+        "ground_truth_context": "Bid opening dates must be extended via a published Corrigendum on the portal. Sufficient notice (usually at least 3-7 days) must be given to allow bidders to adapt to changes."
+    },
+    {
+        "question": "What is the minimum notice period required for a short-term tender under CVC guidelines?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "CVC guideline.pdf",
+        "ground_truth_context": "CVC mandates a standard 21-day notice period for open tenders. Short-term tenders with reduced periods (e.g. 10 to 14 days) are allowed only in emergencies, with written justification from competent authority."
+    },
+    {
+        "question": "Are startups exempt from prior turnover and prior experience criteria in public procurement?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "MSME procurement policy.pdf",
+        "ground_truth_context": "Yes, recognized startups and MSEs can be exempted from prior experience and turnover criteria, provided they meet quality standards and technical specs."
+    },
+    {
+        "question": "Under what circumstances can negotiation be held with the L1 bidder according to CVC?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "Compilation of CVC Guidelines on Tenders and Contracts_1467610136.pdf",
+        "ground_truth_context": "CVC guidelines strictly forbid negotiations except in rare circumstances with the L1 bidder only, when L1 rates are found to be unreasonably high compared to estimated costs."
+    },
+    {
+        "question": "What is the procedure for handling a single bid received against an open tender?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "Manual_for_Procurement_of_works_2019.pdf",
+        "ground_truth_context": "A single bid can be accepted if the tender was widely publicized, requirements were not restrictive, rates are reasonable, and re-tendering is unlikely to yield better results."
+    },
+    {
+        "question": "How does the Chhattisgarh Store Purchase Rules regulate the purchase of items from local CSIDC industries?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "store purchase rule cg.pdf",
+        "ground_truth_context": "CG Store Purchase Rules specify that certain items reserved by the state must be purchased preferentially from local CSIDC-registered cottage, micro, and small scale industries."
+    },
+    {
+        "question": "What are the guidelines for pre-bid conferences in large-value tenders?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "CVC guideline.pdf",
+        "ground_truth_context": "Pre-bid conferences should be held for tenders above Rs. 1 Crore. Clarifications must be published in writing as corrigenda on the portal for all bidders to see."
+    },
+    {
+        "question": "What are the qualifications required for a bidder under pre-qualification criteria (PQC)?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "Compilation of CVC Guidelines on Tenders and Contracts_1467610136.pdf",
+        "ground_truth_context": "PQC includes technical competence, financial capability, manufacturing capacity, and past performance history, which must be clearly defined in NIT and not be restrictive."
+    },
+    {
+        "question": "Can a department split the quantity of a tender among multiple bidders, and under what rules?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "Manual_for_Procurement_of_works_2019.pdf",
+        "ground_truth_context": "Yes, tender quantity can be split among multiple bidders (e.g. L1, L2, L3) under pre-disclosed terms in the tender document, if a single vendor cannot meet the demand or for security of supply."
+    },
+    {
+        "question": "What is the policy for price preference up to 15% for local micro and small enterprises?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "MSME procurement policy.pdf",
+        "ground_truth_context": "In tenders where MSEs bid within L1 + 15% price band, they are allowed to supply up to 25% of the total tender quantity by matching L1 price."
+    },
+    {
+        "question": "How are late bids handled according to the Public Procurement Manual?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "mannual procurement.pdf",
+        "ground_truth_context": "Late bids (received after the bid submission closing time and date) must be rejected outright and returned unopened. No late bids should be evaluated."
+    },
+    {
+        "question": "What is the rule regarding the payment of interest on delayed payments to MSMEs?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "MSME procurement policy.pdf",
+        "ground_truth_context": "According to the MSMED Act, departments must make payments to MSME suppliers within 45 days. Delayed payments attract penal interest at three times the bank rate."
+    },
+    {
+        "question": "Under what conditions can a bank guarantee be accepted as performance security?",
+        "language": "en",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "FInal_GFR_upto_31_07_2024.pdf",
+        "ground_truth_context": "Bank Guarantees are accepted as performance security if they are issued by a commercial bank, in an acceptable format, and remain valid for 60 days beyond the date of completion of all contractual obligations."
+    },
+
+    # ==================== GOVT OFFICER HINDI (25 questions) ====================
+    {
+        "question": "जीएफआर का नियम 144 सार्वजनिक खरीद के मूलभूत सिद्धांतों के बारे में क्या निर्दिष्ट करता है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "नियम 144 सार्वजनिक खरीद के मूलभूत सिद्धांतों को रेखांकित करता है: पारदर्शिता, निष्पक्षता, प्रतिस्पर्धा, दक्षता, अर्थव्यवस्था और जवाबदेही। प्रत्येक खरीद प्राधिकरण का कर्तव्य है कि वह सुनिश्चित करे कि सार्वजनिक धन का व्यय सार्वजनिक हित में हो।"
+    },
+    {
+        "question": "क्या जीएफआर नियम 149 के तहत जीईएम (GeM) पोर्टल के माध्यम से वस्तुओं और सेवाओं की खरीद अनिवार्य है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "हां, जीएफआर नियम 149 सभी सरकारी मंत्रालयों/विभागों द्वारा सामान्य उपयोग की वस्तुओं और सेवाओं की खरीद GeM पोर्टल के माध्यम से करना अनिवार्य बनाता है, बशर्ते वे वहां उपलब्ध हों।"
+    },
+    {
+        "question": "नियम 154 के तहत बिना कोटेशन के सामान खरीदने की वित्तीय सीमा क्या है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "नियम 154 प्रत्येक अवसर पर अधिकतम 50,000 रुपये (पचास हजार रुपये) तक के मूल्य के सामान को बिना कोटेशन आमंत्रित किए खरीदने की अनुमति देता है।"
+    },
+    {
+        "question": "जीएफआर नियम 155 के तहत स्थानीय खरीद समिति की खरीद सीमा और संरचना क्या है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "नियम 155 स्थानीय खरीद समिति के माध्यम से 50,000 रुपये से 2,50,000 रुपये तक की वस्तुओं की खरीद का नियमन करता है। तीन सदस्यीय समिति बाजार का सर्वेक्षण करके सिफारिश करती है।"
+    },
+    {
+        "question": "जीएफआर नियम 161 के तहत विज्ञापित निविदा जांच (Advertised Tender Enquiry) कब अनिवार्य होती है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "नियम 161 के अनुसार, 25 लाख रुपये (पच्चीस लाख रुपये) से अधिक की वस्तुओं की खरीद के लिए विज्ञापित निविदा जांच (ओपन टेंडर) मानक विधि है।"
+    },
+    {
+        "question": "नियम 162 के तहत सीमित निविदा जांच (Limited Tender Enquiry) का उपयोग करने की शर्तें और मूल्य सीमाएं क्या हैं?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "नियम 162 के अनुसार, 25 लाख रुपये तक के अनुमानित मूल्य के लिए सीमित निविदा जांच का उपयोग किया जा सकता है। पूछताछ सीधे कम से कम 3 पंजीकृत आपूर्तिकर्ताओं को भेजी जानी चाहिए।"
+    },
+    {
+        "question": "जीएफआर नियम 166 के तहत किस विशिष्ट मालिकाना शर्तों के तहत सिंगल टेंडर जांच का उपयोग किया जा सकता है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "नियम 166 सिंगल टेंडर जांच की अनुमति देता है जब केवल एक विशिष्ट फर्म आवश्यक वस्तुओं का निर्माण करती है, आपातकालीन स्थिति हो, या मानकीकरण आवश्यक हो।"
+    },
+    {
+        "question": "जीएफआर नियम 170 के तहत बिड सिक्योरिटी (EMD) के लिए मानक प्रतिशत सीमा क्या है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "जीएफआर नियम 170 वस्तुओं के अनुमानित मूल्य के 2% से 5% के बीच बिड सिक्योरिटी (EMD) अनिवार्य करता है। GeM के लिए यह 1% है।"
+    },
+    {
+        "question": "क्या सूक्ष्म और लघु उद्यमों (MSEs) को जीएफआर के तहत बिड सिक्योरिटी (EMD) जमा करने से छूट दी गई है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "हां, डीआईसी, एनएसआईसी, या उद्यम के साथ पंजीकृत सूक्ष्म और लघु उद्यमों (MSEs) और मान्यता प्राप्त स्टार्टअप्स को निविदा में बिड सिक्योरिटी (EMD) जमा करने से पूरी छूट दी गई है।"
+    },
+    {
+        "question": "जीएफआर नियम 171 के तहत परफॉर्मेंस सिक्योरिटी के लिए मानक प्रतिशत सीमा क्या है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "नियम 171 अनुबंध के मूल्य के 3% से 10% के बीच परफॉर्मेंस सिक्योरिटी निर्धारित करता है। इसे संशोधित कर 5-10% से घटाकर 3-10% किया गया था।"
+    },
+    {
+        "question": "क्या जीएफआर सेवाओं की खरीद को नियंत्रित करता है, और यदि हां, तो किस अध्याय में?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "हां, जीएफआर का अध्याय 6 (नियम 177 से 196) स्पष्ट रूप से सेवाओं की खरीद का नियमन करता है: नियम 177-192 परामर्श सेवाओं को कवर करते हैं, और नियम 193-196 आउटसोर्सिंग सेवाओं को।"
+    },
+    {
+        "question": "जीएफआर दिशानिर्देशों के तहत परामर्श और गैर-परामर्श सेवाओं के बीच क्या अंतर है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "परामर्श सेवाओं में सलाहकार, बौद्धिक या पेशेवर कार्य शामिल होते हैं (नियम 177-192)। गैर-परामर्श सेवाओं में भौतिक सेवाएं, श्रम की आउटसोर्सिंग, सुविधा प्रबंधन और रखरखाव शामिल हैं (नियम 193-196)।"
+    },
+    {
+        "question": "बोली खोलने की तारीखों के विस्तार के संबंध में क्या नियम हैं?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "Corrigendum_Instructions_to_department_users_and_bidders.pdf",
+        "ground_truth_context": "बोली खोलने की तारीखों को पोर्टल पर प्रकाशित शुद्धिपत्र (Corrigendum) के माध्यम से बढ़ाया जाना चाहिए। बोलीदाताओं को परिवर्तन के अनुसार तैयारी के लिए पर्याप्त समय (आमतौर पर कम से कम 3-7 दिन) दिया जाना चाहिए।"
+    },
+    {
+        "question": "सीवीसी (CVC) दिशानिर्देशों के अनुसार शॉर्ट-टर्म निविदा के लिए आवश्यक न्यूनतम सूचना अवधि क्या है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "CVC guideline.pdf",
+        "ground_truth_context": "सीवीसी खुली निविदाओं के लिए 21 दिनों की मानक सूचना अवधि अनिवार्य करता है। कम अवधि (जैसे 10 से 14 दिन) वाली शॉर्ट-टर्म निविदाएं केवल आपातकाल में, सक्षम प्राधिकारी की लिखित मंजूरी के साथ दी जा सकती हैं।"
+    },
+    {
+        "question": "क्या सार्वजनिक खरीद में स्टार्टअप्स को पूर्व टर्नओवर और पूर्व अनुभव के मानदंडों से छूट दी गई है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "MSME procurement policy.pdf",
+        "ground_truth_context": "हां, मान्यता प्राप्त स्टार्टअप्स और एमएसई को पूर्व अनुभव और टर्नओवर के मानदंडों से छूट दी जा सकती है, बशर्ते वे गुणवत्ता मानकों और तकनीकी विशिष्टताओं को पूरा करते हों।"
+    },
+    {
+        "question": "सीवीसी के अनुसार किन परिस्थितियों में L1 बोलीदाता के साथ बातचीत (negotiation) की जा सकती है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "Compilation of CVC Guidelines on Tenders and Contracts_1467610136.pdf",
+        "ground_truth_context": "सीवीसी दिशानिर्देश केवल L1 बोलीदाता के साथ ही बातचीत की अनुमति देते हैं, वह भी दुर्लभ परिस्थितियों में, जब L1 की दरें अनुमानित लागत की तुलना में अत्यधिक ऊंची पाई जाती हैं।"
+    },
+    {
+        "question": "ओपन टेंडर के खिलाफ प्राप्त एकल बोली (single bid) को संभालने की प्रक्रिया क्या है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "Manual_for_Procurement_of_works_2019.pdf",
+        "ground_truth_context": "एकल बोली स्वीकार की जा सकती है यदि निविदा का व्यापक प्रचार किया गया था, आवश्यकताएं प्रतिबंधात्मक नहीं थीं, दरें उचित हैं, और पुन: निविदा से बेहतर परिणाम मिलने की संभावना नहीं है।"
+    },
+    {
+        "question": "छत्तीसगढ़ भंडार क्रय नियम स्थानीय सीएसआईडीसी उद्योगों से वस्तुओं की खरीद को कैसे नियंत्रित करता है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "store purchase rule cg hindi.pdf",
+        "ground_truth_context": "छत्तीसगढ़ भंडार क्रय नियमों में यह निर्दिष्ट किया गया है कि राज्य द्वारा आरक्षित कुछ वस्तुएं अधिमानतः स्थानीय सीएसआईडीसी-पंजीकृत कुटीर, सूक्ष्म और लघु उद्योगों से ही खरीदी जानी चाहिए।"
+    },
+    {
+        "question": "उच्च मूल्य की निविदाओं में प्री-बिड कॉन्फ्रेंस के लिए क्या दिशानिर्देश हैं?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "CVC guideline.pdf",
+        "ground_truth_context": "1 करोड़ रुपये से अधिक की निविदाओं के लिए प्री-बिड कॉन्फ्रेंस आयोजित की जानी चाहिए। स्पष्टीकरणों को पोर्टल पर शुद्धिपत्र (corrigenda) के रूप में लिखित में प्रकाशित किया जाना चाहिए।"
+    },
+    {
+        "question": "पूर्व-योग्यता मानदंड (PQC) के तहत बोलीदाता के लिए क्या योग्यताएं आवश्यक हैं?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "Compilation of CVC Guidelines on Tenders and Contracts_1467610136.pdf",
+        "ground_truth_context": "पीक्यूसी (PQC) में तकनीकी क्षमता, वित्तीय क्षमता, विनिर्माण क्षमता और पिछले कार्य अनुभव का इतिहास शामिल है। इन्हें एनआईटी में स्पष्ट किया जाना चाहिए और यह प्रतिबंधात्मक नहीं होना चाहिए।"
+    },
+    {
+        "question": "क्या कोई विभाग निविदा मात्रा को कई बोलीदाताओं के बीच विभाजित कर सकता है, और किन नियमों के तहत?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "Manual_for_Procurement_of_works_2019.pdf",
+        "ground_truth_context": "हां, यदि एकल विक्रेता मांग को पूरा नहीं कर सकता है या आपूर्ति की सुरक्षा के लिए, निविदा मात्रा को कई बोलीदाताओं (जैसे L1, L2, L3) के बीच पहले से घोषित शर्तों पर विभाजित किया जा सकता है।"
+    },
+    {
+        "question": "स्थानीय सूक्ष्म और लघु उद्यमों के लिए 15% तक मूल्य वरीयता (price preference) की नीति क्या है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "MSME procurement policy.pdf",
+        "ground_truth_context": "जिन निविदाओं में एमएसई (MSEs) L1 + 15% के मूल्य बैंड में बोली लगाते हैं, उन्हें L1 मूल्य से मिलान करके कुल निविदा मात्रा का 25% तक आपूर्ति करने की अनुमति दी जाती है।"
+    },
+    {
+        "question": "लोक खरीद मैनुअल के अनुसार देर से प्राप्त बोलियों (late bids) को कैसे संभाला जाता है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "mannual procurement.pdf",
+        "ground_truth_context": "बोली जमा करने के निर्धारित समय और तिथि के बाद प्राप्त देर से आने वाली बोलियों को सीधे खारिज कर दिया जाना चाहिए और बिना खोले वापस कर दिया जाना चाहिए।"
+    },
+    {
+        "question": "एमएसएमई (MSMEs) को विलंबित भुगतानों पर ब्याज के भुगतान के संबंध में क्या नियम है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "MSME procurement policy.pdf",
+        "ground_truth_context": "एमएसएमईडी (MSMED) अधिनियम के अनुसार, विभागों को आपूर्तिकर्ताओं को 45 दिनों के भीतर भुगतान करना होगा। विलंबित भुगतानों पर बैंक दर से तीन गुना दंड ब्याज देना होता है।"
+    },
+    {
+        "question": "किन शर्तों के तहत बैंक गारंटी को परफॉर्मेंस सिक्योरिटी के रूप में स्वीकार किया जा सकता है?",
+        "language": "hi",
+        "role": "government_officer",
+        "category": "government_rules",
+        "source_file": "hindi_general_financial_rules_2017.pdf",
+        "ground_truth_context": "बैंक गारंटी को परफॉर्मेंस सिक्योरिटी के रूप में तब स्वीकार किया जाता है जब वे किसी वाणिज्यिक बैंक द्वारा जारी की जाती हैं, स्वीकार्य प्रारूप में होती हैं और अनुबंध की समाप्ति से 60 दिनों तक वैध रहती हैं।"
+    }
+]
+
+out_path = Path(__file__).parent / "kpi_test_questions.json"
+with open(out_path, 'w', encoding='utf-8') as f:
+    json.dump(questions, f, indent=2, ensure_ascii=False)
+
+print(f"✅ Pre-generated questions written to {out_path}")

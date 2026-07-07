@@ -1,0 +1,35 @@
+# Core Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+python-dotenv==1.0.0
+
+# RAG & LLM
+langchain==0.1.0
+langchain-community==0.0.10
+chromadb==0.4.22
+
+# Document Processing
+pypdf2==3.0.1
+pdfplumber==0.10.3
+pdf2image==1.16.3
+pillow==10.1.0
+
+# OCR (Hindi + English)
+pytesseract==0.3.10
+easyocr==1.7.1
+
+# Language Detection (Fixed)
+langdetect==1.0.9
+
+# For Hindi transliteration (alternative to indic-trans)
+# This package IS available on PyPI
+indic-transliteration==1.0
+
+# Utilities
+requests==2.31.0
+numpy==1.24.3
+tiktoken==0.5.1
+
+# Additional utilities for Hindi text processing
+regex==2023.12.25

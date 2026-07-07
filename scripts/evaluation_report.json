@@ -1,0 +1,1818 @@
+{
+  "summary": {
+    "total_questions": 100,
+    "retrieval_stats": {
+      "top_1_recall": 0.64,
+      "top_3_recall": 0.66,
+      "top_5_recall": 0.68,
+      "top_10_recall": 0.68,
+      "avg_retrieval_latency_ms": 3393.5138845443726,
+      "total_retrieval_time_sec": 339.35138845443726,
+      "total_translation_time_sec": 30.13298797607422,
+      "total_embedding_time_sec": 8.830070495605469
+    },
+    "e2e_stats": {
+      "total_e2e_tested": 5,
+      "avg_e2e_latency_sec": 54.99163112640381,
+      "language_conformity_rate": 80.0,
+      "source_match_rate": 40.0,
+      "total_e2e_time_sec": 274.95815563201904
+    }
+  },
+  "file_breakdown": {
+    "11.02.2004 transp in short term tender.pdf": {
+      "total_queries": 10,
+      "top_1_recall": 0.9,
+      "top_3_recall": 0.9,
+      "top_5_recall": 0.9,
+      "top_10_recall": 0.9,
+      "language_conformity": 1.0,
+      "rag_source_match": 1.0,
+      "avg_e2e_latency": 22.755645751953125
+    },
+    "2. Notification_EMDExemption.pdf": {
+      "total_queries": 10,
+      "top_1_recall": 0.0,
+      "top_3_recall": 0.0,
+      "top_5_recall": 0.0,
+      "top_10_recall": 0.0,
+      "language_conformity": 1.0,
+      "rag_source_match": 0.0,
+      "avg_e2e_latency": 63.325135231018066
+    },
+    "Corrigendum_Instructions_to_department_users_and_bidders.pdf": {
+      "total_queries": 10,
+      "top_1_recall": 0.9,
+      "top_3_recall": 0.9,
+      "top_5_recall": 0.9,
+      "top_10_recall": 0.9,
+      "language_conformity": 0.0,
+      "rag_source_match": 0.0,
+      "avg_e2e_latency": 0.0
+    },
+    "CVC guideline.pdf": {
+      "total_queries": 10,
+      "top_1_recall": 0.9,
+      "top_3_recall": 0.9,
+      "top_5_recall": 0.9,
+      "top_10_recall": 0.9,
+      "language_conformity": 1.0,
+      "rag_source_match": 1.0,
+      "avg_e2e_latency": 27.951162815093994
+    },
+    "mannual procurement.pdf": {
+      "total_queries": 20,
+      "top_1_recall": 0.45,
+      "top_3_recall": 0.55,
+      "top_5_recall": 0.65,
+      "top_10_recall": 0.65,
+      "language_conformity": 0.0,
+      "rag_source_match": 0.0,
+      "avg_e2e_latency": 0.0
+    },
+    "publicProManual-1755343081262-715558279.pdf": {
+      "total_queries": 10,
+      "top_1_recall": 0.9,
+      "top_3_recall": 0.9,
+      "top_5_recall": 0.9,
+      "top_10_recall": 0.9,
+      "language_conformity": 0.0,
+      "rag_source_match": 0.0,
+      "avg_e2e_latency": 55.021949768066406
+    },
+    "short tender notice 2 days.pdf": {
+      "total_queries": 10,
+      "top_1_recall": 0.9,
+      "top_3_recall": 0.9,
+      "top_5_recall": 0.9,
+      "top_10_recall": 0.9,
+      "language_conformity": 0.0,
+      "rag_source_match": 0.0,
+      "avg_e2e_latency": 0.0
+    },
+    "AuctionManual_FA.pdf": {
+      "total_queries": 10,
+      "top_1_recall": 1.0,
+      "top_3_recall": 1.0,
+      "top_5_recall": 1.0,
+      "top_10_recall": 1.0,
+      "language_conformity": 0.0,
+      "rag_source_match": 0.0,
+      "avg_e2e_latency": 0.0
+    },
+    "FAQ_CHiPS_Online_EMD_V2.0.docx": {
+      "total_queries": 10,
+      "top_1_recall": 0.0,
+      "top_3_recall": 0.0,
+      "top_5_recall": 0.0,
+      "top_10_recall": 0.0,
+      "language_conformity": 1.0,
+      "rag_source_match": 0.0,
+      "avg_e2e_latency": 55.19745349884033
+    }
+  },
+  "retrieval_details": [
+    {
+      "question": "What are the main guidelines mentioned in 11.02.2004 transp in short term tender.pdf?",
+      "expected_file": "11.02.2004 transp in short term tender.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "11.02.2004 transp in short term tender.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 728.0104160308838
+    },
+    {
+      "question": "What does 11.02.2004 transp in short term tender.pdf regulate regarding 2004 transp short term tender?",
+      "expected_file": "11.02.2004 transp in short term tender.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "11.02.2004 transp in short term tender.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 58.46357345581055
+    },
+    {
+      "question": "Under GFR and government rules, what is the procedure for 2004 transp short term tender?",
+      "expected_file": "11.02.2004 transp in short term tender.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 4041.92852973938
+    },
+    {
+      "question": "Where can I find the specific sections about 2004 transp short term tender in 11.02.2004 transp in short term tender.pdf?",
+      "expected_file": "11.02.2004 transp in short term tender.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "11.02.2004 transp in short term tender.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 51.41639709472656
+    },
+    {
+      "question": "What is the core objective of 11.02.2004 transp in short term tender.pdf?",
+      "expected_file": "11.02.2004 transp in short term tender.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "11.02.2004 transp in short term tender.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 59.302330017089844
+    },
+    {
+      "question": "11.02.2004 transp in short term tender.pdf में 2004 transp short term tender के संबंध में मुख्य दिशा-निर्देश क्या हैं?",
+      "expected_file": "11.02.2004 transp in short term tender.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "11.02.2004 transp in short term tender.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 58.992624282836914
+    },
+    {
+      "question": "11.02.2004 transp in short term tender.pdf के तहत 2004 transp short term tender के लिए क्या प्रक्रिया निर्धारित है?",
+      "expected_file": "11.02.2004 transp in short term tender.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "11.02.2004 transp in short term tender.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 49.48234558105469
+    },
+    {
+      "question": "सरकारी नियमों के अनुसार 11.02.2004 transp in short term tender.pdf का मुख्य उद्देश्य क्या है?",
+      "expected_file": "11.02.2004 transp in short term tender.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "11.02.2004 transp in short term tender.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 51.610708236694336
+    },
+    {
+      "question": "मुझे 11.02.2004 transp in short term tender.pdf में 2004 transp short term tender से संबंधित नियम कहाँ मिल सकते हैं?",
+      "expected_file": "11.02.2004 transp in short term tender.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "11.02.2004 transp in short term tender.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 73.05312156677246
+    },
+    {
+      "question": "क्या 11.02.2004 transp in short term tender.pdf के अनुसार 2004 transp short term tender के नियमों का पालन करना अनिवार्य है?",
+      "expected_file": "11.02.2004 transp in short term tender.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "11.02.2004 transp in short term tender.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 48.80833625793457
+    },
+    {
+      "question": "What are the main guidelines mentioned in 2. Notification_EMDExemption.pdf?",
+      "expected_file": "2. Notification_EMDExemption.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "GeM_handbook.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 9232.01847076416
+    },
+    {
+      "question": "What does 2. Notification_EMDExemption.pdf regulate regarding Notification EMDExemption?",
+      "expected_file": "2. Notification_EMDExemption.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "GeM_handbook.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 8928.566694259644
+    },
+    {
+      "question": "Under GFR and government rules, what is the procedure for Notification EMDExemption?",
+      "expected_file": "2. Notification_EMDExemption.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 3874.645471572876
+    },
+    {
+      "question": "Where can I find the specific sections about Notification EMDExemption in 2. Notification_EMDExemption.pdf?",
+      "expected_file": "2. Notification_EMDExemption.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "GeM_handbook.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 8895.946264266968
+    },
+    {
+      "question": "What is the core objective of 2. Notification_EMDExemption.pdf?",
+      "expected_file": "2. Notification_EMDExemption.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "GeM_handbook.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 8841.233253479004
+    },
+    {
+      "question": "2. Notification_EMDExemption.pdf में Notification EMDExemption के संबंध में मुख्य दिशा-निर्देश क्या हैं?",
+      "expected_file": "2. Notification_EMDExemption.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "GeM_handbook.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 8914.002180099487
+    },
+    {
+      "question": "2. Notification_EMDExemption.pdf के तहत Notification EMDExemption के लिए क्या प्रक्रिया निर्धारित है?",
+      "expected_file": "2. Notification_EMDExemption.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "GeM_handbook.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 8985.925436019897
+    },
+    {
+      "question": "सरकारी नियमों के अनुसार 2. Notification_EMDExemption.pdf का मुख्य उद्देश्य क्या है?",
+      "expected_file": "2. Notification_EMDExemption.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "GeM_handbook.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 8984.851598739624
+    },
+    {
+      "question": "मुझे 2. Notification_EMDExemption.pdf में Notification EMDExemption से संबंधित नियम कहाँ मिल सकते हैं?",
+      "expected_file": "2. Notification_EMDExemption.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "GeM_handbook.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 9562.817096710205
+    },
+    {
+      "question": "क्या 2. Notification_EMDExemption.pdf के अनुसार Notification EMDExemption के नियमों का पालन करना अनिवार्य है?",
+      "expected_file": "2. Notification_EMDExemption.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "GeM_handbook.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 8825.993299484253
+    },
+    {
+      "question": "What are the main guidelines mentioned in Corrigendum_Instructions_to_department_users_and_bidders.pdf?",
+      "expected_file": "Corrigendum_Instructions_to_department_users_and_bidders.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "Corrigendum_Instructions_to_department_users_and_bidders.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 59.37075614929199
+    },
+    {
+      "question": "What does Corrigendum_Instructions_to_department_users_and_bidders.pdf regulate regarding Corrigendum Instructions department users bidders?",
+      "expected_file": "Corrigendum_Instructions_to_department_users_and_bidders.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "Corrigendum_Instructions_to_department_users_and_bidders.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 51.61857604980469
+    },
+    {
+      "question": "Under GFR and government rules, what is the procedure for Corrigendum Instructions department users bidders?",
+      "expected_file": "Corrigendum_Instructions_to_department_users_and_bidders.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 4758.935928344727
+    },
+    {
+      "question": "Where can I find the specific sections about Corrigendum Instructions department users bidders in Corrigendum_Instructions_to_department_users_and_bidders.pdf?",
+      "expected_file": "Corrigendum_Instructions_to_department_users_and_bidders.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "Corrigendum_Instructions_to_department_users_and_bidders.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 63.75861167907715
+    },
+    {
+      "question": "What is the core objective of Corrigendum_Instructions_to_department_users_and_bidders.pdf?",
+      "expected_file": "Corrigendum_Instructions_to_department_users_and_bidders.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "Corrigendum_Instructions_to_department_users_and_bidders.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 69.2136287689209
+    },
+    {
+      "question": "Corrigendum_Instructions_to_department_users_and_bidders.pdf में Corrigendum Instructions department users bidders के संबंध में मुख्य दिशा-निर्देश क्या हैं?",
+      "expected_file": "Corrigendum_Instructions_to_department_users_and_bidders.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "Corrigendum_Instructions_to_department_users_and_bidders.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 84.70368385314941
+    },
+    {
+      "question": "Corrigendum_Instructions_to_department_users_and_bidders.pdf के तहत Corrigendum Instructions department users bidders के लिए क्या प्रक्रिया निर्धारित है?",
+      "expected_file": "Corrigendum_Instructions_to_department_users_and_bidders.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "Corrigendum_Instructions_to_department_users_and_bidders.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 90.75736999511719
+    },
+    {
+      "question": "सरकारी नियमों के अनुसार Corrigendum_Instructions_to_department_users_and_bidders.pdf का मुख्य उद्देश्य क्या है?",
+      "expected_file": "Corrigendum_Instructions_to_department_users_and_bidders.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "Corrigendum_Instructions_to_department_users_and_bidders.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 76.62844657897949
+    },
+    {
+      "question": "मुझे Corrigendum_Instructions_to_department_users_and_bidders.pdf में Corrigendum Instructions department users bidders से संबंधित नियम कहाँ मिल सकते हैं?",
+      "expected_file": "Corrigendum_Instructions_to_department_users_and_bidders.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "Corrigendum_Instructions_to_department_users_and_bidders.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 85.73532104492188
+    },
+    {
+      "question": "क्या Corrigendum_Instructions_to_department_users_and_bidders.pdf के अनुसार Corrigendum Instructions department users bidders के नियमों का पालन करना अनिवार्य है?",
+      "expected_file": "Corrigendum_Instructions_to_department_users_and_bidders.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "Corrigendum_Instructions_to_department_users_and_bidders.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 80.82389831542969
+    },
+    {
+      "question": "What are the main guidelines mentioned in CVC guideline.pdf?",
+      "expected_file": "CVC guideline.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "CVC guideline.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 1315.8223628997803
+    },
+    {
+      "question": "What does CVC guideline.pdf regulate regarding guideline?",
+      "expected_file": "CVC guideline.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "CVC guideline.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 1595.4720973968506
+    },
+    {
+      "question": "Under GFR and government rules, what is the procedure for guideline?",
+      "expected_file": "CVC guideline.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 3683.3343505859375
+    },
+    {
+      "question": "Where can I find the specific sections about guideline in CVC guideline.pdf?",
+      "expected_file": "CVC guideline.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "CVC guideline.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 1009.8447799682617
+    },
+    {
+      "question": "What is the core objective of CVC guideline.pdf?",
+      "expected_file": "CVC guideline.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "CVC guideline.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 1099.158763885498
+    },
+    {
+      "question": "CVC guideline.pdf में guideline के संबंध में मुख्य दिशा-निर्देश क्या हैं?",
+      "expected_file": "CVC guideline.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "CVC guideline.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 1007.0586204528809
+    },
+    {
+      "question": "CVC guideline.pdf के तहत guideline के लिए क्या प्रक्रिया निर्धारित है?",
+      "expected_file": "CVC guideline.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "CVC guideline.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 982.928991317749
+    },
+    {
+      "question": "सरकारी नियमों के अनुसार CVC guideline.pdf का मुख्य उद्देश्य क्या है?",
+      "expected_file": "CVC guideline.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "CVC guideline.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 993.8161373138428
+    },
+    {
+      "question": "मुझे CVC guideline.pdf में guideline से संबंधित नियम कहाँ मिल सकते हैं?",
+      "expected_file": "CVC guideline.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "CVC guideline.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 1135.4124546051025
+    },
+    {
+      "question": "क्या CVC guideline.pdf के अनुसार guideline के नियमों का पालन करना अनिवार्य है?",
+      "expected_file": "CVC guideline.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "CVC guideline.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 1210.0417613983154
+    },
+    {
+      "question": "What are the main guidelines mentioned in mannual procurement.pdf?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "mannual procurement.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 4999.342203140259
+    },
+    {
+      "question": "What does mannual procurement.pdf regulate regarding mannual procurement?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "mannual procurement.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 4335.783004760742
+    },
+    {
+      "question": "Under GFR and government rules, what is the procedure for mannual procurement?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 7526.514053344727
+    },
+    {
+      "question": "Where can I find the specific sections about mannual procurement in mannual procurement.pdf?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "mannual procurement.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 8955.237627029419
+    },
+    {
+      "question": "What is the core objective of mannual procurement.pdf?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "mannual procurement.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 4601.837158203125
+    },
+    {
+      "question": "mannual procurement.pdf में mannual procurement के संबंध में मुख्य दिशा-निर्देश क्या हैं?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "mannual procurement.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 4743.502855300903
+    },
+    {
+      "question": "mannual procurement.pdf के तहत mannual procurement के लिए क्या प्रक्रिया निर्धारित है?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "mannual procurement.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 5976.276397705078
+    },
+    {
+      "question": "सरकारी नियमों के अनुसार mannual procurement.pdf का मुख्य उद्देश्य क्या है?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "mannual procurement.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 4826.332807540894
+    },
+    {
+      "question": "मुझे mannual procurement.pdf में mannual procurement से संबंधित नियम कहाँ मिल सकते हैं?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "mannual procurement.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 4693.689346313477
+    },
+    {
+      "question": "क्या mannual procurement.pdf के अनुसार mannual procurement के नियमों का पालन करना अनिवार्य है?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "mannual procurement.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 6622.733354568481
+    },
+    {
+      "question": "What are the main guidelines mentioned in PPM 00002.pdf?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf",
+        "Vigilance Manual 2021 (Hindi).pdf",
+        "mannual procurement.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 189.0096664428711
+    },
+    {
+      "question": "What does PPM 00002.pdf regulate regarding 00002?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "ddodscmanual1064dt111017.pdf",
+        "mannual procurement.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 208.6493968963623
+    },
+    {
+      "question": "Under GFR and government rules, what is the procedure for 00002?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 6863.025188446045
+    },
+    {
+      "question": "Where can I find the specific sections about 00002 in PPM 00002.pdf?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf",
+        "Manual_for_Procurement_of_works_2019.pdf",
+        "hindi_general_financial_rules_2017.pdf",
+        "mannual procurement.pdf",
+        "Vigilance Manual 2021 (Hindi).pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 189.64266777038574
+    },
+    {
+      "question": "What is the core objective of PPM 00002.pdf?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf",
+        "mannual procurement.pdf",
+        "Manual_for_Procurement_of_works_2019.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 104.60472106933594
+    },
+    {
+      "question": "PPM 00002.pdf में 00002 के संबंध में मुख्य दिशा-निर्देश क्या हैं?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "Vigilance Manual 2021 (Hindi).pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "hindi_general_financial_rules_2017.pdf",
+        "ddodscmanual1064dt111017.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 173.92420768737793
+    },
+    {
+      "question": "PPM 00002.pdf के तहत 00002 के लिए क्या प्रक्रिया निर्धारित है?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "Vigilance Manual 2021 (Hindi).pdf",
+        "hindi_general_financial_rules_2017.pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 167.76251792907715
+    },
+    {
+      "question": "सरकारी नियमों के अनुसार PPM 00002.pdf का मुख्य उद्देश्य क्या है?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "hindi_general_financial_rules_2017.pdf",
+        "Vigilance Manual 2021 (Hindi).pdf",
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 190.9804344177246
+    },
+    {
+      "question": "मुझे PPM 00002.pdf में 00002 से संबंधित नियम कहाँ मिल सकते हैं?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "hindi_general_financial_rules_2017.pdf",
+        "Vigilance Manual 2021 (Hindi).pdf",
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 205.08527755737305
+    },
+    {
+      "question": "क्या PPM 00002.pdf के अनुसार 00002 के नियमों का पालन करना अनिवार्य है?",
+      "expected_file": "mannual procurement.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "Vigilance Manual 2021 (Hindi).pdf",
+        "hindi_general_financial_rules_2017.pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "Manual_for_Procurement_of_works_2019.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 207.80134201049805
+    },
+    {
+      "question": "What are the main guidelines mentioned in publicProManual-1755343081262-715558279.pdf?",
+      "expected_file": "publicProManual-1755343081262-715558279.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 13052.411079406738
+    },
+    {
+      "question": "What does publicProManual-1755343081262-715558279.pdf regulate regarding publicProManual 1755343081262 715558279?",
+      "expected_file": "publicProManual-1755343081262-715558279.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 9506.813287734985
+    },
+    {
+      "question": "Under GFR and government rules, what is the procedure for publicProManual 1755343081262 715558279?",
+      "expected_file": "publicProManual-1755343081262-715558279.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 4711.202144622803
+    },
+    {
+      "question": "Where can I find the specific sections about publicProManual 1755343081262 715558279 in publicProManual-1755343081262-715558279.pdf?",
+      "expected_file": "publicProManual-1755343081262-715558279.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 10436.154127120972
+    },
+    {
+      "question": "What is the core objective of publicProManual-1755343081262-715558279.pdf?",
+      "expected_file": "publicProManual-1755343081262-715558279.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 8967.866897583008
+    },
+    {
+      "question": "publicProManual-1755343081262-715558279.pdf में publicProManual 1755343081262 715558279 के संबंध में मुख्य दिशा-निर्देश क्या हैं?",
+      "expected_file": "publicProManual-1755343081262-715558279.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 13460.689067840576
+    },
+    {
+      "question": "publicProManual-1755343081262-715558279.pdf के तहत publicProManual 1755343081262 715558279 के लिए क्या प्रक्रिया निर्धारित है?",
+      "expected_file": "publicProManual-1755343081262-715558279.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 21058.68887901306
+    },
+    {
+      "question": "सरकारी नियमों के अनुसार publicProManual-1755343081262-715558279.pdf का मुख्य उद्देश्य क्या है?",
+      "expected_file": "publicProManual-1755343081262-715558279.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 20930.32145500183
+    },
+    {
+      "question": "मुझे publicProManual-1755343081262-715558279.pdf में publicProManual 1755343081262 715558279 से संबंधित नियम कहाँ मिल सकते हैं?",
+      "expected_file": "publicProManual-1755343081262-715558279.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 21320.124864578247
+    },
+    {
+      "question": "क्या publicProManual-1755343081262-715558279.pdf के अनुसार publicProManual 1755343081262 715558279 के नियमों का पालन करना अनिवार्य है?",
+      "expected_file": "publicProManual-1755343081262-715558279.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 21195.376873016357
+    },
+    {
+      "question": "What are the main guidelines mentioned in short tender notice 2 days.pdf?",
+      "expected_file": "short tender notice 2 days.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "short tender notice 2 days.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 954.8254013061523
+    },
+    {
+      "question": "What does short tender notice 2 days.pdf regulate regarding short tender days?",
+      "expected_file": "short tender notice 2 days.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "short tender notice 2 days.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 1004.5883655548096
+    },
+    {
+      "question": "Under GFR and government rules, what is the procedure for short tender days?",
+      "expected_file": "short tender notice 2 days.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 8590.680360794067
+    },
+    {
+      "question": "Where can I find the specific sections about short tender days in short tender notice 2 days.pdf?",
+      "expected_file": "short tender notice 2 days.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "short tender notice 2 days.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 1014.2474174499512
+    },
+    {
+      "question": "What is the core objective of short tender notice 2 days.pdf?",
+      "expected_file": "short tender notice 2 days.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "short tender notice 2 days.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 940.2732849121094
+    },
+    {
+      "question": "short tender notice 2 days.pdf में short tender days के संबंध में मुख्य दिशा-निर्देश क्या हैं?",
+      "expected_file": "short tender notice 2 days.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "short tender notice 2 days.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 995.3749179840088
+    },
+    {
+      "question": "short tender notice 2 days.pdf के तहत short tender days के लिए क्या प्रक्रिया निर्धारित है?",
+      "expected_file": "short tender notice 2 days.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "short tender notice 2 days.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 919.6619987487793
+    },
+    {
+      "question": "सरकारी नियमों के अनुसार short tender notice 2 days.pdf का मुख्य उद्देश्य क्या है?",
+      "expected_file": "short tender notice 2 days.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "short tender notice 2 days.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 865.1344776153564
+    },
+    {
+      "question": "मुझे short tender notice 2 days.pdf में short tender days से संबंधित नियम कहाँ मिल सकते हैं?",
+      "expected_file": "short tender notice 2 days.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "short tender notice 2 days.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 852.7915477752686
+    },
+    {
+      "question": "क्या short tender notice 2 days.pdf के अनुसार short tender days के नियमों का पालन करना अनिवार्य है?",
+      "expected_file": "short tender notice 2 days.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "retrieved_sources": [
+        "short tender notice 2 days.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 976.8400192260742
+    },
+    {
+      "question": "How do I use the system according to the AuctionManual_FA.pdf?",
+      "expected_file": "AuctionManual_FA.pdf",
+      "language": "en",
+      "role": "vendor",
+      "retrieved_sources": [
+        "AuctionManual_FA.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 75.18768310546875
+    },
+    {
+      "question": "What is the step-by-step process for AuctionManual in AuctionManual_FA.pdf?",
+      "expected_file": "AuctionManual_FA.pdf",
+      "language": "en",
+      "role": "vendor",
+      "retrieved_sources": [
+        "AuctionManual_FA.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 50.987958908081055
+    },
+    {
+      "question": "What system settings or configurations are needed for AuctionManual in AuctionManual_FA.pdf?",
+      "expected_file": "AuctionManual_FA.pdf",
+      "language": "en",
+      "role": "vendor",
+      "retrieved_sources": [
+        "AuctionManual_FA.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 41.93711280822754
+    },
+    {
+      "question": "Where can a vendor find details about AuctionManual in AuctionManual_FA.pdf?",
+      "expected_file": "AuctionManual_FA.pdf",
+      "language": "en",
+      "role": "vendor",
+      "retrieved_sources": [
+        "AuctionManual_FA.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 41.844844818115234
+    },
+    {
+      "question": "What are the troubleshooting steps mentioned in AuctionManual_FA.pdf?",
+      "expected_file": "AuctionManual_FA.pdf",
+      "language": "en",
+      "role": "vendor",
+      "retrieved_sources": [
+        "AuctionManual_FA.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 48.088788986206055
+    },
+    {
+      "question": "AuctionManual_FA.pdf के अनुसार AuctionManual की चरण-दर-चरण प्रक्रिया क्या है?",
+      "expected_file": "AuctionManual_FA.pdf",
+      "language": "hi",
+      "role": "vendor",
+      "retrieved_sources": [
+        "AuctionManual_FA.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 49.222469329833984
+    },
+    {
+      "question": "विक्रेताओं के लिए AuctionManual_FA.pdf में AuctionManual से संबंधित क्या निर्देश हैं?",
+      "expected_file": "AuctionManual_FA.pdf",
+      "language": "hi",
+      "role": "vendor",
+      "retrieved_sources": [
+        "AuctionManual_FA.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 46.61250114440918
+    },
+    {
+      "question": "AuctionManual_FA.pdf के अनुसार AuctionManual के लिए आवश्यक सिस्टम सेटिंग्स क्या हैं?",
+      "expected_file": "AuctionManual_FA.pdf",
+      "language": "hi",
+      "role": "vendor",
+      "retrieved_sources": [
+        "AuctionManual_FA.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 47.287702560424805
+    },
+    {
+      "question": "यदि AuctionManual_FA.pdf के अनुसार AuctionManual में कोई समस्या आए तो क्या करें?",
+      "expected_file": "AuctionManual_FA.pdf",
+      "language": "hi",
+      "role": "vendor",
+      "retrieved_sources": [
+        "AuctionManual_FA.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 50.54163932800293
+    },
+    {
+      "question": "AuctionManual_FA.pdf के तहत AuctionManual के मुख्य बिंदु क्या हैं?",
+      "expected_file": "AuctionManual_FA.pdf",
+      "language": "hi",
+      "role": "vendor",
+      "retrieved_sources": [
+        "AuctionManual_FA.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": true,
+        "top_3": true,
+        "top_5": true,
+        "top_10": true
+      },
+      "retrieval_latency_ms": 42.34790802001953
+    },
+    {
+      "question": "How do I use the system according to the FAQ_CHiPS_Online_EMD_V2.0.docx?",
+      "expected_file": "FAQ_CHiPS_Online_EMD_V2.0.docx",
+      "language": "en",
+      "role": "vendor",
+      "retrieved_sources": [
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 170.79710960388184
+    },
+    {
+      "question": "What is the step-by-step process for CHiPS Online in FAQ_CHiPS_Online_EMD_V2.0.docx?",
+      "expected_file": "FAQ_CHiPS_Online_EMD_V2.0.docx",
+      "language": "en",
+      "role": "vendor",
+      "retrieved_sources": [
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 165.26103019714355
+    },
+    {
+      "question": "What system settings or configurations are needed for CHiPS Online in FAQ_CHiPS_Online_EMD_V2.0.docx?",
+      "expected_file": "FAQ_CHiPS_Online_EMD_V2.0.docx",
+      "language": "en",
+      "role": "vendor",
+      "retrieved_sources": [
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 153.2003879547119
+    },
+    {
+      "question": "Where can a vendor find details about CHiPS Online in FAQ_CHiPS_Online_EMD_V2.0.docx?",
+      "expected_file": "FAQ_CHiPS_Online_EMD_V2.0.docx",
+      "language": "en",
+      "role": "vendor",
+      "retrieved_sources": [
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 150.30741691589355
+    },
+    {
+      "question": "What are the troubleshooting steps mentioned in FAQ_CHiPS_Online_EMD_V2.0.docx?",
+      "expected_file": "FAQ_CHiPS_Online_EMD_V2.0.docx",
+      "language": "en",
+      "role": "vendor",
+      "retrieved_sources": [
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 141.67022705078125
+    },
+    {
+      "question": "FAQ_CHiPS_Online_EMD_V2.0.docx के अनुसार CHiPS Online की चरण-दर-चरण प्रक्रिया क्या है?",
+      "expected_file": "FAQ_CHiPS_Online_EMD_V2.0.docx",
+      "language": "hi",
+      "role": "vendor",
+      "retrieved_sources": [
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 159.35349464416504
+    },
+    {
+      "question": "विक्रेताओं के लिए FAQ_CHiPS_Online_EMD_V2.0.docx में CHiPS Online से संबंधित क्या निर्देश हैं?",
+      "expected_file": "FAQ_CHiPS_Online_EMD_V2.0.docx",
+      "language": "hi",
+      "role": "vendor",
+      "retrieved_sources": [
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 170.76754570007324
+    },
+    {
+      "question": "FAQ_CHiPS_Online_EMD_V2.0.docx के अनुसार CHiPS Online के लिए आवश्यक सिस्टम सेटिंग्स क्या हैं?",
+      "expected_file": "FAQ_CHiPS_Online_EMD_V2.0.docx",
+      "language": "hi",
+      "role": "vendor",
+      "retrieved_sources": [
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 187.32666969299316
+    },
+    {
+      "question": "यदि FAQ_CHiPS_Online_EMD_V2.0.docx के अनुसार CHiPS Online में कोई समस्या आए तो क्या करें?",
+      "expected_file": "FAQ_CHiPS_Online_EMD_V2.0.docx",
+      "language": "hi",
+      "role": "vendor",
+      "retrieved_sources": [
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 160.98523139953613
+    },
+    {
+      "question": "FAQ_CHiPS_Online_EMD_V2.0.docx के तहत CHiPS Online के मुख्य बिंदु क्या हैं?",
+      "expected_file": "FAQ_CHiPS_Online_EMD_V2.0.docx",
+      "language": "hi",
+      "role": "vendor",
+      "retrieved_sources": [
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "retrieval_hits": {
+        "top_1": false,
+        "top_3": false,
+        "top_5": false,
+        "top_10": false
+      },
+      "retrieval_latency_ms": 140.35534858703613
+    }
+  ],
+  "e2e_details": [
+    {
+      "question": "11.02.2004 transp in short term tender.pdf में 2004 transp short term tender के संबंध में मुख्य दिशा-निर्देश क्या हैं?",
+      "expected_file": "11.02.2004 transp in short term tender.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "answer": "- दस्तावेज़ में मुख्य दिशा अल्पकालिक निविदाओं के लिए विभागीय वेबसाइटों का उपयोग करने की है [Page 1]।\n- इस निर्णय का उद्देश्य शक्ति के दुरुपयोग को कम करना और पारदर्शिता बढ़ाना है, साथ ही आपूर्तिकर्ताओं के बीच प्रतिस्पर्धा को बढ़ावा देना है [Page 1]।",
+      "retrieved_sources": [
+        "11.02.2004 transp in short term tender.pdf"
+      ],
+      "latency_sec": 45.51129150390625,
+      "language_matches": true,
+      "source_matched": true
+    },
+    {
+      "question": "What are the main guidelines mentioned in 2. Notification_EMDExemption.pdf?",
+      "expected_file": "2. Notification_EMDExemption.pdf",
+      "language": "en",
+      "role": "government_officer",
+      "answer": "- Micro and Small Enterprises (MSEs) are exempted from providing Bid Security [Rule 170].\n- MSEs also do not require EMD for tenders on the GeM portal as per Notification_EMDExemption.pdf.",
+      "retrieved_sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "GeM_handbook.pdf"
+      ],
+      "latency_sec": 63.325135231018066,
+      "language_matches": true,
+      "source_matched": false
+    },
+    {
+      "question": "CVC guideline.pdf में guideline के संबंध में मुख्य दिशा-निर्देश क्या हैं?",
+      "expected_file": "CVC guideline.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "answer": "भारत सरकार के भुगतान के लिए इलेक्ट्रॉनिक भुगतान विधियों पर ध्यान केंद्रित करने वाले सीवीसी दिशानिर्देशों को प्रदान किए गए दस्तावेज़ में स्पष्ट किया गया है। इसके अतिरिक्त, वे कहते हैं कि आयोग की सिफारिशें अन्य स्रोतों से प्राप्त निधि द्वारा वित्त पोषित परियोजनाओं पर लागू नहीं होती हैं [Page 31] [Page 46]।\n\n**Reference:** Section 8(1)",
+      "retrieved_sources": [
+        "CVC guideline.pdf"
+      ],
+      "latency_sec": 55.90232563018799,
+      "language_matches": true,
+      "source_matched": true
+    },
+    {
+      "question": "How do I use the system according to the FAQ_CHiPS_Online_EMD_V2.0.docx?",
+      "expected_file": "FAQ_CHiPS_Online_EMD_V2.0.docx",
+      "language": "en",
+      "role": "vendor",
+      "answer": "- To deposit EMD online for an e-Tender in the Integrated e-Procurement Project:\n 1. Select Online as payment mode and upload bid documents [FAQ_CHiPS_Online_EMD_V2.0.docx]\n 2. Find link to pay via Net Banking, select your bank for login and complete transaction [FAQ_CHiPs_Online_EMD_V2.0.docx",
+      "retrieved_sources": [
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "latency_sec": 55.19745349884033,
+      "language_matches": true,
+      "source_matched": false
+    },
+    {
+      "question": "publicProManual-1755343081262-715558279.pdf में publicProManual 1755343081262 715558279 के संबंध में मुख्य दिशा-निर्देश क्या हैं?",
+      "expected_file": "publicProManual-1755343081262-715558279.pdf",
+      "language": "hi",
+      "role": "government_officer",
+      "answer": "Error: Ollama call failed with status code 500. Details: health resp: Get \"http://127.0.0.1:54382/health\": dial tcp 127.0.0.1:54382: connectex: No connection could be made because the target machine actively refused it.",
+      "retrieved_sources": [],
+      "latency_sec": 55.021949768066406,
+      "language_matches": false,
+      "source_matched": false
+    }
+  ]
+}

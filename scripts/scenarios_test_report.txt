@@ -1,0 +1,71 @@
+==================================================
+RAG SYSTEM EVALUATION REPORT
+Translation Model: mashriram/sarvam-1
+LLM Model: mistral:latest
+==================================================
+
+SCENARIO 1:
+Role: VENDOR
+Query Language: English
+Question: What is the procedure for vendor registration on the Chhattisgarh e-Procurement Portal?
+Detected Language: en
+Sources Cited: CHiPS_Vendor_Registration_Manual_English.pdf, Guidelines_To_Bidders_EPS_v1.6.pdf, CRN_Customer_Reference_Number_Guide.pdf
+Rule Citations: 
+Elapsed Time: 53.46 seconds
+Answer:
+To register as a new vendor on the Chhattisgarh e-Procurement Portal, follow these steps:
+1. Obtain your CRN (Customer Reference Number) by visiting CHiPS office and submitting required documents such as PAN card [Page 4].
+2. After receiving the CRN certificate, use it for online registration on the portal at https://eproc.cgstate.gov.in:
+ a. Click on "Supplier Registration" or "New User Registration".
+ b. Enter basic details including your PAN card number and CRN [Page 4].
+ c. Complete the registration form, fill in additional required information, upload the CRN certificate, and complete DSC (Digital Signature Certificate) selection process [Pages 5-6].
+3. If you are already registered with a class A, B, C, or specific other classes as per government of Chhattisgarh guidelines, log in to your account on the portal using your CRN and complete any necessary updates if required .
+
+==================================================
+
+SCENARIO 2:
+Role: VENDOR
+Query Language: Hindi
+Question: सुरक्षा निधि (EMD) छूट के लिए कौन सी व्यावसायिक संस्थाएं पात्र हैं?
+Detected Language: hi
+Sources Cited: Guidelines_To_Bidders_EPS_v1.6.pdf, FAQ_CHiPS_Online_EMD_V2.0.docx
+Rule Citations: 
+Elapsed Time: 47.52 seconds
+Answer:
+व्यवसाय संस्थाएं ई.एम.डी. प्रदान करने से छूट सकती हैं, जो कि निविदा शर्तों और परिस्थितियों के अधीन है। प्रदान किए गए संदर्भ या उद्धृत नियमों में योग्यता मानदंड स्पष्ट रूप से नहीं बताया गया है। हालाँकि, यह उल्लेख किया गया है कि एक बोली लगाने वाला ई.एम.डी. जमा करने के दौरान छूट का दावा करने के कारण को निर्दिष्ट करते हुए एक दस्तावेज अपलोड करके छूट का दावा कर सकता है [Page 7]। इसलिए, आपको विशिष्ट टेन्डर शर्तों और शर्तों के लिए विवरण पर सुरक्षा जमा (ई.एम.डी.) छूट के लिए पात्र होने वाले व्यवसाय संस्थाओं का संदर्भ लेना चाहिए।
+
+==================================================
+
+SCENARIO 3:
+Role: GOVERNMENT_OFFICER
+Query Language: English
+Question: What is the maximum limit for limited tendering under GFR 2017 and how many suppliers are required?
+Detected Language: en
+Sources Cited: publicProManual-1755343081262-715558279.pdf, Vigilance Manual 2021 (Hindi).pdf, Manual_for_Procurement_of_works_2019.pdf
+Rule Citations: Rule 162, Rule 166, Chapter 4, Rule 154, Chapter 3
+Elapsed Time: 40.45 seconds
+Answer:
+The Limited Tender procedure in GFR 2017 can be conducted up to a maximum of Rs. 25 lakh [Rule 162]. In this tender process, only pre-qualified or known certified vendors are notified and allowed to participate. There is no specific requirement for the number of suppliers mentioned in the context provided. However, it's important to note that details about supplier minimum requirements might be present elsewhere but they aren't explicitly stated here [Rule 162].
+
+For Special Limited Tender Enquiry (SLTE) above Rs. 50 lakh under exceptional circumstances, there is no specific limit mentioned in the provided context regarding the number of suppliers or tender value [Not specified in GFR 2017].
+
+==================================================
+
+SCENARIO 4:
+Role: GOVERNMENT_OFFICER
+Query Language: Hindi
+Question: शॉर्ट टेंडर नोटिस के नियम क्या हैं?
+Detected Language: hi
+Sources Cited: store purchase rule cg hindi.pdf, Vigilance Manual 2021 (Hindi).pdf, CVC guideline.pdf, publicProManual-1755343081262-715558279.pdf
+Rule Citations: Rule 168, Section I, Section V
+Elapsed Time: 77.93 seconds
+Answer:
+त्वरित विक्रेताओं या तत्परता से खरीद के समान शब्दों जैसे कि त्वरित विक्रेताओं के लिए कोई स्पष्ट नियम प्रदान करने वाला संदर्भ नहीं है। हालांकि, यह उल्लेख किया गया है कि समय की बाधाओं के कारण जहां सामान, सेवाएं और कार्य सार्वजनिक रूप से उपलब्ध नहीं हैं, वहां उन्हें अभी भी विभाग की वेबसाइट पर रखा जाना चाहिए [Clarification]।
+
+सीमित निविदा प्रक्रिया के बारे में जानकारी देते हुए, यह उल्लेख किया गया है कि ऐसी प्रक्रियाओं को निर्धारित दिशानिर्देशों के अधीन रखा जाता है और उन्हें सक्षम प्राधिकारी से अनुमोदन की आवश्यकता हो सकती है। सीमित निविदाओं में आपातकालीन निर्माण कार्य या विशिष्ट सुरक्षा या तकनीकी आवश्यकताओं को पूरा करने के लिए बैठकें शामिल हो सकती हैं [Sub-rule 4.5(c)]।
+
+विस्तृत निविदा दस्तावेजों की सामग्री के लिए, वित्तीय बोलियों सहित, कृपया नियम 168 जी.एफ.आर. 2017 देखें [Rule 168]। ऐसा ध्यान रखना आवश्यक है कि ऐसे निविदाओं के लिए आमंत्रण अभी भी उप-नियम 4.4.4 और अनुलग्नक-3 में उल्लिखित सामान्य विज्ञापन दिशानिर्देशों का पालन करना चाहिए [Sub-rule 4.4.4 & Appendix-3]।
+
+यदि किसी भी अतिरिक्त स्पष्टता या विशिष्ट नियमों के लिए जो लघु-टेंडर नोटिसों से संबंधित हैं, तो विस्तृत जानकारी के लिए आधिकारिक जी.एफ.आर. दस्तावेज़ की जांच करने की अनुशंसा की जाती है।
+
+==================================================

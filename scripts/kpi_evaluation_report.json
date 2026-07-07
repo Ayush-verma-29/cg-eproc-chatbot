@@ -1,0 +1,1672 @@
+{
+  "summary": {
+    "overall": {
+      "total_queries": 80,
+      "avg_correctness": 4.0375,
+      "avg_accuracy_percent": 80.75,
+      "avg_latency": 44.09431207180023,
+      "avg_tokens": 271.375,
+      "avg_query_translation": 1.387652373313904,
+      "avg_retrieval": 6.122820496559143,
+      "avg_generation": 30.848943546414375,
+      "avg_response_translation": 12.856901168823242
+    },
+    "english": {
+      "total_queries": 40,
+      "avg_correctness": 3.95,
+      "avg_accuracy_percent": 79.0,
+      "avg_latency": 40.31221079826355,
+      "avg_tokens": 100.925,
+      "avg_retrieval": 6.206210047006607,
+      "avg_generation": 34.10559142827988
+    },
+    "hindi": {
+      "total_queries": 40,
+      "avg_correctness": 4.125,
+      "avg_accuracy_percent": 82.5,
+      "avg_latency": 47.876413345336914,
+      "avg_tokens": 441.825,
+      "avg_query_translation": 1.387652373313904,
+      "avg_retrieval": 6.039430946111679,
+      "avg_generation": 27.592295664548875,
+      "avg_response_translation": 12.856901168823242
+    }
+  },
+  "queries_details": [
+    {
+      "question": "How do I register as a new vendor on the e-procurement portal?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "- To register as a new vendor on Chhattisgarh's e-Procurement Portal, follow these steps:\n  1. Visit the portal at [eproc.cgstate.gov.in](http://eproc.cgstate.gov.in). Click \"New User\" under Register.\n  2. Enter your PAN card details correctly and select New User to continue. Press OK when prompted for a system setup guide downloading alert.\n  3. Check the preferred login code availability, then fill in other required details such as Authorized Sign",
+      "sources": [
+        "CRN_Customer_Reference_Number_Guide.pdf",
+        "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "faq.pdf",
+        "Preferred_System_Configuration_V_2.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 107,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 9.135078191757202,
+        "generation": 33.56070303916931,
+        "response_translation": 0.0,
+        "total": 42.69703006744385
+      }
+    },
+    {
+      "question": "What are the system configuration requirements for using the e-proc portal?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "- Operating System: Windows 7 or Windows 8 (either 32 bit or 64 bit)\n- Java Version: Preferred version is 1.8.0_77 (both 32 and 64 bits as required). Only one version of Java should be kept in the system, with JAVA Security set to High or Very High.\n- Browser: Internet Explorer 9/11, latest Mozilla Firefox, Google Chrome with IE Tab V2 (Enhanced IE Tab) is recommended for use on e",
+      "sources": [
+        "Preferred_System_Configuration_V_2.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "EMD_CHALLAN_PAYMENT_V1.0.pdf",
+        "Online_EMD_Refund_Notice.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 102,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.339876890182495,
+        "generation": 34.77035307884216,
+        "response_translation": 0.0,
+        "total": 37.11022996902466
+      }
+    },
+    {
+      "question": "How can I configure my Microsoft Edge browser for digital signature compatibility?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "To configure the Microsoft Edge browser for digital signature compatibility, follow these steps:\n1. Install and set up a Class II/III Digital Signature Certificate issued by an approved Certifying Authority authorized by the Controller of Certifying Authorities (CCA), Government of India. You can refer to http://www.cca.gov.in/cca/qlicensed_ca.html for more information on obtaining a certificate.\n2. Ensure that your Regional Language Format is set as English (United States) in the Control Panel settings.\n3. Install and properly configure e-",
+      "sources": [
+        "EDGE_Browser_Setup_V1.0.pdf",
+        "faq.pdf",
+        "Preferred_System_Configuration_V_2.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "CHiPS_Vendor_Registration_Manual_English.pdf"
+      ],
+      "correctness_score": 2,
+      "tokens_generated": 106,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 4.55523419380188,
+        "generation": 33.64009475708008,
+        "response_translation": 0.0,
+        "total": 38.19532895088196
+      }
+    },
+    {
+      "question": "What is the procedure to pay the EMD fee online via Challan?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "- To pay the EMD fee online via Challan, follow these steps on Chhattisgarh e-Procurement Portal:\n  1. Log into your account using User ID and Password.\n  2. Click \"Run\", select DSC, continue to Dashboard, click \"All Live Tenders\".\n  3. Select the interested tender, agree with terms, pay the EMD/Processing fee by selecting RTGS or Challan as payment mode.\n  4. Generate a challan and confirm your payment at the bank within 2-3 working",
+      "sources": [
+        "Learned satisfied Q&As",
+        "EMD_CHALLAN_PAYMENT_V1.0.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 116,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 11.06995415687561,
+        "generation": 35.99802041053772,
+        "response_translation": 0.0,
+        "total": 47.06851506233215
+      }
+    },
+    {
+      "question": "How do I check the status of my online EMD refund?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "- To check the status of your Online EMD Refund, you can log into the Integrated e-Procurement Portal and navigate to the 'EMD Refund MIS' section available under your login.\n- The refund status is updated online on the portal in real time, so there is no need to visit CHiPS office for getting the EMD refund status.\n- If you have any further queries or suggestions regarding Online EMD Refund, please contact the Helpdesk Team at helpdesk.eproccgswan.gov.in or call",
+      "sources": [
+        "Learned satisfied Q&As",
+        "Online_EMD_Refund_Notice.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "faq.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 109,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 11.03447413444519,
+        "generation": 33.57355523109436,
+        "response_translation": 0.0,
+        "total": 44.608614444732666
+      }
+    },
+    {
+      "question": "How can I submit a bid for an active tender on the portal?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "To submit a bid for an active tender on Chhattisgarh e-Procurement Portal, follow these steps as a vendor:\n1. Access the portal at https://eproc.cgstate.gov.in and log in using your User ID and Password.\n2. Navigate to the Auction tab and open it in a new Tab.\n3. Select respective auction and click on View/Respond to RFx.\n4. Click on Accept, then Bid, place your bid above opening price (multiple of min bid change price), submit the",
+      "sources": [
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf",
+        "AuctionManual_FA.pdf",
+        "Learned satisfied Q&As",
+        "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "faq.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 106,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.3657522201538086,
+        "generation": 34.389368772506714,
+        "response_translation": 0.0,
+        "total": 36.75512099266052
+      }
+    },
+    {
+      "question": "What documents are required to complete vendor registration?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "- To obtain a CRN, the following documents are needed during visit at CHiPS Office: PAN Card and CA Certificate. After receiving the CRN certificate, it can be used for online registration on eproc.cgstate.gov.in\n- During online vendor registration, required documents include Basic Details (filled in PA), CRN (Customer Reference Number), upload of CRN Certificate, completion of DSC Selection and payment of Registration Fee. For more details, please refer to the Supplier Registration Manual available on eproc.cgstate.gov.",
+      "sources": [
+        "CRN_Customer_Reference_Number_Guide.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "faq.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 107,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 6.634598016738892,
+        "generation": 37.14572238922119,
+        "response_translation": 0.0,
+        "total": 43.78032040596008
+      }
+    },
+    {
+      "question": "What should I do if my DSC (Digital Signature Certificate) is not detected by the system?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "- Check that your Digital Signing and Encryption certificates are Class II/III SHA 2 with a minimum of 2048 bits, separately installed correctly along with the e-Token drivers and root certificates.\n- Ensure you have an active internet connection with at least 2 Mbps upload speed and 4 Mbps download speed for smooth operation on the Chhattisgarh e-Procurement Portal.\n- If your DSC is still not detected, try renewing or reinstalling it following the guidelines provided in Section 1.1",
+      "sources": [
+        "Preferred_System_Configuration_V_2.pdf",
+        "faq.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf",
+        "CHiPS_Vendor_Registration_Manual_English.pdf"
+      ],
+      "correctness_score": 2,
+      "tokens_generated": 104,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 4.525468826293945,
+        "generation": 35.05086898803711,
+        "response_translation": 0.0,
+        "total": 39.576337814331055
+      }
+    },
+    {
+      "question": "How can I participate in an online reverse auction on the platform?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "- To participate in a forward auction, follow these steps:\n  1. Login to Chhattisgarh EProcurement portal with your user ID and password.\n  2. After logging in, open the Auction Portal by right clicking on the Auction tab and selecting \"Open in new Tab\".\n  3. Select a respective auction from the dashboard and click on \"View/Respond to RFx\".\n  4. Click on \"Accept\" and then \"Bid\", place your bid above the opening price (or 0 if there is no opening",
+      "sources": [
+        "AuctionManual_FA.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "faq.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "correctness_score": 2,
+      "tokens_generated": 113,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 6.64393424987793,
+        "generation": 34.28085708618164,
+        "response_translation": 0.0,
+        "total": 40.92756104469299
+      }
+    },
+    {
+      "question": "Can a vendor modify their bid after final submission but before the closing date?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "- The system does not allow vendors to modify bids once they have been submitted, as per the guidelines provided on Page 10 and following pages.\n- If a vendor wishes to change their bid after submission but before the closing date, it is recommended that they resubmit the revised bid multiple times before the specified due date (as mentioned in point number 23).\n- It's important for vendors to complete their bids within the stipulated timeline and double check their submitted data to ensure accuracy.",
+      "sources": [
+        "CHiPS_Bid_Submission_Manual_English.pdf",
+        "AuctionManual_FA.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "faq.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 98,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 6.655596494674683,
+        "generation": 32.64638829231262,
+        "response_translation": 0.0,
+        "total": 39.301984786987305
+      }
+    },
+    {
+      "question": "What is the fee for registering as a vendor on the Chhattisgarh e-procurement portal?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "- To register as a vendor on the Chhattisgarh e-Procurement Portal, there is an enrollment fee of INR 500 that needs to be paid online during registration. This one-time payment covers the cost for obtaining a Customer Reference Number (CRN).\n- After successful CRN acquisition and other required registrations, vendors must also have a valid Digital Signature Certificate (DSC) with an annual renewal fee applicable as per DSC provider's rates.\n- It is important to note that these fees may be subject to changes",
+      "sources": [
+        "faq.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "EMD_CHALLAN_PAYMENT_V1.0.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "CRN_Customer_Reference_Number_Guide.pdf"
+      ],
+      "correctness_score": 2,
+      "tokens_generated": 107,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 6.646833896636963,
+        "generation": 35.980186223983765,
+        "response_translation": 0.0,
+        "total": 42.62702012062073
+      }
+    },
+    {
+      "question": "What is the process of generating a bid decryption key?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "- To generate a bid decryption key, bidders need to follow these steps during the e-Procurement process:\n  1. Obtain a Class-II/III Digital Certificate from an approved Certifying Authority authorized by the Controller of Certifying Authorities, Government of India (details available at http//www.cca.gov.in).\n  2. After successful registration and login to Chhattisgarh EProcurement portal with user ID and password, bidders can participate in auctions or respond to RFXs.\n  3.",
+      "sources": [
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "AuctionManual_FA.pdf",
+        "faq.pdf",
+        "Online_EMD_Refund_Notice.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 107,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.228778600692749,
+        "generation": 34.356261253356934,
+        "response_translation": 0.0,
+        "total": 36.58503985404968
+      }
+    },
+    {
+      "question": "What are the common reasons for EMD payment transaction failure?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "* **Transaction Failure Reasons**:\n  1. Insufficient funds in the bidder's account at the time of making an online EMD payment.\n  2. Incorrect or invalid bank details provided during vendor registration or while submitting the tender, leading to failed transactions.\n  3. Technical issues with the e-Procurement portal or the integrated online payments gateway service may cause transaction failures.",
+      "sources": [
+        "Learned satisfied Q&As",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf",
+        "Online_EMD_Refund_Notice.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 79,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 10.907225608825684,
+        "generation": 31.528470754623413,
+        "response_translation": 0.0,
+        "total": 42.4356963634491
+      }
+    },
+    {
+      "question": "How can I download the tender documents from the portal?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "- To download the tender document(s), you need to log into your account on the Chhattisgarh e-Procurement Portal.\n- The documents will be available for download only online, after the online publication of the tender and up until the stipulated date/time as set in the tender.\n- You can find the tenders you are interested in by navigating to 'Tenders' > 'View'.",
+      "sources": [
+        "faq.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "EMD_CHALLAN_PAYMENT_V1.0.pdf",
+        "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf"
+      ],
+      "correctness_score": 2,
+      "tokens_generated": 82,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.4116783142089844,
+        "generation": 32.51528239250183,
+        "response_translation": 0.0,
+        "total": 34.926960706710815
+      }
+    },
+    {
+      "question": "Who should I contact if I face technical issues while uploading my commercial bid?",
+      "role": "vendor",
+      "language": "en",
+      "answer": "- For any technical assistance or queries, you can reach out to the Service Integrator of e-Procurement system, M/s. Mjunction Service Ltd., via their Toll free No. 1800 419 9140 or email helpdesk.cgeprocmjunction.in\n- Alternatively, you can contact Mr. Shailesh Kumar Soni, Sr. Manager at Chhattisgarh Infotech Biotech Promotion Society for further assistance.\n- If the issue persists after trying",
+      "sources": [
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "faq.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "Online_EMD_Refund_Notice.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf"
+      ],
+      "correctness_score": 3,
+      "tokens_generated": 98,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.32926607131958,
+        "generation": 35.643852949142456,
+        "response_translation": 0.0,
+        "total": 37.97708559036255
+      }
+    },
+    {
+      "question": "ई-प्रोक्योरमेंट पोर्टल पर नया विक्रेता पंजीकरण कैसे करें?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "- छत्तीसगढ़ ई-खरीद पोर्टल पर नए विक्रेता के रूप में पंजीकरण करने के लिए, https://eproc.cgstate.gov.in पर जाएं और \"नए उपयोगकर्ता\" के तहत \"पंजीकरण करें\" पर क्लिक करें।\n- पैन कार्ड के विवरण को सही ढंग से दर्ज करें और आगे बढ़ने के लिए नए उपयोगकर्ता का चयन करें। सिस्टम सेटअप गाइड डाउनलोड करने के लिए आपको प्रेरित किया जा सकता है; OK पर क्लिक करें।\n- पसंदीदा लॉगिन कोड दर्ज करें ताकि उपलब्धता की जाँच की जा सके। उसके बाद अधिकृत हस्ताक्षरकर्ता, संपर्क, अतिरिक्त संपर्क बैंक, सीआरएन (ग्राहक संदर्भ संख्या), विक्रेता व्यवसाय भागीदार आदि जैसे अन्य आवश्यक विवरण भरें।",
+      "sources": [
+        "CRN_Customer_Reference_Number_Guide.pdf",
+        "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "faq.pdf",
+        "Preferred_System_Configuration_V_2.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 535,
+      "times": {
+        "query_translation": 0.8455305099487305,
+        "retrieval": 6.909971475601196,
+        "generation": 37.15473794937134,
+        "response_translation": 20.744062423706055,
+        "total": 65.65543031692505
+      }
+    },
+    {
+      "question": "पोर्टल का उपयोग करने के लिए सिस्टम कॉन्फ़िगरेशन आवश्यकताएं क्या हैं?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "- जावा संस्करण 8.77 ई-खरीद पोर्टल के संचालन के लिए आवश्यक है, साथ ही इंटरनेट एक्सप्लोरर 9/11 और नवीनतम मोज़िला फ़ायरफ़ॉक्स। गूगल क्रोम में आईई टैब वी2 (पर्धित आईई टैब) को भी समर्थन की आवश्यकता होती है।\n- विंडोज 7 या विंडोज 8 को ऑपरेटिंग सिस्टम के रूप में उपयोग करने की अनुशंसा की जाती है और जब फ़ाइलों को अपलोड किया जाता है तो \"इन्क्लूड लोकल डायरेक्टरी पथ\" सक्षम करें।\n- इंटरनेट कनेक्टिविटी कम से कम एक एमबीपीएस होनी चाहिए। ईप्रोक्योरमेंट पोर्टल होम पेज पर ऑटो सेटअप यूटिलिटी उपलब्ध है, जिससे कॉन्फ़िगरेशन आसान हो जाता है।",
+      "sources": [
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf",
+        "faq.pdf",
+        "Preferred_System_Configuration_V_2.pdf"
+      ],
+      "correctness_score": 3,
+      "tokens_generated": 539,
+      "times": {
+        "query_translation": 2.38887095451355,
+        "retrieval": 2.2710022926330566,
+        "generation": 53.39757537841797,
+        "response_translation": 27.24800419807434,
+        "total": 85.30545282363892
+      }
+    },
+    {
+      "question": "डिजिटल सिग्नेचर के लिए माइक्रोसॉफ्ट एज ब्राउज़र को कैसे सेटअप करें?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "त्रुटि प्रतिक्रिया उत्पन्न करते समय हुई। हिंदीः महत्वपूर्णः उत्तर को 2-3 संक्षिप्त बुलेट पॉइंट में दें। लंबे पैराग्राफ से बचें।",
+      "sources": [
+        "faq.pdf",
+        "EDGE_Browser_Setup_V1.0.pdf",
+        "Preferred_System_Configuration_V_2.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf"
+      ],
+      "correctness_score": 2,
+      "tokens_generated": 127,
+      "times": {
+        "query_translation": 0.9193458557128906,
+        "retrieval": 4.480801105499268,
+        "generation": 32.94222068786621,
+        "response_translation": 3.7529451847076416,
+        "total": 42.09531283378601
+      }
+    },
+    {
+      "question": "चालान के माध्यम से ऑनलाइन ईएमडी शुल्क का भुगतान कैसे करें?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "- ईएमडी शुल्क का ऑनलाइन भुगतान करने के लिए चालान विधि से निम्नलिखित चरणों का पालन करेंः। 1. 1. अपने खाते में लॉग इन करने के लिए, आपको उपयोगकर्ता आईडी और पासवर्ड का उपयोग करना होगा।\n2. आरटीजीएस/चालान के भुगतान मोड का चयन करके एक चालान उत्पन्न करें और इसे उत्पादन के बाद सहेजें।\n3. दो प्रतियाँ उत्पन्न चालान की छपाई करें, बैंक में जमा करने के लिए आवश्यक ईएमडी राशि (चालान पर उल्लेखित) प्राप्त करें और मुद्रित चालान की एक प्रति पर इस लेनदेन के लिए रसीद प्राप्त करें।",
+      "sources": [
+        "Learned satisfied Q&As",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "EMD_CHALLAN_PAYMENT_V1.0.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 455,
+      "times": {
+        "query_translation": 1.2860357761383057,
+        "retrieval": 10.782010316848755,
+        "generation": 30.321752071380615,
+        "response_translation": 15.424046039581299,
+        "total": 57.813844203948975
+      }
+    },
+    {
+      "question": "ऑनलाइन ईएमडी रिफंड की स्थिति की जांच कैसे की जा सकती है?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "* ईएमडी रिफंड स्थिति की ऑनलाइन जाँच करने के लिए इन चरणों का पालन करेंः। 1. च॒ट्छीड़र्ऍगड़रड़ाड़लड़ाड़लड़ाड़लड़ाड़लड़ाड़लड़ाड़लड़ाड़लड़ाड़लड़ाड़लड़ाड़लड़ाड़लड़ाड़लड़ा। 2. हिंदीः\n‘माय बिड्स’ अनुभाग में जाएं और आप जिस बोली के लिए बोली लगाई है, उसके अनुरूप बोली का चयन करें।\n3. ईएमडी रिफंड स्थिति को विशिष्ट टेंडर विवरणों के तहत देखें, यह या तो \"रिफंड लंबित\", \"रिफंड शुरू किया गया\" या \"रिफंड पूरा हुआ\" प्रदर्शित करेगा।",
+      "sources": [
+        "Learned satisfied Q&As",
+        "Online_EMD_Refund_Notice.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "faq.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 422,
+      "times": {
+        "query_translation": 9.468347311019897,
+        "retrieval": 10.838087797164917,
+        "generation": 27.07371997833252,
+        "response_translation": 18.14403200149536,
+        "total": 65.5245304107666
+      }
+    },
+    {
+      "question": "पोर्टल पर सक्रिय निविदा के लिए बोली कैसे जमा करें?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "* बोली लगाने के लिए इन चरणों का पालन करेंः 1. सबसे पहले, अपनी बोली की जानकारी जमा करने से पहले सुनिश्चित करें कि आप सभी आवश्यकताओं को पूरा करते हैं।\n2. इसके बाद, अपने प्रस्ताव में उपयोग किए जाने वाले शब्दों और वाक्यांशों पर ध्यान दें ताकि यह सुनिश्चित किया जा सके कि वे स्पष्ट रूप से समझ में आए।\n3. अंत में, अपनी बोली के लिए एक समय सीमा निर्धारित करें और उस पर कायम रहें।\n1. उपयोगकर्ता आईडी और पासवर्ड का उपयोग करके अपने खाते में लॉग इन करें।\n2. अज़ुबिलेशन पोर्टल तक पहुँचने के लिए, दाहिने माउस बटन पर क्लिक करें और \"ओपन इन न्यू टैब\" चुनें।\n3. हैः \"विशिष्ट नीलामी चुनें, फिर 'व्यू/रिप्लाइ टू आरएफएक्स' पर क्लिक करें और शर्तों को स्वीकार करने के बाद आगे बढ़ें।\n4. बोली लगाने के लिए \"बोली लगाएँ\" पर क्लिक करें। अपनी बोली को ऊपर खुलने की कीमत पर रखें और इसे सबमिट करने के लिए \"सबमिट बोली\" का उपयोग करें।",
+      "sources": [
+        "CHiPS_Bid_Submission_Manual_English.pdf",
+        "Learned satisfied Q&As",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "Online_EMD_Refund_Notice.pdf",
+        "AuctionManual_FA.pdf",
+        "CHiPS_Vendor_Registration_Manual_English.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 790,
+      "times": {
+        "query_translation": 1.4683289527893066,
+        "retrieval": 6.552448749542236,
+        "generation": 29.644562482833862,
+        "response_translation": 21.489444255828857,
+        "total": 59.15478444099426
+      }
+    },
+    {
+      "question": "विक्रेता पंजीकरण पूरा करने के लिए किन दस्तावेजों की आवश्यकता होती है?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "- चिप्स कार्यालय में जाएं और पैन कार्ड, आयकर रिटर्न या वार्षिक रिपोर्ट जमा करें। पृष्ठ 4 पर छत्तीसगढ ई-प्रोक्योरमेंट पोर्टल गाइड (पृष्ठ 3) के अनुसार संगठन की बैंक डिटेल्स दें।\n- CG ई-प्रोक्योरमेंट पोर्टल पर ऑनलाइन विक्रेता पंजीकरण के दौरानः। - प्रमाणपत्र प्राप्त करने के बाद सीआरएन भरें और इसे अपलोड करें। चरण 3, पृष्ठ 4, आपूर्तिकर्ता।",
+      "sources": [
+        "CRN_Customer_Reference_Number_Guide.pdf",
+        "CHiPS_Vendor_Registration_Manual_English.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "faq.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 334,
+      "times": {
+        "query_translation": 1.047006368637085,
+        "retrieval": 6.525653600692749,
+        "generation": 31.222771167755127,
+        "response_translation": 12.067175388336182,
+        "total": 50.86260652542114
+      }
+    },
+    {
+      "question": "यदि सिस्टम द्वारा मेरा डीएससी (DSC) नहीं पहचाना जा रहा है तो मुझे क्या करना चाहिए?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "- डिजिटल हस्ताक्षर प्रमाणपत्र (डी.एस.सी.) को छत्‍तीस्‍गढ़ ई-प्रोक्योरमेंट पोर्टल द्वारा मान्यता नहीं दी जा रही है। समस्या का निवारण करने और हल करने के लिए, इन चरणों का पालन करेंः। 1. भारतीय अधिकृत भारतीय CA से वैध पर्ग II या III DSC प्राप्त करें, जैसे कि eMudhra (www.e-mudhra.com), GNFC (www.ncodesolutions.com) आदि। विदेशी सेवा प्रदाताओं से न खरीदें।\n2. अंग्रेजी पाठ का स्थापित ई-संस्करण की पुष्टि करें। हिंदीः स्थापना के बाद, ई-संस्करण की पुष्टि करना सुनिश्चित करें।",
+      "sources": [
+        "Preferred_System_Configuration_V_2.pdf",
+        "faq.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 413,
+      "times": {
+        "query_translation": 0.9979126453399658,
+        "retrieval": 4.371838331222534,
+        "generation": 29.17432975769043,
+        "response_translation": 13.464781284332275,
+        "total": 48.008862018585205
+      }
+    },
+    {
+      "question": "प्लेटफॉर्म पर ऑनलाइन रिवर्स ऑक्शन में कैसे भाग लें?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "- ऑनलाइन रिपर्स नीलामी में भाग लेने के लिए चरणः\n1. वेबसाइट पर जाएं और साइन अप करें।\n2. अपनी बोली लगाएँ या वस्तु खरीदें।\n1. छत्तीसगढ खरीद पोर्टल पर जाएँ (https://eproc.cgstate.gov.in.)। 2. उपयोगकर्ता आईडी और पासवर्ड (पंजीकरण के दौरान प्राप्त) के साथ लॉग इन करें। यदि लॉगिन के बाद पासवर्ड बदलने के लिए प्रेरित किया जाता है, तो पुराने पासवर्ड के रूप में \"Password123\" का उपयोग करें और एक नया सेट करें।\n3. लॉग इन करने के बाद, दाहिने माउस बटन पर क्लिक करें और टैब को 'एक्शन' पर ले जाएं।\" फिर, नई टैब में खोलने का चयन करें।",
+      "sources": [
+        "AuctionManual_FA.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf",
+        "faq.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 491,
+      "times": {
+        "query_translation": 0.8973987102508545,
+        "retrieval": 6.509933233261108,
+        "generation": 29.316640377044678,
+        "response_translation": 15.967612266540527,
+        "total": 52.69158458709717
+      }
+    },
+    {
+      "question": "क्या कोई विक्रेता अंतिम जमा करने के बाद लेकिन अंतिम तिथि से पहले अपनी बोली में संशोधन कर सकता है?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "- नहीं, एक बार विक्रेता ने छत्तीसगढ़ ई-खरीद पोर्टल पर बोली जमा कर दी हो तो इसे अंतिम जमा करने की तारीख से पहले संशोधित नहीं किया जा सकता है लेकिन बंद होने की तारीख के बाद ही।\n- यदि प्रणाली के साथ कोई समस्या है या अप्रत्याशित घटनाएँ हैं जो विक्रेताओं को निर्धारित समय सीमा के भीतर अपनी बोलियों जमा करने से रोकती हैं, तो वेबसाइट पर एक सुधार प्रकाशित करके और संबंधित पक्षों को स्वचालित ईमेल संचार भेजकर विस्तार दिया जा सकता है।\n- यदि कोई विक्रेता समय सीमा से पहले अपनी बोली को फिर से जमा करना चाहता है, तो वह कई बार ऐसा कर सकता है।",
+      "sources": [
+        "CHiPS_Bid_Submission_Manual_English.pdf",
+        "AuctionManual_FA.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "faq.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 504,
+      "times": {
+        "query_translation": 1.3415844440460205,
+        "retrieval": 6.54107666015625,
+        "generation": 29.351929664611816,
+        "response_translation": 12.870227336883545,
+        "total": 50.10481810569763
+      }
+    },
+    {
+      "question": "छत्तीसगढ़ ई-प्रोक्योरमेंट पोर्टल पर पंजीकरण शुल्क कितना है?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "- छत्तीसगढ ई-खरीद पोर्टल पर विक्रेताओं के पंजीकरण के लिए एक बार का नामांकन शुल्क ₹500 है, जो ऑनलाइन भुगतान किया जाना चाहिए।\n- वार्षिक नवीनीकरण शुल्क प्रति पर्ष ₹100 पर लिया जाता है।\n- ईएमडी या बोली सुरक्षा राशि के असफल होने पर संभावित रिफंड के लिए सही बैंक खाते की जानकारी सुनिश्चित करने के लिए ऑनलाइन नामांकन/पंजीकरण प्रक्रिया को पूरा करना महत्वपूर्ण है।",
+      "sources": [
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "faq.pdf",
+        "EMD_CHALLAN_PAYMENT_V1.0.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "CRN_Customer_Reference_Number_Guide.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 341,
+      "times": {
+        "query_translation": 1.1253154277801514,
+        "retrieval": 6.49964451789856,
+        "generation": 28.476268529891968,
+        "response_translation": 11.63378357887268,
+        "total": 47.73701763153076
+      }
+    },
+    {
+      "question": "बोली डिक्रिप्शन कुंजी (bid decryption key) जनरेट करने की प्रक्रिया क्या है?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "- भारत सरकार के नियंत्रक द्वारा अधिकृत एक अनुमोदित प्रमाणपत्र प्राधिकारी (सी.सी.ए.) द्वारा जारी डिजिटल प्रमाणपत्र प्राप्त करने की आवश्यकता है।\n- डिजिटल प्रमाणपत्र प्राप्त करने के बारे में विवरण आरईएफ0 पर पाया जा सकता है और आवश्यक दस्तावेजों को प्राप्त करने और सत्यापन प्रक्रिया पूरी होने के बाद जारी करने की आवश्यकता होती है।\n- छत्तीसगढ़ में ई-प्रोक के लिए बोली डिक्रिप्शन कुंजी उत्पन्न करनाः महत्वपूर्ण जानकारी। जवाब संक्षिप्त बुलेट पॉइंट में दें। लंबे पैराग्राफ से बचें।",
+      "sources": [
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "AuctionManual_FA.pdf",
+        "faq.pdf",
+        "Online_EMD_Refund_Notice.pdf"
+      ],
+      "correctness_score": 2,
+      "tokens_generated": 449,
+      "times": {
+        "query_translation": 2.207785129547119,
+        "retrieval": 2.2849581241607666,
+        "generation": 28.618019580841064,
+        "response_translation": 12.112720012664795,
+        "total": 45.223482847213745
+      }
+    },
+    {
+      "question": "ईएमडी भुगतान विफलता के सामान्य कारण क्या हैं?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "* बैंक खाते में अपर्याप्त धन के समय लेन-देन। * गलत या अवैध जानकारी ऑनलाइन ईएमडी भुगतान प्रक्रिया के दौरान दर्ज की गई है।\n* भुगतान गेटवे प्रणाली के तकनीकी मुद्दे।",
+      "sources": [
+        "Learned satisfied Q&As",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf",
+        "Online_EMD_Refund_Notice.pdf",
+        "EMD_CHALLAN_PAYMENT_V1.0.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 166,
+      "times": {
+        "query_translation": 1.383756160736084,
+        "retrieval": 10.783779382705688,
+        "generation": 21.945695161819458,
+        "response_translation": 9.239433765411377,
+        "total": 43.35266447067261
+      }
+    },
+    {
+      "question": "पोर्टल से निविदा दस्तावेज कैसे डाउनलोड करें?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "- ई-खरीद पोर्टल पर विशिष्ट निविदा के लिए, प्रत्येक दस्तावेज के लिए \"डाउनलोड\" विकल्प का चयन करने के लिए नेविगेट करें।\n- अंग्रेजी पाठ का निविदा के ऑनलाइन प्रकाशन के बाद निर्धारित तिथि और समय पर ही दस्तावेज उपलब्ध होंगे।\n- हिंदीः\nइंटरनेट कनेक्शन स्थिर होना सुनिश्चित करें ताकि आप किसी भी रुकावट या त्रुटि के बिना सभी आवश्यक फ़ाइलों को डाउनलोड कर सकें।",
+      "sources": [
+        "faq.pdf",
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "CHiPS_Vendor_Registration_Manual_English.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 337,
+      "times": {
+        "query_translation": 1.0295100212097168,
+        "retrieval": 2.22377872467041,
+        "generation": 25.13637948036194,
+        "response_translation": 11.42780089378357,
+        "total": 39.817469120025635
+      }
+    },
+    {
+      "question": "कमर्शियल बिड अपलोड करते समय तकनीकी समस्या आने पर किससे संपर्क करें?",
+      "role": "vendor",
+      "language": "hi",
+      "answer": "- ईप्रोक्योरमेंट पोर्टल के बारे में किसी भी तकनीकी सहायता या प्रश्नों के लिए, वाणिज्यिक बोलियों को अपलोड करने की प्रक्रिया के दौरान, आप सिस्टम के सभीिस इंटीग्रेटर से संपर्क कर सकते हैं। वे टोल फ्री नंबर 1800-419-9140 पर उपलब्ध हैं और ईमेल द्वारा मदद डेस्क.cgeprocmjunction.in भी पहुँच सकते हैं।\n- वैकल्पिक रूप से, श्री शैलेश कुमार सोनी, सी.आई.बी.पी.एस. के परिष्ठ प्रबंधक भी हो सकते हैं।",
+      "sources": [
+        "Guidelines_To_Bidders_EPS_v1.6.pdf",
+        "faq.pdf",
+        "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+        "CHiPS_Bid_Submission_Manual_English.pdf",
+        "CHiPS_Vendor_Registration_Manual_English.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 351,
+      "times": {
+        "query_translation": 1.5504398345947266,
+        "retrieval": 2.2261204719543457,
+        "generation": 29.38025450706482,
+        "response_translation": 9.864060401916504,
+        "total": 43.020875215530396
+      }
+    },
+    {
+      "question": "What does Rule 144 of the GFR specify regarding the fundamental principles of public buying?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- Rule 144 specifies that every authority responsible for procuring goods in public interest must bring efficiency, economy, and transparency to matters relating to public procurement. It also emphasizes fair and equitable treatment of suppliers and promotion of competition in public procurement.\n- The procedure followed in making public procurements should be objective, functional, generic, measurable, and specify technical, qualitative, and performance characteristics without requiring a particular trade mark, tradename or brand.\n- It also states that the specifications for goods to be procured must clearly",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 103,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 5.650388956069946,
+        "generation": 26.564029693603516,
+        "response_translation": 0.0,
+        "total": 32.214998722076416
+      }
+    },
+    {
+      "question": "Is procurement of goods and services through the GeM portal mandatory under GFR Rule 149?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- Yes, as per the provided context from Chhattisgarh e-Procurement Portal rules dated April 02, 2019 and amendments thereafter, procurement of common use goods and services is mandatory through GeM (Government e-Marketplace) under Rule 149.\n- The Government e-Marketplace has been established by the Government of India for this purpose, with the SPV ensuring adequate publicity and certification of suppliers' credentials.\n- Exceptions to this rule include automobiles, where",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 98,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 4.740070581436157,
+        "generation": 24.618919610977173,
+        "response_translation": 0.0,
+        "total": 29.35899019241333
+      }
+    },
+    {
+      "question": "What is the financial limit for purchasing goods without quotations under Rule 154?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- The financial limit for purchasing goods without quotations, as per GFR 2017 rule 154, is up to INR 50,000 on each occasion.\n- This exemption from inviting quotes or bids requires a certificate recorded by the competent authority based on their satisfaction that these goods are of requisite quality and specification, purchased at reasonable prices from reliable suppliers.\n- The mandatory use of Government e-Marketplace (GeM) for procurement applies to common use goods and services unless notified otherwise in",
+      "sources": [
+        "hindi_general_financial_rules_2017.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "Learned satisfied Q&As"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 99,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 15.37296748161316,
+        "generation": 30.056209325790405,
+        "response_translation": 0.0,
+        "total": 45.42968249320984
+      }
+    },
+    {
+      "question": "What is the purchase limit and composition of a Local Purchase Committee under Rule 155?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- The purchase limit for goods by a Local Purchase Committee, as per Rule 155, is between Rs. 50,000 to Rs. 5,00,000 (Rupees Fifty thousand to Rupees Five lakh) on each occasion.\n- The composition of the Local Purchase Committee consists of three members as per the rule dated 6/1/2018.\n- Only Class-I local suppliers are eligible for purchase preference, subject to meeting certain criteria and constraints mentioned in Rule 15",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 99,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 10.838692426681519,
+        "generation": 23.762360334396362,
+        "response_translation": 0.0,
+        "total": 34.60105276107788
+      }
+    },
+    {
+      "question": "When is an Advertised Tender Enquiry mandatory under GFR Rule 161?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- An Advertised Tender Enquiry is mandatory when the estimated value of goods procurement exceeds Rs. 50 lakhs, as per Rule 161 under GFR (General Financial Rules).\n- The advertisement should be given on GeM and CPPP portals, along with publishing it on an organization's own website if applicable.\n- In some cases where the required goods of specific quality or specification may not be available in India, a Global Tender Enquiry (GTE) can be conducted by sending copies of tender notice to",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 104,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.5285520553588867,
+        "generation": 23.986035346984863,
+        "response_translation": 0.0,
+        "total": 26.51458740234375
+      }
+    },
+    {
+      "question": "What are the conditions and value limits for using a Limited Tender Enquiry under Rule 162?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- The condition to use a Limited Tender Enquiry under Rule 162 is when the estimated value of goods being procured does not exceed Rupees Fifty Lakhs (50,00,000).\n- Copies of bidding documents should be sent directly by speed post/registered post/courier/e-mail to firms which are registered suppliers for the specific goods. The number of supplier firms in Limited Tender Enquiry should exceed three.\n- Efforts must be made to identify a higher number of approved suppliers, and organizations should",
+      "sources": [
+        "hindi_general_financial_rules_2017.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "GeM_handbook.pdf",
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 102,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 15.15717625617981,
+        "generation": 28.477667093276978,
+        "response_translation": 0.0,
+        "total": 43.63545489311218
+      }
+    },
+    {
+      "question": "Under what specific proprietary conditions can a Single Tender Enquiry be used under GFR Rule 166?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- A Single Tender Enquiry can be resorted to when only one specific firm is the manufacturer of the required goods, as per GFR Rule 166(i).\n- In case of emergency and necessary purchase from a particular source with proper documentation (reason recorded and approval obtained), it can also be used under Rule 166.\n- For standardization purposes or compatibility to existing equipment sets, when the required item is only available from a selected firm after technical expert advice and competent authority's approval, Single Tender Enquiry may apply as per GFR Rule",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 109,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.7400646209716797,
+        "generation": 26.464744567871094,
+        "response_translation": 0.0,
+        "total": 29.204809188842773
+      }
+    },
+    {
+      "question": "What is the standard percentage range for Bid Security (EMD) under GFR Rule 170?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- The standard percentage range for Bid Security (also known as Earnest Money) is between two percent to five percent of the estimated value of the goods being procured, according to GFR Rule 170.\n- This amount may vary and should be determined by the Ministry or Department involved in the tender process and indicated in the bidding documents.\n- The bid security can take various forms such as Insurance Surety Bonds, Account Payee Demand Drafts, Fixed Deposit Receipts, Bankers Cheques, Bank Guarantees including",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 105,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.5139620304107666,
+        "generation": 21.740222215652466,
+        "response_translation": 0.0,
+        "total": 24.254184246063232
+      }
+    },
+    {
+      "question": "Are Micro and Small Enterprises (MSEs) exempt from submitting Bid Security (EMD) under GFR?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- Yes, Micro and Small Enterprises (MSEs), as defined by the",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 3,
+      "tokens_generated": 16,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.6849145889282227,
+        "generation": 140.25832152366638,
+        "response_translation": 0.0,
+        "total": 142.9439721107483
+      }
+    },
+    {
+      "question": "What is the standard percentage range for Performance Security under Rule 171?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- The standard percentage range for Performance Security, as per Rule 171 of GFR 2017, is between three to five percent (3%-5%) of the value of the contract for non-consultancy services and goods procurement.\n- For contracts related to Works or Plants, a higher percentage range of up to ten percent may be considered based on market conditions and commercial practice.\n- The specific amount is as specified in the bid documents provided during tender processes.",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "GeM_handbook.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 93,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 12.821284294128418,
+        "generation": 29.14517045021057,
+        "response_translation": 0.0,
+        "total": 41.96645474433899
+      }
+    },
+    {
+      "question": "Does the GFR regulate the procurement of services, and if so, in which chapter?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- Yes, the Government Financial Rules (GFR) do regulate the procurement of services.\n- The specific rules for service procurement can be found under Rule 149 and subsequent rules related to e-procurement solutions like GeM SPV, invitation to tenders by advertisement, limited tender enquiry, etc. (Referring to Rules mentioned in the context)\n- Additionally, there are specific provisions for shortlisting consultants, preparation of Terms of Reference (TOR), and disposal of surplus or obsolete items among others that",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 101,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 4.790841817855835,
+        "generation": 36.428345680236816,
+        "response_translation": 0.0,
+        "total": 41.21918749809265
+      }
+    },
+    {
+      "question": "What is the difference between consulting and non-consulting services under GFR guidelines?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- Consulting Services refer to professional or specialized services that are usually provided on a temporary basis, such as legal advice, engineering consultancy, architectural design, etc. These services require specific expertise and qualifications.\n- Non-Consulting Services include all other goods and services not classified under consulting services, like office supplies, equipment, construction materials, transportation, maintenance, catering, etc. They do not necessarily require specialized skills or qualifications but are essential for the functioning of government departments.",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 93,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 5.015933036804199,
+        "generation": 33.54195308685303,
+        "response_translation": 0.0,
+        "total": 38.55788612365723
+      }
+    },
+    {
+      "question": "What are the rules regarding the extension of bid opening dates?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- The e-Procurement portal/ GeM may extend the time and date for submission of tenders suitably, not less than three days before the original deadline, if requested by a bidder or due to significant modification of tender documents (Reference: 5.1.6 Extension of Deadline of Bid Submission).\n- The Procuring Entity can also extend the time and date for opening of tenders with approval from the Contract Approval Authority, only when it is necessary to have better competition (Reference: Further a limited or open tender which results in only one effective",
+      "sources": [
+        "publicProManual-1755343081262-715558279.pdf",
+        "short tender notice 2 days.pdf",
+        "mannual procurement.pdf"
+      ],
+      "correctness_score": 3,
+      "tokens_generated": 112,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 6.818819046020508,
+        "generation": 33.83727526664734,
+        "response_translation": 0.0,
+        "total": 40.65609431266785
+      }
+    },
+    {
+      "question": "What is the minimum notice period required for a short-term tender under CVC guidelines?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- According to the provided context, there's no specific mention of a minimum notice period required for a short-term tender under CVC guidelines. However, it is suggested that notices can be put on the web-site of departments instead of giving advertisements in newspapers which might help bring transparency and reduce opportunities for abuse (Point 2 from Improving Vigilance Administration section).\n- The Commission's Circular No.8(1)(h)/98(1) dated 18.11.1998 does not specify a minimum notice period",
+      "sources": [
+        "CVC guideline.pdf"
+      ],
+      "correctness_score": 3,
+      "tokens_generated": 105,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.105746269226074,
+        "generation": 53.607505559921265,
+        "response_translation": 0.0,
+        "total": 55.71369767189026
+      }
+    },
+    {
+      "question": "Are startups exempt from prior turnover and prior experience criteria in public procurement?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- Yes, startups recognized by the Department for Industry Internal Trade (DPIIT) are exempted from the prior turnover and experience criteria under certain circumstances in public procurement.\n- This exemption applies to both goods and works procurements as well. However, it is not optional but has to be ensured except in specific cases related to public safety, health, critical security operations, etc where adequate justification exists for the Procuring Entity not to relax such criteria.\n- The decision of the procuring entity regarding this exemption shall be final.",
+      "sources": [
+        "Manual_for_Procurement_of_works_2019.pdf",
+        "mannual procurement.pdf",
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 105,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.3729963302612305,
+        "generation": 35.47032308578491,
+        "response_translation": 0.0,
+        "total": 37.84331941604614
+      }
+    },
+    {
+      "question": "Under what circumstances can negotiation be held with the L1 bidder according to CVC?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- Negotiations with L-1 bidders are allowed only under exceptional situations, such as procurement of proprietary items, items with limited sources of supply, or suspicion of cartel formation (as per CVC instructions dated November 18, 1998).\n- In urgent cases where re-tendering would delay the availability of an item and jeopardize essential operations, maintenance, and safety, negotiations are permitted for a bare minimum quantity with L-1 bidder(s) (as per CVC instructions dated October 25,",
+      "sources": [
+        "CVC guideline.pdf",
+        "Compilation of CVC Guidelines on Tenders and Contracts_1467610136.pdf",
+        "Vigilance Manual 2021 (Hindi).pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 103,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 6.7466161251068115,
+        "generation": 32.27131986618042,
+        "response_translation": 0.0,
+        "total": 39.01793599128723
+      }
+    },
+    {
+      "question": "What is the procedure for handling a single bid received against an open tender?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- If only one responsive bid is received against an advertised/open tender, it should be treated as a Single Tender situation according to Rule 21 of DFPR.\n- The contract may be placed on the single offer bidder provided the quoted price is reasonable and restricted powers of Single tender mode of procurement would apply.\n- Before retendering, the procuring entity should first check if all necessary requirements such as wide publicity, sufficient time for bidding, etc., were fulfilled during the initial enquiry process. If deficiencies are found",
+      "sources": [
+        "publicProManual-1755343081262-715558279.pdf",
+        "Manual_for_Procurement_of_works_2019.pdf",
+        "mannual procurement.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "Vigilance Manual 2021 (Hindi).pdf",
+        "hindi_general_financial_rules_2017.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 102,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 6.886508226394653,
+        "generation": 29.53529453277588,
+        "response_translation": 0.0,
+        "total": 36.42180275917053
+      }
+    },
+    {
+      "question": "How does the Chhattisgarh Store Purchase Rules regulate the purchase of items from local CSIDC industries?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- The Chhattisgarh e-Procurement Portal follows Rule 154, which allows for the purchase of goods without quoting rates or inviting bids if their value is up to INR 50,000 (Rule 154).\n- However, when it comes to purchasing items from local CSIDC industries in Chhattisgarh, there are no specific rules mentioned within the provided context. It's recommended that you consult relevant departmental regulations or guidelines for detailed information on this matter.\n- The Central Government may",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "hindi_general_financial_rules_2017.pdf",
+        "Learned satisfied Q&As",
+        "Vigilance Manual 2021 (Hindi).pdf"
+      ],
+      "correctness_score": 3,
+      "tokens_generated": 104,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 6.725865602493286,
+        "generation": 31.669349193572998,
+        "response_translation": 0.0,
+        "total": 38.397085189819336
+      }
+    },
+    {
+      "question": "What are the guidelines for pre-bid conferences in large-value tenders?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- Pre-bid conferences may be conducted for large value tenders by Procuring Entities, as per Rule 173(x) of GFR 2017.\n- The place and time should be mentioned in the tender document or publicized through the website/newspaper publication.\n- Pre-bid conferences are mandatory for turnkey contracts, sophisticated equipment procurement, large works, complex consultancy assignments, etc., as specified in the tender documents after NIT and Tender Documents have been published. The date should be sufficiently ahead of",
+      "sources": [
+        "mannual procurement.pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "hindi_general_financial_rules_2017.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 103,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.351497173309326,
+        "generation": 29.925546884536743,
+        "response_translation": 0.0,
+        "total": 32.278233766555786
+      }
+    },
+    {
+      "question": "What are the qualifications required for a bidder under pre-qualification criteria (PQC)?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- The bidder should have regularly manufactured and supplied (or erected/commissioned) the required product with the same or higher specifications for at least the last three years, ending on a specified date mentioned in the PQC criteria.\n- The bidder must have also manufactured and supplied (or erected/ commissioned) a minimum number of the said product in at least one of the last five years ending on that same date as per the PQC criteria.\n- In small value contracts, such as repair contracts up to Rs. 30 lakh, requirements regarding",
+      "sources": [
+        "publicProManual-1755343081262-715558279.pdf",
+        "mannual procurement.pdf",
+        "Manual_for_Procurement_of_works_2019.pdf",
+        "Compilation of CVC Guidelines on Tenders and Contracts_1467610136.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 108,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 2.2348923683166504,
+        "generation": 30.87769865989685,
+        "response_translation": 0.0,
+        "total": 33.1125910282135
+      }
+    },
+    {
+      "question": "Can a department split the quantity of a tender among multiple bidders, and under what rules?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- If the quantity to be ordered is more than what the L1 bidder alone can supply and there was no prior decision to split quantities, it may distribute among other bidders fairly, transparently, and equitably based on objective data available in the bids (e.g., eligibility criteria, Quantity/ Delivery).\n- In cases where organizations decide in advance to have more than one source of supply due to critical or vital nature of an item, they must pre-disclose the ratio for splitting quantities in the tender documents itself.\n- The procuring",
+      "sources": [
+        "CVC guideline.pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "Compilation of CVC Guidelines on Tenders and Contracts_1467610136.pdf",
+        "mannual procurement.pdf",
+        "Manual_for_Procurement_of_works_2019.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 108,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 7.002699375152588,
+        "generation": 28.704901218414307,
+        "response_translation": 0.0,
+        "total": 35.70838236808777
+      }
+    },
+    {
+      "question": "What is the policy for price preference up to 15% for local micro and small enterprises?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- The Public Procurement Policy provides a purchase preference of up to 15% for locally manufactured goods or services from Micro and Small Enterprises (MSE).\n- This policy is applicable when the bid evaluation is based on price alone, as per MII order.\n- For divisible procurements in nature, Class-I local suppliers get a purchase preference over both Class-II local suppliers and Non-local suppliers by up to 15% of L1 (Lowest One) price calculated from the original bid amount, not negotiated prices.",
+      "sources": [
+        "hindi_general_financial_rules_2017.pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "MSME procurement policy.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 104,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 6.48430871963501,
+        "generation": 24.34519338607788,
+        "response_translation": 0.0,
+        "total": 30.83004331588745
+      }
+    },
+    {
+      "question": "How are late bids handled according to the Public Procurement Manual?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- In Advertised Tender Enquiry or Limited Tender Enquiry, as per Rule 165 of GFR 2017 and General Financial Regulations Rule 465, late bids (i.e., bids received after the specified date and time for receipt of bids) should not be considered.\n- In Single Tender Enquiry, according to Rule 166, single source procurement may be resorted to in certain circumstances such as emergency situations or when there is no other supplier available in the market. Late received b",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "hindi_general_financial_rules_2017.pdf",
+        "Manual_for_Procurement_of_works_2019.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 100,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 6.697154760360718,
+        "generation": 26.40413212776184,
+        "response_translation": 0.0,
+        "total": 33.10128688812256
+      }
+    },
+    {
+      "question": "What is the rule regarding the payment of interest on delayed payments to MSMEs?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- For timely payments to MSME suppliers, as per the MSMED Act 2006 (referenced in para 1.11.2-4-c), a period of no more than 45 days is agreed upon from deemed acceptance of materials supplied by the MSMEs. Any delay results in penal interest being levied on the delayed amount at three times the bank rate notified by the Reserve Bank (referenced in para c).\n- In case of public authorities, provisions can be made for payment of interest if bills are delayed more than 30",
+      "sources": [
+        "publicProManual-1755343081262-715558279.pdf",
+        "mannual procurement.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "hindi_general_financial_rules_2017.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 111,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 10.888280630111694,
+        "generation": 24.08156132698059,
+        "response_translation": 0.0,
+        "total": 34.969841957092285
+      }
+    },
+    {
+      "question": "Under what conditions can a bank guarantee be accepted as performance security?",
+      "role": "government_officer",
+      "language": "en",
+      "answer": "- Bank Guarantees, including e-Bank Guarantees, issued/confirmed from any commercial banks in India are acceptable forms of Performance Security for both goods and works contracts.\n- In the case of GTE tenders (Goods Tender with Engineering), the performance security should be in the same currency as the contract and must conform to Uniform Rules for Demand Guarantees (URDG 758).\n- The Procuring Entity may also accept Insurance Surety Bond or account payee demand draft from a commercial bank, or online payment in an acceptable",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "short tender notice 2 days.pdf",
+        "hindi_general_financial_rules_2017.pdf",
+        "Manual_for_Procurement_of_works_2019.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 109,
+      "times": {
+        "query_translation": 0.0,
+        "retrieval": 6.594419240951538,
+        "generation": 23.36959147453308,
+        "response_translation": 0.0,
+        "total": 29.96401071548462
+      }
+    },
+    {
+      "question": "जीएफआर का नियम 144 सार्वजनिक खरीद के मूलभूत सिद्धांतों के बारे में क्या निर्दिष्ट करता है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- सार्वजनिक हित के लिए सामान खरीदने वाले हर प्राधिकारी को दक्षता, अर्थव्यवस्था, पारदर्शिता, निष्पक्षता और समानता लाने की जिम्मेदारी और जवाबदेही है।\n- वस्तुतः, कार्यात्मक और सामान्य, मापने योग्य, तकनीकी, गुणात्मक और विशिष्ट व्यापार चिह्न या ब्रांडों का उल्लेख न करने वाले विषय-वस्तु के विवरण की आवश्यकता है।\n- सार्वजनिक खरीद प्रक्रियाओं में सभी पक्षों के लिए निष्पक्ष व्यवहार सुनिश्चित करते हुए, आपूर्तिकर्ताओं के बीच प्रतिस्पर्धा को बढ़ावा देने की प्रक्रिया का पालन करना चाहिए।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 465,
+      "times": {
+        "query_translation": 0.8476314544677734,
+        "retrieval": 4.451609134674072,
+        "generation": 23.085935831069946,
+        "response_translation": 15.078935861587524,
+        "total": 43.464112281799316
+      }
+    },
+    {
+      "question": "क्या जीएफआर नियम 149 के तहत जीईएम (GeM) पोर्टल के माध्यम से वस्तुओं और सेवाओं की खरीद अनिवार्य है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- हां, नियम 149 के अनुसार मंत्रालयों या विभागों द्वारा सरकारी ई-मार्केटप्लेस (जीईएम) पर उपलब्ध सामान्य उपयोग की वस्तुओं और सेवाओं का अधिग्रहण अनिवार्य है।\n- जीईएम पर आपूर्तिकर्ताओं के प्रमाणपत्रों को जीईएम एसपीवी द्वारा प्रमाणित किया जाता है।\n- अन्य माध्यमों से खरीद केवल तभी संभव है जब सामान और सेवाएं पोर्टल पर उपलब्ध न हों। कुछ अपवाद हैं जैसे कि कारों के लिए कोई छत सीमा नहीं या विशिष्ट मामले जहां खरीदें कम से कम 10,000 रुपये की राशि में खरीदे जाते हैं।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 443,
+      "times": {
+        "query_translation": 0.8560619354248047,
+        "retrieval": 4.5147411823272705,
+        "generation": 22.33563733100891,
+        "response_translation": 12.616983890533447,
+        "total": 40.323424339294434
+      }
+    },
+    {
+      "question": "नियम 154 के तहत बिना कोटेशन के सामान खरीदने की वित्तीय सीमा क्या है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- सामान खरीदने के लिए उद्धरण की आवश्यकता के बिना वित्तीय सीमा (जी.एफ.आर. 2017 नियम 154) INR 50,000 प्रति अवसर है।\n- यह नियम तब लागू होता है जब सक्षम प्राधिकारी पुष्टि करता है कि वे खरीदे गए सामान की गुणवत्ता और विनिर्देशों से संतुष्ट हैं, एक उचित मूल्य पर विश्वसनीय आपूर्तिकर्ता से।\n- ₹ 50,000 से अधिक की खरीदें लेकिन INR 5 लाख तक INR 15 के नियम के अनुसार स्थानीय खरीद समिति के माध्यम से की जा सकती है।",
+      "sources": [
+        "hindi_general_financial_rules_2017.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "Learned satisfied Q&As"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 382,
+      "times": {
+        "query_translation": 1.9220943450927734,
+        "retrieval": 15.287474632263184,
+        "generation": 28.047324180603027,
+        "response_translation": 12.816566467285156,
+        "total": 58.07345962524414
+      }
+    },
+    {
+      "question": "जीएफआर नियम 155 के तहत स्थानीय खरीद समिति की खरीद सीमा और संरचना क्या है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- 1,00,000 से अधिक की लागत वाले सामानों के लिए खरीद सीमा (जी.एफ.आर. नियम 155) को सरकारी विभागों या संगठनों द्वारा निर्धारित किया जा सकता है। यह निर्णय विभागीय आदेश संख्या एफ.20/42/2021-पी.पी.डी. पर आधारित है, जो 20.05.2024 को जारी किया गया था।\n- 3 सदस्यों की स्थानीय खरीद समिति में शामिल हैं जिन्हें नियम 155 के तहत ठीक से गठित किया गया है।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 326,
+      "times": {
+        "query_translation": 1.3243544101715088,
+        "retrieval": 4.357250928878784,
+        "generation": 20.869948387145996,
+        "response_translation": 9.966321468353271,
+        "total": 36.51787519454956
+      }
+    },
+    {
+      "question": "जीएफआर नियम 161 के तहत विज्ञापित निविदा जांच (Advertised Tender Enquiry) कब अनिवार्य होती है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- सामान खरेदीची अंदाजे किंमत 5 कोटी रुपयांपेक्षा जास्त असेल, तर वस्तूंच्या खरेदीच्या जाहिराती अनिवार्य हैत और जीएफआर (गुड्स अँड सभी्हिसेस टॅक्स रूल्स) अंतर्गत नियम 161 नुसार आहे.\n- इस विज्ञापन को सरकारी ईमार्केटप्लेस (जीईएम) और केंद्रीय सार्वजनिक खरीद पोर्टल (सीपीपीपी) पर प्रदर्शित किया जाना चाहिए, साथ ही संगठन की अपनी वेबसाइट पर भी।\n- पूरी बोली प्रक्रिया के दस्तावेज को भी संभावित बोली लगाने वालों द्वारा डाउनलोड करने के लिए इन प्लेटफार्मों पर पोस्ट किया जाना चाहिए।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 466,
+      "times": {
+        "query_translation": 1.2880005836486816,
+        "retrieval": 4.861368656158447,
+        "generation": 21.379427671432495,
+        "response_translation": 12.292336702346802,
+        "total": 39.821133613586426
+      }
+    },
+    {
+      "question": "नियम 162 के तहत सीमित निविदा जांच (Limited Tender Enquiry) का उपयोग करने की शर्तें और मूल्य सीमाएं क्या हैं?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- अंग्रेजी पाठ का पचास लाख रुपये (₹ 50,00,000) तक की खरीद के लिए सीमित टेन्डर जाँच विधि को अपनाया जा सकता है।\n- हैः \"खरीद दस्तावेजों की प्रतियाँ सीधे स्पीड पोस्ट/पंजीकृत डाक/कार्गो/ईमेल के माध्यम से उन फर्मों को भेजी जानी चाहिए जो विशिष्ट वस्तुओं के लिए पंजीकृत आपूर्तिकर्ता हैं।\" लिमिटेड टेंडर पूछताछ में आपूर्तिकर्ताओं की संख्या तीन से अधिक नहीं होनी चाहिए।\n- एक संगठन को जीईएम और जीईएम केंद्रीय सार्वजनिक खरीद पोर्टल पर अपनी सीमित निविदा पूछताछ प्रकाशित करनी चाहिए।\" है।",
+      "sources": [
+        "hindi_general_financial_rules_2017.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "GeM_handbook.pdf",
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 469,
+      "times": {
+        "query_translation": 1.3386847972869873,
+        "retrieval": 15.210133790969849,
+        "generation": 26.206135272979736,
+        "response_translation": 13.746659278869629,
+        "total": 56.5016131401062
+      }
+    },
+    {
+      "question": "जीएफआर नियम 166 के तहत किस विशिष्ट मालिकाना शर्तों के तहत सिंगल टेंडर जांच का उपयोग किया जा सकता है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- जीएफआर नियम 166 के तहत एकल-टेंडर जाँच केवल तभी की जा सकती है जब एक विशेष फर्म आवश्यक वस्तुओं का निर्माता हो (नियम 166(i))।\n- आपात स्थिति में, यदि आवश्यक वस्तुएँ किसी विशेष स्रोत से खरीदी जानी चाहिएँ, तो एकल निविदा जाँच का उपयोग किया जा सकता है। इस निर्णय के पीछे की वजह को दर्ज करना और सक्षम प्राधिकारी (नियम 166(ii)) से अनुमोदन प्राप्त करना महत्वपूर्ण है।\n- मौजूदा उपकरणों के साथ संगत होने के लिए मशीनरी या स्पेयर पार्ट्स को मानकीकृत करने की सिफारिश एक सक्षम तकनीकी विशेषज्ञ द्वारा की जाती है।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 478,
+      "times": {
+        "query_translation": 1.0314738750457764,
+        "retrieval": 4.478315830230713,
+        "generation": 23.27448081970215,
+        "response_translation": 13.50469708442688,
+        "total": 42.28896760940552
+      }
+    },
+    {
+      "question": "जीएफआर नियम 170 के तहत बिड सिक्योरिटी (EMD) के लिए मानक प्रतिशत सीमा क्या है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- दो प्रतिशत से लेकर पाँच प्रतिशत तक की बोली सुरक्षा, जिसे अर्नेस्ट मनी डिपॉजिट (ई.एम.डी.) के रूप में जाना जाता है, आमतौर पर वस्तुओं को खरीदने के अनुमानित मूल्य का लगभग दो प्रतिशत और पांच प्रतिशत के बीच होना चाहिए।\n- मंत्रालय या विभाग द्वारा प्रतिशत निर्धारित किया जा सकता है और बोली दस्तावेजों में इंगित किया गया है।\n- अंतिम बोली वैधता अवधि के बाद चालीस दिनों तक वैध रहती है, जब तक कि अन्यथा निर्दिष्ट न हो।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 402,
+      "times": {
+        "query_translation": 1.1000890731811523,
+        "retrieval": 4.65997052192688,
+        "generation": 19.791239976882935,
+        "response_translation": 11.949899196624756,
+        "total": 37.50119876861572
+      }
+    },
+    {
+      "question": "क्या सूक्ष्म और लघु उद्यमों (MSEs) को जीएफआर के तहत बिड सिक्योरिटी (EMD) जमा करने से छूट दी गई है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- हां, सूक्ष्म और लघु उद्यमों (एम.एस.ई.) को खरीद नीति द्वारा परिभाषित किया गया है जो विभाग के सूक्ष्म, छोटे और मध्यम उद्यम या केंद्रीय खरीद संगठन में पंजीकृत हैं, उन्हें बोली सुरक्षा जमा (बिड सुरक्षा) जमा करने की आवश्यकता नहीं होगी।\n- छत्तीसगढ ई-खरीद पोर्टल के नियम 170 के अनुसार विज्ञापनित निविदा पूछताछ और सीमित निविदा पूछताछ प्रक्रियाओं में से किसी एक के लिए यह छूट लागू होती है।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 381,
+      "times": {
+        "query_translation": 0.9584517478942871,
+        "retrieval": 4.699072599411011,
+        "generation": 27.131404161453247,
+        "response_translation": 9.323264598846436,
+        "total": 42.11219310760498
+      }
+    },
+    {
+      "question": "जीएफआर नियम 171 के तहत परफॉर्मेंस सिक्योरिटी के लिए मानक प्रतिशत सीमा क्या है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- जी.एफ.आर. नियम 171 के अनुसार, गैर-सलाहकार सेवाओं के अनुबंध मूल्य का 3% से 5% की सीमा में प्रदर्शन सुरक्षा होनी चाहिए।\n- 3% से लेकर 10% तक के बीच अनुबंधों के लिए काम और संयंत्र।\n- बीमा प्रतिभूति बांड, खाता भुगतान योग्य मांग ड्राफ्ट, वाणिज्यिक बैंक से फिक्स्ड डिपॉजिट रसीद और बैंक गारंटी सहित विभिन्न रूपों में प्रदर्शन सुरक्षा प्रदान की जा सकती है।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 342,
+      "times": {
+        "query_translation": 1.119208574295044,
+        "retrieval": 5.065871238708496,
+        "generation": 21.611162424087524,
+        "response_translation": 11.792494058609009,
+        "total": 39.58873629570007
+      }
+    },
+    {
+      "question": "क्या जीएफआर सेवाओं की खरीद को नियंत्रित करता है, और यदि हां, तो किस अध्याय में?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- जी हाँ, सरकारी वित्तीय नियम (जीएफआर) खरीद प्रक्रिया को नियंत्रित करते हैं।\n- ई-खरीद समाधानों जैसे जीईएम एसपीवी आदि से संबंधित नियम अध्याय 149 और उसके बाद के नियमों में पाए जा सकते हैं।\n- अतिरिक्त नियम, जैसे कि नियम 221 भी लागू होते हैं जब अतिरिक्त या पुराने सामान को निपटाया जाता है जो सेवाओं (नियम 221 सेवा वस्तुओं का उल्लेख करता है लेकिन इसे व्यापक रूप से व्याख्या किया जा सकता) शामिल हो सकते हैं।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 389,
+      "times": {
+        "query_translation": 0.9653010368347168,
+        "retrieval": 4.138913869857788,
+        "generation": 25.81425952911377,
+        "response_translation": 11.978309392929077,
+        "total": 42.89678382873535
+      }
+    },
+    {
+      "question": "जीएफआर दिशानिर्देशों के तहत परामर्श और गैर-परामर्श सेवाओं के बीच क्या अंतर है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- भारत सरकार द्वारा स्थापित एक सरकारी ई-बाजार, जीईएम के माध्यम से उपलब्ध वस्तुओं या सेवाओं को संदर्भित करता है। ये वस्तुएँ और सेवाएँ आम उपयोग के लिए हैं। इन वस्तुओं की खरीद अनिवार्य रूप से नियम 149 के अनुसार होती है।\n- गैर-काउंसलिंग सेवाएं उन वस्तुओं या सेवाओं को संदर्भित करती हैं जो जीईएम पर उपलब्ध नहीं हैं, और उन्हें सीधे बाहरी आपूर्तिकर्ताओं से खरीदा जा सकता है। कुछ शर्तों के अधीन, इनमें अतिरिक्त आवंटन (नियम 64) प्राप्त करना शामिल हो सकता है ताकि अधिक खर्च की आवश्यकता होने पर धन का पुनर्वितरण किया जा सके (नियम)।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 513,
+      "times": {
+        "query_translation": 1.0632781982421875,
+        "retrieval": 4.116083145141602,
+        "generation": 27.49215078353882,
+        "response_translation": 10.536742925643921,
+        "total": 43.20825505256653
+      }
+    },
+    {
+      "question": "बोली खोलने की तारीखों के विस्तार के संबंध में क्या नियम हैं?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- ई-खरीद पोर्टल/जीईएम द्वारा निविदाओं के प्रस्तुतिकरण की समय सीमा और तिथि को तदनुसार समायोजित किया जा सकता है, जो कि मूल समय सीमा से कम से कम तीन दिन पहले हो। यह परिपर्तन महत्वपूर्ण रूप से संशोधित निविदा दस्तावेजों या प्रोक्योरिंग एंटिटी के विवेक (पृष्ठ 10) के कारण होता है।\n- सीमित या खुले निविदा में प्रतिस्पर्धा की कम के मामले में, प्रणाली को बिना किसी इनपुट के प्रोक्योरिंग एंटिटी (पृष्ठ 2) सहित किसी से भी पूछे बिना, पूर्व-निर्धारित संख्या के दिनों तक बोली खोलने का विस्तार करना चाहिए। स्वचालित विस्तार केवल एक बार किया जा सकता है।",
+      "sources": [
+        "publicProManual-1755343081262-715558279.pdf",
+        "short tender notice 2 days.pdf",
+        "mannual procurement.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 508,
+      "times": {
+        "query_translation": 1.2739324569702148,
+        "retrieval": 7.029687166213989,
+        "generation": 25.027419090270996,
+        "response_translation": 10.75178074836731,
+        "total": 44.083606004714966
+      }
+    },
+    {
+      "question": "सीवीसी (CVC) दिशानिर्देशों के अनुसार शॉर्ट-टर्म निविदा के लिए आवश्यक न्यूनतम सूचना अवधि क्या है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- नहीं, केंद्रीय सतर्कता आयोग (सीवीसी) के दिशानिर्देशों में अल्पकालिक निविदाओं के लिए न्यूनतम नोटिस अवधि का कोई विशिष्ट उल्लेख नहीं है। हालाँकि, यह सुझाव दिया जाता है कि विभागों की वेबसाइट पर नोटिस पोस्ट करना समाचार पत्रों में विज्ञापन देने से अधिक तेज़ और सस्ता हो सकता है, जो समय लेने वाला या महंगा भी हो सकता है।\n- उपसचिवालय के निर्देशों के अनुसार, निविदाओं के पुरस्कार की पूरी प्रक्रिया के लिए समय सीमा एक महीने से अधिक नहीं होनी चाहिए।",
+      "sources": [
+        "CVC guideline.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 422,
+      "times": {
+        "query_translation": 1.6944687366485596,
+        "retrieval": 1.2542932033538818,
+        "generation": 26.543669939041138,
+        "response_translation": 9.596961736679077,
+        "total": 39.089393615722656
+      }
+    },
+    {
+      "question": "क्या सार्वजनिक खरीद में स्टार्टअप्स को पूर्व टर्नओवर और पूर्व अनुभव के मानदंडों से छूट दी गई है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- हाँ, उद्योग विभाग के अंतर्गत स्टार्टअप को पूर्व कारोबार और अनुभव की शर्तों से छूट दी गई है।\n- यह छूट वस्तुओं और कार्यों की खरीद पर लागू होती है, लेकिन केवल तभी जब सार्वजनिक सुरक्षा, स्वास्थ्य या महत्वपूर्ण सुरक्षा संचालन जैसे मामलों में पर्याप्त औचित्य हो जहां प्रोक्योरिंग इकाई को इन मानदंडों से विचलित नहीं होना चाहिए (जीएफआर 2017 के नियम 173(i) के अनुसार)।\n- स्टार्टअप्स एमएसएमई हो सकते हैं या अन्यथा और यह छूट इस बात पर निर्भर करती है कि वे किस तरह के व्यवसाय करते हैं।",
+      "sources": [
+        "Manual_for_Procurement_of_works_2019.pdf",
+        "mannual procurement.pdf",
+        "CVC guideline.pdf",
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 469,
+      "times": {
+        "query_translation": 0.616797924041748,
+        "retrieval": 2.2317214012145996,
+        "generation": 26.54511547088623,
+        "response_translation": 12.684365272521973,
+        "total": 42.07800006866455
+      }
+    },
+    {
+      "question": "सीवीसी के अनुसार किन परिस्थितियों में L1 बोलीदाता के साथ बातचीत (negotiation) की जा सकती है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- सबसे कम बोली लगाने वाले (एल-1) के साथ बातचीत की अनुमति अपवादों के रूप में है, विशेष रूप से जब मालिकाना वस्तुओं का व्यापार किया जाता है या जब संदेह होता है कि कार्टेल गठन हो रहा है। इन वार्ताओं को उचित ठहराया जाना चाहिए और दस्तावेजीकृत किया जाना चाहिए ताकि यह सुनिश्चित किया जा सके कि वे समय बर्बाद न करें।\n- तत्काल मामलों में जहां पुनः बोली लगाने से वस्तु की उपलब्धता में देरी होगी, जिससे महत्वपूर्ण संचालन और सुरक्षा को खतरा होगा, एल-1 बोलीदाता के साथ बातचीत करने की अनुमति है ताकि एक न्यूनतम मात्रा प्रदान की जा सके। शेष मात्रा को जल्दी से जल्दी प्राप्त किया जाना चाहिए।",
+      "sources": [
+        "CVC guideline.pdf",
+        "Compilation of CVC Guidelines on Tenders and Contracts_1467610136.pdf",
+        "Vigilance Manual 2021 (Hindi).pdf"
+      ],
+      "correctness_score": 2,
+      "tokens_generated": 550,
+      "times": {
+        "query_translation": 0.8124022483825684,
+        "retrieval": 6.4493608474731445,
+        "generation": 27.638482570648193,
+        "response_translation": 10.451988458633423,
+        "total": 45.35223412513733
+      }
+    },
+    {
+      "question": "ओपन टेंडर के खिलाफ प्राप्त एकल बोली (single bid) को संभालने की प्रक्रिया क्या है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- यदि किसी एकल प्रस्ताव या केवल एक प्रतिक्रियाशील बोली के खिलाफ खुले निविदा का सामना करना पड़ता है, तो इसे एकल निविदा जाँच स्थिति माना जाना चाहिए।\n- उचित मूल्य पर एकल बोली लगाने वाले को अनुबंध दिया जा सकता है यदि बोली की प्रक्रिया के दौरान मानक शर्तों, उद्योग अनुकूल विनिर्देशों और पर्याप्त समय जैसे सभी आवश्यकताओं को पूरा किया जाता है।\n- कोई कम नहीं हुई है या नहीं, यह जांचने के लिए पहले ही पुनर्वितरण किया जाना चाहिए।",
+      "sources": [
+        "hindi_general_financial_rules_2017.pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "Vigilance Manual 2021 (Hindi).pdf",
+        "mannual procurement.pdf",
+        "Manual_for_Procurement_of_works_2019.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 408,
+      "times": {
+        "query_translation": 0.8857543468475342,
+        "retrieval": 6.564193964004517,
+        "generation": 25.516575813293457,
+        "response_translation": 11.746479511260986,
+        "total": 44.713003635406494
+      }
+    },
+    {
+      "question": "छत्तीसगढ़ भंडार क्रय नियम स्थानीय सीएसआईडीसी उद्योगों से वस्तुओं की खरीद को कैसे नियंत्रित करता है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- भारत सरकार की मध्यम उद्यम खरीद नीति के अनुच्छेद 11 में अनिवार्य खरीद या स्थानीय रूप से निर्मित वस्तुओं को प्राथमिकता देने का प्रावधान है, जिसमें छत्तीसगढ़ लघु उद्योग विकास निगम (सी.एस.आई.डी.सी.) भी शामिल हैं।\n- भारत में, खरीद के लिए उद्धरण नियमों का पालन किए बिना सीधे वस्तुओं को खरीदने की अनुमति है। यह तब संभव होता है जब एक सक्षम प्राधिकारी पुष्टि करता है कि वे आवश्यक गुणवत्ता मानकों को पूरा करते हैं और उचित मूल्य पर खरीदे जाते हैं। इस प्रथा का उपयोग सी.एस.आई.डी.सी. उद्योगों से सामान प्राप्त करने के लिए किया जा सकता है, जो 50,000 रुपये की सीमा तक हो सकती है।\n- ।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "hindi_general_financial_rules_2017.pdf",
+        "Learned satisfied Q&As",
+        "Vigilance Manual 2021 (Hindi).pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 566,
+      "times": {
+        "query_translation": 0.7545285224914551,
+        "retrieval": 6.451734304428101,
+        "generation": 28.700446844100952,
+        "response_translation": 10.94359540939331,
+        "total": 46.85030508041382
+      }
+    },
+    {
+      "question": "उच्च मूल्य की निविदाओं में प्री-बिड कॉन्फ्रेंस के लिए क्या दिशानिर्देश हैं?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- बोली लगाने से पहले की बैठकों को बोली लगाने वाली संस्थाओं द्वारा आयोजित किया जा सकता है, जो कि टेंडर दस्तावेज़ या उनकी वेबसाइट और समाचार पत्रों के माध्यम से सार्वजनिक रूप से घोषित किए गए हैं।\n- टेंडर दस्तावेजों में पूर्व-bid सम्मेलनों के स्थान और समय का उल्लेख करना महत्वपूर्ण है। जटिल मामलों में, एक प्री-एनआईटी सम्मेलन (अंतिम रूप से प्रकाशित होने या एनआईटी को अंतिम रूप देने से पहले) उद्योग से इनपुट प्राप्त करने में सहायता कर सकता है।\n- नहीं, पूर्व बोली सम्मेलन में भाग लेना अनिवार्य नहीं है लेकिन केवल उन लोगों के लिए सीमित है जिन्होंने टेन्डर दस्तावेज़ डाउनलोड किया है।",
+      "sources": [
+        "mannual procurement.pdf",
+        "hindi_general_financial_rules_2017.pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 558,
+      "times": {
+        "query_translation": 1.3453760147094727,
+        "retrieval": 2.2416629791259766,
+        "generation": 26.236695766448975,
+        "response_translation": 12.852226972579956,
+        "total": 42.67651009559631
+      }
+    },
+    {
+      "question": "पूर्व-योग्यता मानदंड (PQC) के तहत बोलीदाता के लिए क्या योग्यताएं आवश्यक हैं?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- आवश्यक उत्पाद के लिए नियमित रूप से उत्पादन और आपूर्ति/निर्माण या निर्माण करना, या निर्दिष्ट तिथि पर इसे स्थापित करना (जिसे \"रिलेवेंट डेट\" कहा जाता है), पिछले तीन पर्षों में समान या उच्चतर विनिर्देशों के साथ।\n- (अंतिम पाँच पर्ष की समाप्ति पर) “रिलीज डेट” के अनुसार, बोली लगाने वाले को भी कम से कम एक निश्चित संख्या में उत्पाद का निर्माण और आपूर्ति/निर्माण करना होगा या उसे खड़ा करना होगा।\n- अन्य योग्यता मानदंड विशिष्ट खरीद के आधार पर भिन्न हो सकते हैं, लेकिन उन्हें गुणवत्ता से संबंधित होना चाहिए।",
+      "sources": [
+        "Vigilance Manual 2021 (Hindi).pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "mannual procurement.pdf",
+        "Manual_for_Procurement_of_works_2019.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 485,
+      "times": {
+        "query_translation": 1.842026710510254,
+        "retrieval": 2.2012360095977783,
+        "generation": 26.891229391098022,
+        "response_translation": 12.354063987731934,
+        "total": 43.28855609893799
+      }
+    },
+    {
+      "question": "क्या कोई विभाग निविदा मात्रा को कई बोलीदाताओं के बीच विभाजित कर सकता है, और किन नियमों के तहत?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- नहीं, एक विभाग केवल तभी कई बोली लगाने वालों के बीच टेंडर की मात्रा को विभाजित कर सकता है जब टेंडर की गई मात्रा L1 बोलीदाता द्वारा अकेले आपूर्ति करने में सक्षम से अधिक हो और कोई पूर्व निर्णय नहीं लिया गया था कि मात्राओं को विभाजित किया जाए (संदर्भः पृष्ठ 69)।\n- इस वितरण को निष्पक्षता, पारदर्शिता और वस्तुनिष्ठ डेटा के आधार पर किया जाना चाहिए जो बोली में उपलब्ध है (उदाहरण के लिए, पात्रता मानदंड, मात्रा/डिलीपरी)। (संदर्भः पृष्ठ 22 & 69)। - महत्वपूर्णः उत्तर को 2-3 संक्षिप्त बुलेट पॉइंट में दें। लंबे पैराग्राफ से बचें।",
+      "sources": [
+        "hindi_general_financial_rules_2017.pdf",
+        "CVC guideline.pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "Compilation of CVC Guidelines on Tenders and Contracts_1467610136.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 512,
+      "times": {
+        "query_translation": 0.4789609909057617,
+        "retrieval": 6.63257098197937,
+        "generation": 28.09166693687439,
+        "response_translation": 13.0754075050354,
+        "total": 48.27860641479492
+      }
+    },
+    {
+      "question": "स्थानीय सूक्ष्म और लघु उद्यमों के लिए 15% तक मूल्य वरीयता (price preference) की नीति क्या है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- नीति में माइक्रो और लघु उद्यमों (एमएसई) से स्थानीय रूप से निर्मित वस्तुओं या सेवाओं के लिए खरीद प्राथमिकता मार्जिन तक 15% की सीमा प्रदान की गई है।\n- इस प्राथमिकता को लागू करें जब एल1 बोली लगाने वाला एक एमएसई होना चाहिए, और उनकी कीमत एल1 + 15% की सीमा के भीतर आती है।\n- नहीं, एल1 बोलीदाता के साथ बातचीत करते समय, प्राथमिकता मार्जिन (एल1 + 15%) की गणना मूल एल1 मूल्य और कम किए गए सौदे के मूल्य पर आधारित होनी चाहिए। पात्र एम.एस.ई. को फिर इस नए वार्ताबद्ध मूल्य से मेल खाना होगा।",
+      "sources": [
+        "hindi_general_financial_rules_2017.pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "MSME procurement policy.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 459,
+      "times": {
+        "query_translation": 0.7757315635681152,
+        "retrieval": 6.469748258590698,
+        "generation": 28.018420934677124,
+        "response_translation": 13.050652027130127,
+        "total": 48.314552783966064
+      }
+    },
+    {
+      "question": "लोक खरीद मैनुअल के अनुसार देर से प्राप्त बोलियों (late bids) को कैसे संभाला जाता है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- अंग्रेजी पाठ का विज्ञापित निविदा जाँच या सीमित निविदा जाँच के दौरान, नियम 165 (जी.एफ.आर. 2017 का नियम) और नियम 202 (सार्वजनिक खरीद नियमावली) के अनुसार देर से बोली पर विचार नहीं किया जाना चाहिए।\n- सार्वजनिक खरीद नियमावली के अनुसार, एकल टेंडर पूछताछ में, कुछ परिस्थितियों में एकल स्रोत खरीद को प्राथमिकता दी जा सकती है। हालाँकि, देर से बोलियाँ इस प्रकार की जाँचों के लिए उपयुक्त नहीं हैं जैसा कि नियम f में उल्लेख किया गया है।\n- इलेक्ट्रॉनिक रिपर्स नीलामी के मामले में, यह ध्यान रखना महत्वपूर्ण है कि ये एक ऐसी प्रक्रिया है जिसमें विक्रेता अपनी वस्तुओं को ऑनलाइन सूचीबद्ध करते हैं और खरीदार उन्हें खरीदने के लिए बोली लगाते हैं।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "hindi_general_financial_rules_2017.pdf",
+        "publicProManual-1755343081262-715558279.pdf"
+      ],
+      "correctness_score": 4,
+      "tokens_generated": 608,
+      "times": {
+        "query_translation": 1.100311279296875,
+        "retrieval": 6.661281108856201,
+        "generation": 30.1194326877594,
+        "response_translation": 14.03437352180481,
+        "total": 51.91591453552246
+      }
+    },
+    {
+      "question": "एमएसएमई (MSMEs) को विलंबित भुगतानों पर ब्याज के भुगतान के संबंध में क्या नियम है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- एमएसई आपूर्तिकर्ताओं को समय पर भुगतान सुनिश्चित करने के लिए, एमएसई अधिनियम, 2006 के अनुसार, माना गया स्वीकृति की अवधि अधिकतम 45 दिनों तक सीमित है।\" यदि इस अवधि के भीतर कोई विसंगति या आपत्ति नहीं उठाई जाती है, तो इसे माना गया स्वीकृति (पैरा सी देखें) माना जाएगा।\n- भारत के रिज़र्व बैंक द्वारा घोषित तीन गुना बैंक दर पर देरी से भुगतान करने वाले खरीदारों को ब्याज का भुगतान करना होगा। यह नियम मध्यस्थता और सुलह पर लागू होता है।",
+      "sources": [
+        "publicProManual-1755343081262-715558279.pdf",
+        "hindi_general_financial_rules_2017.pdf",
+        "mannual procurement.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 430,
+      "times": {
+        "query_translation": 1.4760377407073975,
+        "retrieval": 15.128444910049438,
+        "generation": 28.495555877685547,
+        "response_translation": 9.902611494064331,
+        "total": 55.002650022506714
+      }
+    },
+    {
+      "question": "किन शर्तों के तहत बैंक गारंटी को परफॉर्मेंस सिक्योरिटी के रूप में स्वीकार किया जा सकता है?",
+      "role": "government_officer",
+      "language": "hi",
+      "answer": "- प्रदर्शन सुरक्षा, जिसमें बैंक गारंटी या जमा शामिल हैं, यह सुनिश्चित करने के लिए आवश्यक है कि अनुबंध की वस्तुओं और सेवाओं का उचित प्रदर्शन किया जाए।\n- नहीं, कॉर्पोरेट गारंटी या प्रतिरक्षा बांड को ई.एम.डी., प्रदर्शन सुरक्षा या किसी अन्य बैंक गारंटी के विकल्प के रूप में स्वीकार नहीं किया जाएगा।\n- ई-बैंक गारंटी को आसानी से सत्यापित किया जा सकता है जैसा कि पर अनुच्छेद 6.1.4-5 में दिखाया गया है।",
+      "sources": [
+        "FInal_GFR_upto_31_07_2024.pdf",
+        "hindi_general_financial_rules_2017.pdf",
+        "Vigilance Manual 2021 (Hindi).pdf",
+        "publicProManual-1755343081262-715558279.pdf",
+        "short tender notice 2 days.pdf"
+      ],
+      "correctness_score": 5,
+      "tokens_generated": 388,
+      "times": {
+        "query_translation": 0.6779682636260986,
+        "retrieval": 6.619392395019531,
+        "generation": 25.671152114868164,
+        "response_translation": 11.778200149536133,
+        "total": 44.74671292304993
+      }
+    }
+  ]
+}

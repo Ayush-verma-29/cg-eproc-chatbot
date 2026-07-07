@@ -1,0 +1,68 @@
+# backend/app/core/procurement_dict.py
+"""
+MINIMAL Domain Dictionary - Only translates key procurement terms
+DO NOT translate common words like "के", "अनुसार", "कितना", "होना", "चाहिए"
+"""
+
+import re
+
+# ONLY translate these specific terms - NOT general words
+MINIMAL_TERM_MAPPING = {
+    # Core Terms (only exact matches)
+    "ईएमडी": "EMD",
+    "सुरक्षा निधि": "Security Deposit",
+    "बैंक गारंटी": "Bank Guarantee",
+    "प्रदर्शन सुरक्षा": "Performance Security",
+    "निविदा": "Tender",
+    "बोली": "Bid",
+    "क्रय": "Procurement",
+    "अनुबंध": "Contract",
+    "पंजीकरण": "Registration",
+    "रजिस्ट्रेशन": "Registration",
+    
+    # Organizations
+    "जीएफआर": "GFR",
+    "सीवीसी": "CVC",
+    "जीईएम": "GeM",
+    
+    # Documents
+    "डीएससी": "DSC",
+    
+    # Actions (but not common verbs)
+    "संशोधन": "Amendment",
+    "विस्तार": "Extension",
+    "वापसी": "Refund",
+}
+
+def translate_query(text: str) -> str:
+    """
+    MINIMAL translation - ONLY replace specific terms
+    Preserves all other words like "के अनुसार", "कितना", "होना चाहिए"
+    """
+    result = text
+    
+    # Sort by length (longest first) to avoid partial matches
+    sorted_terms = sorted(MINIMAL_TERM_MAPPING.keys(), key=len, reverse=True)
+    
+    for hindi_term in sorted_terms:
+        # Only replace if it's a whole word match
+        pattern = re.compile(r'\b' + re.escape(hindi_term) + r'\b', re.IGNORECASE)
+        result = pattern.sub(MINIMAL_TERM_MAPPING[hindi_term], result)
+    
+    return result
+
+def translate_response(text: str) -> str:
+    """Translate English responses to Hindi (only key terms)"""
+    # Reverse mapping for common terms in responses
+    reverse_mapping = {
+        "EMD": "ईएमडी",
+        "Bid Security": "बोली सुरक्षा",
+        "General Financial Rules": "सामान्य वित्तीय नियम",
+        "Rule": "नियम",
+    }
+    
+    result = text
+    for en_term, hi_term in reverse_mapping.items():
+        result = result.replace(en_term, hi_term)
+    
+    return result

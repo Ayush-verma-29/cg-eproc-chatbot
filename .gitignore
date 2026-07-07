@@ -1,0 +1,32 @@
+# Python virtual environment
+venv/
+.venv/
+ENV/
+env/
+*.pyc
+__pycache__/
+
+# Node/Frontend dependencies
+node_modules/
+dist/
+build/
+.cache/
+
+# Local databases and runtime data
+backend/db/
+backend/data/
+*.db
+*.sqlite
+chroma_vendor/
+chroma_govt/
+
+# Logs and temporary files
+*.log
+backend_out.log
+backend_err.log
+.tempmediaStorage/
+scratch/
+.agents/
+.idea/
+.vscode/
+.DS_Store

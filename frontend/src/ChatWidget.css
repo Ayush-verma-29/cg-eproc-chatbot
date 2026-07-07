@@ -1,0 +1,907 @@
+/* frontend/src/ChatWidget.css */
+
+/* ─── Container ─────────────────────────────────── */
+.cg-chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+/* ─── Launcher button ────────────────────────────── */
+.cg-chat-toggle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #628ec8, #4a74aa);
+    border: none;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cg-chat-toggle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Chat window ────────────────────────────────── */
+.cg-chat-window {
+    position: relative;
+    width: 380px;
+    max-width: calc(100vw - 24px);
+    height: 550px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.28s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ─── Header ─────────────────────────────────────── */
+.cg-chat-header {
+    background: linear-gradient(135deg, #628ec8, #4a74aa);
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.cg-chat-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.cg-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 2px 5px;
+    border-radius: 50%;
+    transition: background 0.2s;
+    line-height: 1;
+}
+
+.cg-close-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* ─── Role selector bar ──────────────────────────── */
+.cg-role-selector {
+    display: flex;
+    padding: 10px 12px;
+    gap: 10px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
+}
+
+.cg-role-btn {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    background: white;
+    color: #333;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.cg-role-btn.active {
+    background: #628ec8;
+    color: white;
+    border-color: #628ec8;
+}
+
+.cg-role-btn:hover:not(.active) {
+    background: #f0f0f0;
+}
+
+/* ─── Messages area ──────────────────────────────── */
+.cg-messages-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    background: #f9f9f9;
+    min-height: 0;
+    scroll-behavior: smooth;
+}
+
+.cg-messages-area::-webkit-scrollbar {
+    width: 5px;
+}
+
+.cg-messages-area::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+/* ─── Message rows ───────────────────────────────── */
+.cg-message {
+    margin-bottom: 14px;
+    display: flex;
+}
+
+.cg-message.user {
+    justify-content: flex-end;
+}
+
+.cg-message.assistant {
+    justify-content: flex-start;
+}
+
+/* ─── Bubbles ────────────────────────────────────── */
+.cg-message-bubble {
+    max-width: 82%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.cg-message.user .cg-message-bubble {
+    background: #7da1d1;
+    color: white;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cg-message.assistant .cg-message-bubble {
+    background: white;
+    color: #222;
+    border: 1px solid #e0e0e0;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.cg-message-bubble strong {
+    font-weight: 700;
+}
+
+/* ─── Typing indicator ───────────────────────────── */
+.cg-typing-indicator {
+    background: white;
+    padding: 10px 14px;
+    border-radius: 18px;
+    border: 1px solid #e0e0e0;
+    display: inline-flex;
+    gap: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.cg-typing-indicator span {
+    width: 7px;
+    height: 7px;
+    background: #628ec8;
+    border-radius: 50%;
+    display: inline-block;
+    animation: cgTyping 1.4s infinite ease-in-out;
+}
+
+.cg-typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.cg-typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes cgTyping {
+
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.45;
+    }
+
+    30% {
+        transform: translateY(-7px);
+        opacity: 1;
+    }
+}
+
+/* ─── Input area ─────────────────────────────────── */
+.cg-input-area {
+    padding: 10px 12px;
+    background: white;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    align-items: center;
+}
+
+.cg-input-area input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 24px;
+    outline: none;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.cg-input-area input:focus {
+    border-color: #628ec8;
+}
+
+.cg-input-area button {
+    padding: 9px 20px;
+    background: #628ec8;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: inherit;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.cg-input-area button:hover {
+    background: #4a74aa;
+}
+
+.cg-input-area button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ─── Language footer ────────────────────────────── */
+.cg-lang-footer {
+    padding: 5px;
+    text-align: center;
+    font-size: 11px;
+    background: #f5f5f5;
+    color: #777;
+    border-top: 1px solid #e8e8e8;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+/* --- Citations and references box --- */
+.cg-sources-box {
+    margin-top: 5px;
+    font-size: 11px;
+    color: #4a5568;
+    background: #edf2f7;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border-left: 3px solid #cbd5e0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ─── Admin Diagnostics Panel ───────────────────── */
+.cg-admin-panel {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 50px);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    overflow-y: auto;
+    color: #1e293b;
+    box-sizing: border-box;
+}
+
+.cg-admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+.cg-admin-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.cg-admin-close-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cg-admin-close-btn:hover {
+    background: #dc2626;
+}
+
+.cg-admin-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+.cg-admin-kpi-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.cg-admin-kpi-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #628ec8;
+    margin-bottom: 2px;
+}
+
+.cg-admin-kpi-label {
+    font-size: 9px;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.cg-admin-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+.cg-admin-topic-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+.cg-admin-topic-tag {
+    background: #f3f7fd;
+    border: 1px solid #d2e3f7;
+    color: #628ec8;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.cg-admin-table-container {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow-y: auto;
+    background: white;
+    flex-grow: 1;
+    margin-bottom: 8px;
+    max-height: 220px;
+}
+
+.cg-admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+    text-align: left;
+}
+
+.cg-admin-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+    padding: 8px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+}
+
+.cg-admin-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cg-admin-table tr:last-child td {
+    border-bottom: none;
+}
+
+.cg-feedback-badge {
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-size: 8px;
+    text-transform: uppercase;
+}
+
+.cg-feedback-badge.satisfied {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.cg-feedback-badge.unsatisfied {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.cg-feedback-badge.neutral {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+/* ─── Feedback actions inside bubbles ───────────────── */
+.cg-feedback-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+    justify-content: flex-end;
+    border-top: 1px dashed rgba(0, 0, 0, 0.05);
+    padding-top: 4px;
+}
+
+.cg-feedback-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    opacity: 0.4;
+    transition: opacity 0.2s, transform 0.1s;
+    padding: 2px;
+}
+
+.cg-feedback-btn:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+.cg-feedback-btn.selected {
+    opacity: 1;
+    pointer-events: none;
+}
+
+/* ---------- ADMIN CONFIGURATION TAB STYLES ---------- */
+.admin-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #cbd5e1;
+    flex-shrink: 0;
+}
+
+.admin-tab-btn {
+    padding: 6px 10px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-size: 10px;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.admin-tab-btn.active {
+    color: #628ec8;
+    border-bottom-color: #628ec8;
+}
+
+.admin-tab-content {
+    display: none;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 4px;
+}
+
+.admin-tab-content.active {
+    display: flex;
+}
+
+.admin-form-group {
+    margin-bottom: 10px;
+}
+
+.admin-form-group label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+}
+
+.admin-form-group input[type="text"],
+.admin-form-group input[type="range"],
+.admin-form-group textarea,
+.admin-form-group select {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 11px;
+    color: #1e293b;
+    outline: none;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.admin-form-group textarea {
+    resize: vertical;
+    min-height: 50px;
+}
+
+.admin-btn {
+    background: #628ec8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.admin-btn:hover {
+    background: #4a74aa;
+}
+
+.admin-btn.secondary {
+    background: #64748b;
+}
+
+.admin-btn.secondary:hover {
+    background: #475569;
+}
+
+.admin-btn.danger {
+    background: #ef4444;
+}
+
+.admin-btn.danger:hover {
+    background: #dc2626;
+}
+
+.session-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px;
+    background: white;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.session-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 4px;
+}
+
+.session-card-kill-btn {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 9px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.session-card-kill-btn:hover {
+    background: #fecaca;
+}
+
+.session-history-item {
+    font-size: 10px;
+    color: #475569;
+    margin-bottom: 4px;
+    padding-left: 6px;
+    border-left: 2px solid #e2e8f0;
+}
+
+.document-governance-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: #334155;
+}
+
+.rules-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+    margin-bottom: 8px;
+}
+
+.rules-table th,
+.rules-table td {
+    border: 1px solid #cbd5e1;
+    padding: 4px 6px;
+    text-align: left;
+}
+
+.rules-table th {
+    background: #f8fafc;
+}
+
+/* Dynamic Suggestion Chips styles */
+.cg-chips-container {
+    display: flex;
+    gap: 8px;
+    padding: 8px 14px;
+    background: #f8fafc;
+    overflow-x: auto;
+    flex-shrink: 0;
+    white-space: nowrap;
+    border-top: 1px solid #e2e8f0;
+    scrollbar-width: none;
+    /* Hide scrollbar for standard browsers */
+}
+
+.cg-chips-container::-webkit-scrollbar {
+    display: none;
+    /* Hide scrollbar for WebKit */
+}
+
+.cg-chip-btn {
+    background: #f3f7fd;
+    border: 1px solid #d2e3f7;
+    color: #628ec8;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.cg-chip-btn:hover {
+    background: #e6f0fa;
+    border-color: #b8d2f1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(30, 58, 138, 0.08);
+}
+
+/* ─── Clickable Source Chips & Links ──────────────── */
+.cg-source-chip {
+    transition: background-color 0.2s, transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.cg-source-chip:hover {
+    background-color: #e6f0fa !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(30, 58, 138, 0.12);
+}
+
+.cg-source-link {
+    transition: color 0.2s;
+}
+
+.cg-source-link:hover {
+    color: #628ec8 !important;
+    text-decoration: underline !important;
+}
+
+.cg-page-num-link {
+    transition: color 0.2s, opacity 0.2s;
+}
+
+.cg-page-num-link:hover {
+    color: #628ec8 !important;
+    opacity: 0.9;
+}
+
+/* ---------- DUAL PANEL VIEW & PDF VIEWER (React Scope) ---------- */
+.cg-chat-window.with-pdf {
+    width: 1000px !important;
+    max-width: calc(100vw - 30px) !important;
+    flex-direction: row !important;
+}
+
+.cg-chat-main-panel {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.cg-chat-window.with-pdf .cg-chat-main-panel {
+    width: 380px;
+}
+
+.cg-pdf-viewer-panel {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    border-left: 1px solid #cbd5e1;
+    background: #f8fafc;
+    position: relative;
+    height: 100%;
+    min-width: 0;
+}
+
+.cg-chat-window.with-pdf .cg-pdf-viewer-panel {
+    display: flex;
+}
+
+.cg-pdf-header {
+    background: linear-gradient(135deg, #628ec8, #4a74aa);
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    height: 50px;
+    box-sizing: border-box;
+}
+
+.cg-pdf-title {
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 320px;
+}
+
+.cg-pdf-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 50%;
+    transition: background 0.2s;
+    line-height: 1;
+}
+
+.cg-pdf-close-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.cg-pdf-toolbar {
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 6px 12px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+}
+
+.cg-pdf-tb-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.cg-pdf-btn {
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    color: #334155;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cg-pdf-btn:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+.cg-pdf-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+}
+
+.cg-pdf-canvas-container {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 16px;
+    background: #64748b;
+}
+
+.cg-pdf-canvas {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
+    background: white;
+    display: block;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .cg-chat-window.with-pdf {
+        width: calc(100vw - 16px) !important;
+        max-width: calc(100vw - 16px) !important;
+    }
+
+    .cg-chat-window.with-pdf .cg-chat-main-panel {
+        display: none;
+    }
+}

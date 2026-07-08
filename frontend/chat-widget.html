@@ -1627,6 +1627,7 @@
                     <!-- Language footer -->
                     <div id="langFooter" class="hide-when-minimised">
                         <span id="langFooterText">English</span>
+                        <span id="wakeWordStatus" style="color: #475569; font-weight: 500; display: none;">🎙️ Hands-free enabled (Say "Hello Assistant")</span>
                         <span id="langFooterTime" style="color: #64748b; font-weight: normal;"></span>
                     </div>
                 </div>
@@ -1929,6 +1930,14 @@
         let ttsActive = false;        // true while TTS is speaking
         let ttsActiveSpeakBtn = null; // the 🔊 button that triggered current TTS
         let streamLock = false;   // prevent concurrent streams
+
+        // ── Wake Word & Voice Trigger state ───────────────────
+        let wakeWordRecognizer = null;
+        let wakeWordActive = false;
+        let lastQueryWasVoice = false;
+        let streamTriggerRecognizer = null;
+        let streamTriggerActive = false;
+        let streamVoiceRequested = false;
 
         let lastUserQuery = '';
 
@@ -2611,10 +2620,13 @@
                 renderChips();
 
                 const welcome = role === 'vendor'
-                    ? 'Namaste!\n\nYou are connected as a **Vendor / Contractor**.\n\nI can help you with:\n- Tender registration and DSC setup\n- EMD and bid submission process\n- Portal navigation and troubleshooting\n- Short-term tender rules\n\nPlease type your question in English or Hindi.'
-                    : 'Namaste!\n\nYou are connected as a **Government Officer**.\n\nI can help you with:\n- GFR 2017 procurement rules\n- CVC guidelines and compliance\n- Tender publication and corrigendum\n- Bid evaluation and transparency norms\n\nPlease type your question in English or Hindi.';
+                    ? 'Namaste!\n\nYou are connected as a **Vendor / Contractor**.\n\nI can help you with:\n- Tender registration and DSC setup\n- EMD and bid submission process\n- Portal navigation and troubleshooting\n- Short-term tender rules\n\nPlease type your question in English or Hindi.\n\n💡 *Tip: You can say **"Hello Assistant"** to speak hands-free, or say **"speak"** / **"bolo"** to hear generated answers.*'
+                    : 'Namaste!\n\nYou are connected as a **Government Officer**.\n\nI can help you with:\n- GFR 2017 procurement rules\n- CVC guidelines and compliance\n- Tender publication and corrigendum\n- Bid evaluation and transparency norms\n\nPlease type your question in English or Hindi.\n\n💡 *Tip: You can say **"Hello Assistant"** to speak hands-free, or say **"speak"** / **"bolo"** to hear generated answers.*';
 
                 addMessage('assistant', welcome, null, null, false);
+                
+                // Initialize hands-free wake word detection
+                initWakeWord();
 
             } catch (err) {
                 console.error(err);
@@ -2632,6 +2644,9 @@
             document.getElementById('langFooterText').textContent = 'English';
             document.getElementById('langFooterTime').textContent = '';
             document.getElementById('chipsArea').innerHTML = '';
+            
+            // Stop hands-free wake word detection
+            stopWakeWord();
         }
 
         function renderChips() {
@@ -3193,6 +3208,11 @@
                                     box.appendChild(row);  // ← insert bubble NOW (not before)
                                     document.getElementById('typingIndicator').style.display = 'none';
                                     scrollToBottom(true);
+                                    
+                                    // Stop background wake word during generation, start trigger listener
+                                    stopWakeWord();
+                                    streamVoiceRequested = false;
+                                    startStreamTriggerListener();
                                 }
                                 currentText += parsed.text;
                                 bubble.innerHTML = parseMarkdownToHtml(currentText);
@@ -3208,6 +3228,9 @@
                         }
                     }
                 }
+
+                // Stop the mid-stream voice trigger listener
+                stopStreamTriggerListener();
 
                 streamLock = false;
                 stopStreamRequested = false;
@@ -3369,7 +3392,16 @@
                     }
                     fbActions.appendChild(btnGroup);
                     bubble.appendChild(fbActions);
+
+                    // If user queried via voice, automatically speak the response
+                    if (lastQueryWasVoice) {
+                        lastQueryWasVoice = false;
+                        speakText(currentText, detectedLanguage, speakBtn);
+                    }
                 }
+
+                // Restart background hands-free listener
+                initWakeWord();
 
                 scrollToBottom();
 
@@ -3389,6 +3421,219 @@
         }
 
         // ───────────────────────────────────────────────────
+        // VOICE TRIGGER & HANDS-FREE INTERACTIONS
+        // ───────────────────────────────────────────────────
+        function playWakeChime() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.15); // E5
+                gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.5);
+            } catch(e) {
+                console.warn('Audio Context failed:', e);
+            }
+        }
+
+        function initWakeWord() {
+            if (wakeWordActive) return;
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) return;
+
+            try {
+                wakeWordRecognizer = new SR();
+                wakeWordRecognizer.lang = 'en-IN,hi-IN';
+                wakeWordRecognizer.continuous = true;
+                wakeWordRecognizer.interimResults = false;
+
+                wakeWordRecognizer.onresult = (e) => {
+                    // Prevent trigger if mic, TTS, or streaming is active
+                    if (micActive || ttsActive || streamLock) return;
+
+                    for (let i = e.resultIndex; i < e.results.length; i++) {
+                        const text = e.results[i][0].transcript.toLowerCase();
+                        console.log('[WakeWord] Heard:', text);
+                        if (text.includes('assistant') || text.includes('hello assistant') || text.includes('hey assistant')) {
+                            console.log('[WakeWord] Triggered!');
+                            playWakeChime();
+                            lastQueryWasVoice = true;
+                            // Wait slightly for chime to finish then open mic
+                            setTimeout(() => {
+                                if (!micActive) toggleMic();
+                            }, 400);
+                        }
+                    }
+                };
+
+                wakeWordRecognizer.onerror = (ev) => {
+                    if (ev.error === 'not-allowed') {
+                        console.warn('[WakeWord] Permission denied');
+                        wakeWordActive = false;
+                        return;
+                    }
+                    if (wakeWordActive) {
+                        setTimeout(startWakeWord, 1000);
+                    }
+                };
+
+                wakeWordRecognizer.onend = () => {
+                    if (wakeWordActive) {
+                        startWakeWord();
+                    }
+                };
+
+                wakeWordActive = true;
+                startWakeWord();
+            } catch (err) {
+                console.warn('Error starting wake word listener:', err);
+            }
+        }
+
+        function startWakeWord() {
+            if (!wakeWordActive || !wakeWordRecognizer || micActive || ttsActive || streamLock) {
+                const badge = document.getElementById('wakeWordStatus');
+                if (badge) badge.style.display = 'none';
+                return;
+            }
+            try {
+                wakeWordRecognizer.start();
+                const badge = document.getElementById('wakeWordStatus');
+                if (badge) badge.style.display = 'inline';
+            } catch (e) {
+                // Already running
+                const badge = document.getElementById('wakeWordStatus');
+                if (badge) badge.style.display = 'inline';
+            }
+        }
+
+        function stopWakeWord() {
+            wakeWordActive = false;
+            const badge = document.getElementById('wakeWordStatus');
+            if (badge) badge.style.display = 'none';
+            if (wakeWordRecognizer) {
+                try { wakeWordRecognizer.stop(); } catch(e) {}
+                wakeWordRecognizer = null;
+            }
+        }
+
+        function startStreamTriggerListener() {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR || streamTriggerActive) return;
+
+            try {
+                streamTriggerRecognizer = new SR();
+                streamTriggerRecognizer.lang = 'en-IN,hi-IN';
+                streamTriggerRecognizer.continuous = true;
+                streamTriggerRecognizer.interimResults = false;
+
+                streamTriggerRecognizer.onresult = (e) => {
+                    if (streamVoiceRequested) return; // already activated
+                    for (let i = e.resultIndex; i < e.results.length; i++) {
+                        const text = e.results[i][0].transcript.toLowerCase();
+                        console.log('[StreamTrigger] Heard segment:', text);
+                        if (text.includes('speak') || text.includes('read') || text.includes('bolo') || text.includes('बोलो')) {
+                            console.log('[StreamTrigger] Activation keyword heard!');
+                            streamVoiceRequested = true;
+                            stopStreamTriggerListener();
+                            const allSpeakBtns = document.querySelectorAll('.cg-speak-btn');
+                            if (allSpeakBtns.length > 0) {
+                                const lastBtn = allSpeakBtns[allSpeakBtns.length - 1];
+                                lastBtn.click();
+                            }
+                            break;
+                        }
+                    }
+                };
+
+                streamTriggerRecognizer.onerror = (ev) => {
+                    if (streamTriggerActive) {
+                        try { streamTriggerRecognizer.start(); } catch(e) {}
+                    }
+                };
+
+                streamTriggerRecognizer.onend = () => {
+                    if (streamTriggerActive && !streamVoiceRequested) {
+                        try { streamTriggerRecognizer.start(); } catch(e) {}
+                    }
+                };
+
+                streamTriggerActive = true;
+                streamTriggerRecognizer.start();
+                console.log('[StreamTrigger] Started listening for voice triggers...');
+            } catch(err) {
+                console.warn('Failed to start stream trigger recognizer:', err);
+            }
+        }
+
+        function stopStreamTriggerListener() {
+            streamTriggerActive = false;
+            if (streamTriggerRecognizer) {
+                try { streamTriggerRecognizer.stop(); } catch(e) {}
+                streamTriggerRecognizer = null;
+            }
+        }
+
+        let ttsStopTriggerRecognizer = null;
+        let ttsStopTriggerActive = false;
+
+        function startTtsStopListener() {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR || ttsStopTriggerActive) return;
+
+            try {
+                ttsStopTriggerRecognizer = new SR();
+                ttsStopTriggerRecognizer.lang = 'en-IN,hi-IN';
+                ttsStopTriggerRecognizer.continuous = true;
+                ttsStopTriggerRecognizer.interimResults = false;
+
+                ttsStopTriggerRecognizer.onresult = (e) => {
+                    for (let i = e.resultIndex; i < e.results.length; i++) {
+                        const text = e.results[i][0].transcript.toLowerCase();
+                        console.log('[TtsStopListener] Heard:', text);
+                        if (text.includes('stop') || text.includes('chup') || text.includes('shant') || text.includes('शांत') || text.includes('चुप')) {
+                            console.log('[TtsStopListener] Stop word detected. Cancelling playback.');
+                            stopVoice();
+                            break;
+                        }
+                    }
+                };
+
+                ttsStopTriggerRecognizer.onerror = (ev) => {
+                    if (ttsStopTriggerActive) {
+                        try { ttsStopTriggerRecognizer.start(); } catch(e) {}
+                    }
+                };
+
+                ttsStopTriggerRecognizer.onend = () => {
+                    if (ttsStopTriggerActive) {
+                        try { ttsStopTriggerRecognizer.start(); } catch(e) {}
+                    }
+                };
+
+                ttsStopTriggerActive = true;
+                ttsStopTriggerRecognizer.start();
+                console.log('[TtsStopListener] Started listening for stop command...');
+            } catch(err) {
+                console.warn('Failed to start TTS stop listener:', err);
+            }
+        }
+
+        function stopTtsStopListener() {
+            ttsStopTriggerActive = false;
+            if (ttsStopTriggerRecognizer) {
+                try { ttsStopTriggerRecognizer.stop(); } catch(e) {}
+                ttsStopTriggerRecognizer = null;
+            }
+        }
+
+        // ───────────────────────────────────────────────────
         // VOICE INPUT  (Speech-to-Text)
         // ───────────────────────────────────────────────────
         function toggleMic() {
@@ -3401,6 +3646,9 @@
                 btn.classList.remove('active');
                 btn.title = 'Voice input (click to speak)';
                 if (micRecognition) micRecognition.stop();
+                
+                // Restart hands-free background listener
+                initWakeWord();
                 return;
             }
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -3408,6 +3656,10 @@
                 alert('Speech recognition is not supported in this browser.\nPlease use Chrome or Edge.');
                 return;
             }
+
+            // Temporarily stop wake word detection to avoid overlapping SpeechRecognition instances
+            stopWakeWord();
+            lastQueryWasVoice = true;
 
             micRecognition = new SR();
             // Detect language: prefer Hindi for govt officer role; otherwise try to detect from last response
@@ -3438,11 +3690,15 @@
                 if (ev.error !== 'no-speech' && ev.error !== 'aborted') {
                     console.warn('Mic error:', ev.error);
                 }
+                // Resume hands-free background listener
+                initWakeWord();
             };
             micRecognition.onend = () => {
                 micActive = false;
                 btn.classList.remove('active');
                 btn.title = 'Voice input (click to speak)';
+                // Resume hands-free background listener
+                initWakeWord();
             };
 
             micRecognition.start();
@@ -3527,24 +3783,40 @@
                 } catch(e) {}
                 ttsAudio = null;
             }
+            // Stop the verbal stop listener
+            stopTtsStopListener();
+            
             ttsUpdateUI(false);
+
+            // Resume hands-free wake word detection
+            initWakeWord();
         }
 
         // Active HTML5 Audio object (for gTTS backend playback)
         let ttsAudio = null;
 
         function speakText(markdownText, detectedLang, speakBtn) {
-            // Stop any current speech first
+            // Stop any current speech and reset triggers
             stopVoice();
+
+            // Temporarily disable wake word detection during playback to prevent acoustic feedback loops
+            stopWakeWord();
 
             // Strip Markdown, URLs and HTML so TTS gets clean readable text
             let cleanText = ttsCleanText(markdownText);
             cleanText = cleanText.replace(/https?:\/\/\S+/g, '');  // remove bare URLs
             cleanText = cleanText.replace(/\s{2,}/g, ' ').trim();
-            if (!cleanText) return;
+            if (!cleanText) {
+                // If nothing to speak, restore wake-word
+                initWakeWord();
+                return;
+            }
 
             ttsActiveSpeakBtn = speakBtn;
             ttsUpdateUI(true);  // show speaking state immediately
+
+            // Start listening for verbal stop triggers ("stop", "chup", "shant")
+            startTtsStopListener();
 
             const langCode = (detectedLang === 'hi') ? 'hi' : 'en';
             const ttsUrl = `${API.replace('/api/v1', '')}/api/v1/tts?lang=${langCode}&text=${encodeURIComponent(cleanText)}`;
@@ -3564,22 +3836,21 @@
                     ttsAudio.onended = () => {
                         URL.revokeObjectURL(audioUrl);
                         ttsAudio = null;
-                        ttsUpdateUI(false);
+                        stopVoice();
                     };
                     ttsAudio.onerror = (e) => {
                         console.warn('[TTS] Audio play error:', e);
                         URL.revokeObjectURL(audioUrl);
                         ttsAudio = null;
-                        ttsUpdateUI(false);
+                        stopVoice();
                     };
                     ttsAudio.play().catch(e => {
                         console.warn('[TTS] play() rejected:', e);
-                        ttsUpdateUI(false);
+                        stopVoice();
                     });
                 })
                 .catch(err => {
                     console.warn('[TTS] Backend TTS failed, trying browser fallback:', err);
-                    ttsUpdateUI(false);
                     // Fallback to browser SpeechSynthesis if backend unavailable
                     if (window.speechSynthesis) {
                         const utterance = new SpeechSynthesisUtterance(cleanText);
@@ -3587,9 +3858,11 @@
                         utterance.rate = 0.9;
                         ttsActiveSpeakBtn = speakBtn;
                         utterance.onstart = () => ttsUpdateUI(true);
-                        utterance.onend = () => ttsUpdateUI(false);
-                        utterance.onerror = () => ttsUpdateUI(false);
+                        utterance.onend = () => stopVoice();
+                        utterance.onerror = () => stopVoice();
                         window.speechSynthesis.speak(utterance);
+                    } else {
+                        stopVoice();
                     }
                 });
         }

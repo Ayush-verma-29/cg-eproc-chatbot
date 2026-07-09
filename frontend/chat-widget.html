@@ -2077,6 +2077,7 @@
         let ttsActive = false;        // true while TTS is speaking
         let ttsActiveSpeakBtn = null; // the 🔊 button that triggered current TTS
         let streamLock = false;   // prevent concurrent streams
+        let activeReader = null;  // active stream reader to abort/cancel
 
         // ── Wake Word & Voice Trigger state ───────────────────
         let wakeWordRecognizer = null;
@@ -3031,6 +3032,15 @@
 
         function stopStreaming() {
             stopStreamRequested = true;
+            if (activeReader) {
+                try {
+                    activeReader.cancel();
+                } catch (e) {
+                    console.warn('[SSE] Error cancelling reader:', e);
+                }
+                activeReader = null;
+            }
+            stopVoice(true);
         }
 
         // ───────────────────────────────────────────────────
@@ -3293,6 +3303,7 @@
                 let firstTokenReceived = false;
 
                 const reader = res.body.getReader();
+                activeReader = reader;
                 const decoder = new TextDecoder('utf-8');
                 let buffer = '';
 
@@ -3393,6 +3404,7 @@
 
                 streamLock = false;
                 stopStreamRequested = false;
+                activeReader = null;
                 setInputEnabled(true);
 
                 const duration = ((performance.now() - startTime) / 1000).toFixed(2);
@@ -3582,6 +3594,7 @@
                 document.getElementById('typingIndicator').style.display = 'none';
                 streamLock = false;
                 stopStreamRequested = false;
+                activeReader = null;
                 setInputEnabled(true);
                 addMessage('assistant',
                     'Sorry, there was an error connecting to the server. Please check that the backend is running.',

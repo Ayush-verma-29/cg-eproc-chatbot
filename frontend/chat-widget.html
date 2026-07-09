@@ -3509,19 +3509,27 @@
                     if (micActive || ttsActive || streamLock) return;
 
                     for (let i = e.resultIndex; i < e.results.length; i++) {
-                        const text = e.results[i][0].transcript.toLowerCase();
+                        const text = e.results[i][0].transcript.toLowerCase().trim();
                         console.log('[WakeWord] Heard:', text);
-                        if (text.includes('assistant') || text.includes('hello assistant') || text.includes('hey assistant')) {
+                        const isTrigger = text.includes('assistant') || 
+                                          text.includes('asistant') || 
+                                          text.includes('assist') || 
+                                          text.includes('\u0905\u0938\u093f\u0938\u094d\u091f\u0947\u0902\u091f') || 
+                                          text.includes('\u0905\u0938\u093f\u0938\u094d\u091f\u0947\u0928\u094d\u091f') || 
+                                          text.includes('\u0938\u093f\u0938\u094d\u091f\u0947\u0902\u091f');
+                        if (isTrigger) {
                             console.log('[WakeWord] Triggered!');
                             wakeWordTriggeredMicOpen = true;
                             stopWakeWord();
+                            break;
                         }
                     }
                 };
 
                 wakeWordRecognizer.onerror = (ev) => {
+                    console.warn('[WakeWord] Error event:', ev.error, ev.message || '');
                     if (ev.error === 'not-allowed') {
-                        console.warn('[WakeWord] Permission denied');
+                        console.warn('[WakeWord] Permission denied by user/browser');
                         wakeWordActive = false;
                         return;
                     }

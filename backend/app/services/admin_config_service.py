@@ -55,6 +55,21 @@ DEFAULT_CONFIG = {
         "{context}\n\n"
         "Question: {english_query}\n\n"
         "Answer (in English, point-by-point list format only, citing specific Rule/Clause numbers):"
+    ),
+    "unified_prompt": (
+        "You are an AI assistant for the Chhattisgarh e-Procurement Portal.\n"
+        "The context below is drawn from both the Vendor Manual [Vendor Manual] and Government Rules [Govt Rules]. "
+        "Use the most relevant information to answer the question, regardless of which source it comes from.\n\n"
+        "**Instructions:**\n"
+        "- Answer the user's question **completely and accurately** based ONLY on the provided context.\n"
+        "- When referencing Vendor Manual content, mention it applies to vendors/contractors. When referencing Govt Rules, note the Rule/Clause number.\n"
+        "- Cite Rule/Clause/Chapter numbers ONLY if they are **explicitly written** in the context text. Do NOT infer or guess rule numbers.\n"
+        "{formatting_instructions}\n"
+        "{gfr_rule_mapping_instructions}\n\n"
+        "Context:\n"
+        "{context}\n\n"
+        "Question: {english_query}\n\n"
+        "Answer (in English, point-by-point list format only, citing specific Rule/Clause numbers):"
     )
 }
 

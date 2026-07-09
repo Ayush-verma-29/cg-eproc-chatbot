@@ -50,7 +50,7 @@ app.mount("/static", StaticFiles(directory=str(settings.BASE_DIR / "frontend")),
 
 # Request/Response Models
 class RoleRequest(BaseModel):
-    role: str  # "vendor" or "government_officer"
+    role: str = "unified"  # "vendor", "government_officer", or "unified" (default)
     session_id: Optional[str] = None
 
 class RoleResponse(BaseModel):
@@ -93,15 +93,17 @@ async def root():
 
 @app.post("/api/v1/start", response_model=RoleResponse)
 async def start_session(request: RoleRequest):
-    """Start a new session with specified role"""
-    if request.role not in ["vendor", "government_officer"]:
-        raise HTTPException(status_code=400, detail="Role must be 'vendor' or 'government_officer'")
+    """Start a new session with specified role (unified, vendor, or government_officer)"""
+    valid_roles = ["vendor", "government_officer", "unified"]
+    if request.role not in valid_roles:
+        request.role = "unified"  # default fallback
     
     session_id = session_manager.create_session(request.role)
     
     role_message = {
         "vendor": "You are now chatting as a VENDOR. I'll help you with portal usage, bid submission, registration, and troubleshooting.",
-        "government_officer": "You are now chatting as a GOVERNMENT OFFICER. I'll help you with procurement rules, GFR guidelines, and compliance."
+        "government_officer": "You are now chatting as a GOVERNMENT OFFICER. I'll help you with procurement rules, GFR guidelines, and compliance.",
+        "unified": "Welcome to the CG e-Procurement Assistant. Ask me anything about procurement rules, vendor registration, tenders, or GFR guidelines."
     }
     
     return RoleResponse(

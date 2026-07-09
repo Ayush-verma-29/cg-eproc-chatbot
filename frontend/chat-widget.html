@@ -1541,47 +1541,13 @@
                     </div>
                 </div>
 
-                <!-- ── ROLE SELECTION ── -->
-                <div id="roleSelection" class="hide-when-minimised">
-                    <div class="cg-welcome-icon">🏛️</div>
-                    <div class="cg-welcome-title">CG e-Procurement Portal</div>
-                    <div class="cg-welcome-sub">Select your role to get started with personalised assistance</div>
-
-                    <div class="cg-role-card" onclick="selectRole('vendor')">
-                        <div class="cg-role-card-icon">
-                            <svg viewBox="0 0 24 24" width="42" height="42" fill="#628ec8">
-                                <path
-                                    d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
-                            </svg>
-                        </div>
-                        <div class="cg-role-card-text">
-                            <div class="cg-role-card-name">Vendor / Contractor</div>
-                            <div class="cg-role-card-desc">Registration, bid submission, EMD, DSC, tender participation
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="cg-role-card officer" onclick="selectRole('government_officer')">
-                        <div class="cg-role-card-icon">
-                            <svg viewBox="0 0 24 24" width="42" height="42" fill="#4a74aa">
-                                <path
-                                    d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
-                            </svg>
-                        </div>
-                        <div class="cg-role-card-text">
-                            <div class="cg-role-card-name">Government Officer</div>
-                            <div class="cg-role-card-desc">GFR rules, procurement compliance, approvals, CVC guidelines
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Role selection removed — unified mode, auto-started on widget open -->
 
                 <!-- ── CHAT AREA (shown after role selected) ── -->
                 <div id="chatArea">
-                    <!-- Role badge -->
+                    <!-- Header label -->
                     <div id="roleBadge" class="hide-when-minimised">
-                        <span class="badge-label">Role: <span class="badge-name" id="roleNameSpan"></span></span>
-                        <button class="cg-change-role-btn" onclick="resetRole()">Change Role</button>
+                        <span class="badge-label">🏛️ <span class="badge-name" id="roleNameSpan">CG e-Procurement Assistant</span></span>
                     </div>
 
                     <!-- Messages -->
@@ -1978,8 +1944,10 @@
             const btn = document.getElementById('chatToggleBtn');
             win.classList.add('open');
             btn.classList.add('open-state');
-            // If chat area was already active, scroll to latest message
-            if (document.getElementById('chatArea').classList.contains('active')) {
+            // If no session yet, auto-start with unified role (no selection screen)
+            if (!sessionId) {
+                selectRole('unified');
+            } else if (document.getElementById('chatArea').classList.contains('active')) {
                 requestAnimationFrame(() => scrollToBottom(true));
             }
         }
@@ -2608,8 +2576,8 @@
         // ROLE SELECTION & DYNAMIC SUGGESTION CHIPS
         // ───────────────────────────────────────────────────
         async function selectRole(role) {
+            role = role || 'unified';
             currentRole = role;
-            const label = role === 'vendor' ? 'Vendor / Contractor' : 'Government Officer';
 
             try {
                 const res = await fetch(`${API}/start`, {
@@ -2620,19 +2588,14 @@
                 const data = await res.json();
                 sessionId = data.session_id;
 
-                // Switch from role selection to chat area
-                document.getElementById('roleSelection').style.display = 'none';
+                // Show chat area immediately (no role selection screen)
                 document.getElementById('chatArea').classList.add('active');
-                document.getElementById('roleNameSpan').textContent = label;
-                document.getElementById('headerSub').textContent = 'Chatting as ' + label;
-
-
+                document.getElementById('roleNameSpan').textContent = 'CG e-Procurement Assistant';
+                document.getElementById('headerSub').textContent = 'Ask anything about procurement';
 
                 renderChips();
 
-                const welcome = role === 'vendor'
-                    ? 'Namaste!\n\nYou are connected as a **Vendor / Contractor**.\n\nI can help you with:\n- Tender registration and DSC setup\n- EMD and bid submission process\n- Portal navigation and troubleshooting\n- Short-term tender rules\n\nPlease type your question in English or Hindi.\n\n💡 *Tip: You can say **"Hello Assistant"** to speak hands-free, or say **"speak"** / **"bolo"** to hear generated answers.*'
-                    : 'Namaste!\n\nYou are connected as a **Government Officer**.\n\nI can help you with:\n- GFR 2017 procurement rules\n- CVC guidelines and compliance\n- Tender publication and corrigendum\n- Bid evaluation and transparency norms\n\nPlease type your question in English or Hindi.\n\n💡 *Tip: You can say **"Hello Assistant"** to speak hands-free, or say **"speak"** / **"bolo"** to hear generated answers.*';
+                const welcome = 'Namaste! 🏛️\n\nWelcome to the **CG e-Procurement Assistant**.\n\nI can help you with:\n- Vendor registration, DSC setup, bid submission\n- EMD, performance security, and tender participation\n- GFR 2017 rules and procurement compliance\n- CVC guidelines, approvals, and corrigendum\n- GeM portal and MSME price preference\n\nAsk your question in **English or Hindi**.\n\n💡 *Tip: Say **"Hello Assistant"** to speak hands-free, or say **"speak"** / **"bolo"** to hear the answer.*';
 
                 addMessage('assistant', welcome, null, null, false);
                 
@@ -2646,19 +2609,7 @@
         }
 
         function resetRole() {
-            sessionId = null;
-            currentRole = null;
-            document.getElementById('roleSelection').style.display = '';
-            document.getElementById('chatArea').classList.remove('active');
-            document.getElementById('chatMessages').innerHTML = '';
-            document.getElementById('headerSub').textContent = 'Select your role to begin';
-            document.getElementById('langFooterText').textContent = 'English';
-            document.getElementById('langFooterTime').textContent = '';
-            document.getElementById('chipsArea').innerHTML = '';
-            
-            // Stop hands-free wake word detection and stream triggers
-            stopWakeWord();
-            stopStreamTriggerListener();
+            // No-op in unified mode — kept for backward compatibility
         }
 
         function renderChips() {
@@ -2666,21 +2617,16 @@
             container.innerHTML = '';
             if (!currentRole) return;
 
-            const vendorChips = [
+            const unifiedChips = [
                 'EMD refund process',
+                'Vendor registration steps',
+                'GFR Rule 170',
                 'Bid submission deadline',
-                'Vendor registration',
+                'CVC compliance',
                 'निविदा में संशोधन'
             ];
-            const officerChips = [
-                'GFR 2017 Rules',
-                'CVC compliance',
-                'Tender publication',
-                'Bid evaluation'
-            ];
-            const chips = currentRole === 'vendor' ? vendorChips : officerChips;
 
-            chips.forEach(text => {
+            unifiedChips.forEach(text => {
                 const btn = document.createElement('button');
                 btn.className = 'cg-chip-btn';
                 btn.textContent = text;
@@ -2707,10 +2653,7 @@
         function clearChat() {
             closeMenu();
             document.getElementById('chatMessages').innerHTML = '';
-            const msg = currentRole === 'vendor'
-                ? 'Chat cleared. Ask me anything about vendor portal usage.'
-                : 'Chat cleared. Ask me anything about procurement rules.';
-            addMessage('assistant', msg, null, null, false);
+            addMessage('assistant', 'Chat cleared. Ask me anything about e-procurement, vendor registration, GFR rules, or CVC compliance.', null, null, false);
         }
 
         function saveChat() {
@@ -3722,8 +3665,9 @@
             lastQueryWasVoice = true;
 
             micRecognition = new SR();
-            // Detect language: prefer Hindi for govt officer role; otherwise use Indian English (en-IN)
-            const langForMic = (currentRole === 'government_officer') ? 'hi-IN' : 'en-IN';
+            // In unified mode, use hi-IN which accepts both Hindi and English on most devices
+            // The backend auto-detects the query language regardless
+            const langForMic = 'hi-IN';
             micRecognition.lang = langForMic;
             micRecognition.continuous = false;
             micRecognition.interimResults = true;   // show live transcript in input box
@@ -4187,7 +4131,7 @@
                 queriesList.forEach(q => {
                     const tr = document.createElement('tr');
                     const timeStr = formatTimestamp(q.timestamp);
-                    const roleLabel = q.role === 'government_officer' ? 'Officer' : 'Vendor';
+                    const roleLabel = q.role === 'government_officer' ? 'Officer' : q.role === 'vendor' ? 'Vendor' : 'Unified';
 
                     tr.innerHTML = `
                         <td>${escapeHtml(timeStr)}</td>

@@ -810,7 +810,7 @@ Hinglish:"""
             
         return score
     
-    def retrieve_chunks(self, query: str, role: str, k: int = 10, query_vector: Optional[List[float]] = None, original_query: Optional[str] = None, query_lang: Optional[str] = None) -> List[Dict]:
+    def retrieve_chunks(self, query: str, role: str = "unified", k: int = 10, query_vector: Optional[List[float]] = None, original_query: Optional[str] = None, query_lang: Optional[str] = None) -> List[Dict]:
         """Retrieve relevant chunks with deduplication and query expansion"""
         try:
             from app.services.admin_config_service import admin_config_service
@@ -828,23 +828,22 @@ Hinglish:"""
         orig_lower = original_query.lower() if original_query else query_lower
         combined_query_lower = f"{query_lower} {orig_lower}"
         
-        if role == "government_officer":
-            store = self.vector_store_manager.get_govt_store()
-        else:
-            store = self.vector_store_manager.get_vendor_store()
-        
+        # Always search both vendor and govt stores (Option D — unified mode)
+        vendor_store = self.vector_store_manager.get_vendor_store()
+        govt_store = self.vector_store_manager.get_govt_store()
+
         preferred_source = self.infer_preferred_source(combined_query_lower)
         if preferred_source:
             if preferred_source in deactivated:
                 return []
-            
+
             # If the user asked in Hindi and the preferred source is English GFR,
-            # we also query chunks from the Hindi GFR document and merge them.
+            # also query the Hindi GFR and merge.
             if query_lang == "hi" and preferred_source == "FInal_GFR_upto_31_07_2024.pdf":
-                eng_chunks = self.retrieve_chunks_from_source(store, "FInal_GFR_upto_31_07_2024.pdf", query_lower, original_query, k, query_lang=query_lang)
-                hin_chunks = self.retrieve_chunks_from_source(store, "hindi_general_financial_rules_2017.pdf", query_lower, original_query, k, query_lang=query_lang)
-                
-                # Merge the chunks by score
+                eng_chunks = self.retrieve_chunks_from_source(govt_store, "FInal_GFR_upto_31_07_2024.pdf", query_lower, original_query, k, query_lang=query_lang)
+                hin_chunks = self.retrieve_chunks_from_source(govt_store, "hindi_general_financial_rules_2017.pdf", query_lower, original_query, k, query_lang=query_lang)
+                for c in eng_chunks + hin_chunks:
+                    c["metadata"]["source_db"] = "govt"
                 merged = []
                 seen = set()
                 for c in sorted(eng_chunks + hin_chunks, key=lambda x: x.get("score", 0.0), reverse=True):
@@ -853,8 +852,17 @@ Hinglish:"""
                         seen.add(key)
                         merged.append(c)
                 return merged[:k]
-                
-            return self.retrieve_chunks_from_source(store, preferred_source, query_lower, original_query, k, query_lang=query_lang)
+
+            # Try the preferred source in both stores, pick whichever has results
+            vendor_hits = self.retrieve_chunks_from_source(vendor_store, preferred_source, query_lower, original_query, k, query_lang=query_lang)
+            govt_hits = self.retrieve_chunks_from_source(govt_store, preferred_source, query_lower, original_query, k, query_lang=query_lang)
+            for c in vendor_hits:
+                c["metadata"]["source_db"] = "vendor"
+            for c in govt_hits:
+                c["metadata"]["source_db"] = "govt"
+            combined = vendor_hits + govt_hits
+            combined.sort(key=lambda x: x.get("score", 0.0), reverse=True)
+            return combined[:k]
 
         query_topics = self.infer_query_topics(combined_query_lower)
         search_queries = self.build_search_queries(query, query_topics)
@@ -902,39 +910,41 @@ Hinglish:"""
         all_results = []
         seen_chunks = set()
         source_counts = {}
-        # 2. STANDARD VECTOR STORE SIMILARITY SEARCH (fallback / general depth)
-        try:
-            search_k = max(40, k)
-            for s_query in search_queries:
-                    if query_vector is not None and s_query == query:
-                        results = store.similarity_search_by_vector(query_vector, k=search_k)
-                    else:
-                        results = store.similarity_search(s_query, k=search_k)
-                    for doc in results:
-                        source = doc.metadata.get("source", "Unknown")
-                        if source.lower().endswith(('.docx', '.txt')):
-                            source = os.path.splitext(source)[0] + ".pdf"
-                            doc.metadata["source"] = source
-                        if source in deactivated:
-                            continue
-                        content_snippet = doc.page_content[:200]
-                        chunk_key = doc.metadata.get("chunk_id", content_snippet)
-                        
-                        if chunk_key not in seen_chunks:
-                            # Allow up to 3 chunks per source, or 25 if GFR rules document, to prevent domination while allowing depth
-                            max_source_chunks = 25 if "gfr" in source.lower() else 3
-                            if source_counts.get(source, 0) < max_source_chunks:
-                                seen_chunks.add(chunk_key)
-                                source_counts[source] = source_counts.get(source, 0) + 1
-                                sc = self.score_chunk(doc.page_content, query_lower, source, original_query=original_query, topic_boosts=topic_boosts, query_lang=query_lang, metadata=doc.metadata)
-                                all_results.append({
-                                    "content": doc.page_content,
-                                    "source": source,
-                                    "metadata": doc.metadata,
-                                    "score": sc
-                                })
-        except Exception as e:
-            print(f"   Search error: {e}")
+        # 2. STANDARD VECTOR STORE SIMILARITY SEARCH — both vendor and govt stores
+        for db_label, store in [("vendor", vendor_store), ("govt", govt_store)]:
+            try:
+                search_k = max(40, k)
+                for s_query in search_queries:
+                        if query_vector is not None and s_query == query:
+                            results = store.similarity_search_by_vector(query_vector, k=search_k)
+                        else:
+                            results = store.similarity_search(s_query, k=search_k)
+                        for doc in results:
+                            source = doc.metadata.get("source", "Unknown")
+                            if source.lower().endswith(('.docx', '.txt')):
+                                source = os.path.splitext(source)[0] + ".pdf"
+                                doc.metadata["source"] = source
+                            if source in deactivated:
+                                continue
+                            content_snippet = doc.page_content[:200]
+                            chunk_key = f"{db_label}::{doc.metadata.get('chunk_id', content_snippet)}"
+                            
+                            if chunk_key not in seen_chunks:
+                                # Allow up to 3 chunks per source, or 25 if GFR rules document, to prevent domination while allowing depth
+                                max_source_chunks = 25 if "gfr" in source.lower() else 3
+                                if source_counts.get(source, 0) < max_source_chunks:
+                                    seen_chunks.add(chunk_key)
+                                    source_counts[source] = source_counts.get(source, 0) + 1
+                                    doc.metadata["source_db"] = db_label
+                                    sc = self.score_chunk(doc.page_content, query_lower, source, original_query=original_query, topic_boosts=topic_boosts, query_lang=query_lang, metadata=doc.metadata)
+                                    all_results.append({
+                                        "content": doc.page_content,
+                                        "source": source,
+                                        "metadata": doc.metadata,
+                                        "score": sc
+                                    })
+            except Exception as e:
+                print(f"   Search error ({db_label}): {e}")
         
         # Filter chunks to only keep those containing the requested rule numbers, if any match
         all_results = self.filter_chunks_by_rules(all_results, query_lower, original_query)
@@ -1287,7 +1297,10 @@ Hinglish:"""
                 content_to_use = c["content"]
                 truncated_content = self.clean_truncate(content_to_use, 2500)
                 if total_chars + len(truncated_content) <= max_context_chars:
-                    context_parts.append(truncated_content)
+                    # Prefix each chunk with its source database tag for the LLM
+                    db_tag = c.get("metadata", {}).get("source_db", "")
+                    tag_prefix = "[Vendor Manual]\n" if db_tag == "vendor" else ("[Govt Rules]\n" if db_tag == "govt" else "")
+                    context_parts.append(tag_prefix + truncated_content)
                     total_chars += len(truncated_content)
                     src = c["source"]
                     if src not in sources:
@@ -1305,7 +1318,9 @@ Hinglish:"""
                     remaining_space = max_context_chars - total_chars
                     if remaining_space > 500:
                         partially_truncated = self.clean_truncate(content_to_use, remaining_space)
-                        context_parts.append(partially_truncated)
+                        db_tag = c.get("metadata", {}).get("source_db", "")
+                        tag_prefix = "[Vendor Manual]\n" if db_tag == "vendor" else ("[Govt Rules]\n" if db_tag == "govt" else "")
+                        context_parts.append(tag_prefix + partially_truncated)
                         total_chars += len(partially_truncated)
                         src = c["source"]
                         if src not in sources:
@@ -1351,22 +1366,15 @@ Key GFR Rules (cite exactly): Rule 144=buying principles; Rule 149=GeM portal; R
                 abbr_instructs.append(f"- Abbreviations like '{ab}' in the context stand for '{full}'. Always expand '{ab}' to '{full}' in your responses.")
             abbreviation_instructions = "\n".join(abbr_instructs)
             
-            if role == "vendor":
-                prompt = vendor_prompt_tpl.format(
-                    abbreviation_instructions=abbreviation_instructions,
-                    formatting_instructions=formatting_instructions,
-                    gfr_rule_mapping_instructions=gfr_rule_mapping_instructions,
-                    context=context,
-                    english_query=english_query
-                )
-            else:
-                prompt = officer_prompt_tpl.format(
-                    abbreviation_instructions=abbreviation_instructions,
-                    formatting_instructions=formatting_instructions,
-                    gfr_rule_mapping_instructions=gfr_rule_mapping_instructions,
-                    context=context,
-                    english_query=english_query
-                )
+            unified_prompt_tpl = config.get("unified_prompt", config.get("vendor_prompt", ""))
+
+            prompt = unified_prompt_tpl.format(
+                abbreviation_instructions=abbreviation_instructions,
+                formatting_instructions=formatting_instructions,
+                gfr_rule_mapping_instructions=gfr_rule_mapping_instructions,
+                context=context,
+                english_query=english_query
+            )
                 
             self.llm.temperature = engine_params.get("temperature", 0.0)
             
@@ -1646,7 +1654,15 @@ Rewrite this as a clear, self-contained search query (1 sentence, English only, 
                 content_to_use = c["content"]
                 truncated_content = self.clean_truncate(content_to_use, 2500)
                 if total_chars + len(truncated_content) <= max_context_chars:
-                    context_parts.append(truncated_content)
+                    # Prefix each chunk with its source database tag for the LLM
+                    db_tag = c.get("metadata", {}).get("source_db", "")
+                    if db_tag == "vendor":
+                        tag_prefix = "[Vendor Manual]\n"
+                    elif db_tag == "govt":
+                        tag_prefix = "[Govt Rules]\n"
+                    else:
+                        tag_prefix = ""
+                    context_parts.append(tag_prefix + truncated_content)
                     total_chars += len(truncated_content)
                     src = c["source"]
                     if src not in sources:
@@ -1664,7 +1680,15 @@ Rewrite this as a clear, self-contained search query (1 sentence, English only, 
                     remaining_space = max_context_chars - total_chars
                     if remaining_space > 500:
                         partially_truncated = self.clean_truncate(content_to_use, remaining_space)
-                        context_parts.append(partially_truncated)
+                        # Prefix partial chunk with source tag too
+                        db_tag = c.get("metadata", {}).get("source_db", "")
+                        if db_tag == "vendor":
+                            tag_prefix = "[Vendor Manual]\n"
+                        elif db_tag == "govt":
+                            tag_prefix = "[Govt Rules]\n"
+                        else:
+                            tag_prefix = ""
+                        context_parts.append(tag_prefix + partially_truncated)
                         total_chars += len(partially_truncated)
                         src = c["source"]
                         if src not in sources:
@@ -1733,22 +1757,15 @@ Key GFR Rules (cite exactly): Rule 144=buying principles; Rule 149=GeM portal; R
                     )
                     print(f"   \U0001f4ac Using {len(conversation_history)} conversation turn(s) for context")
             
-            if role == "vendor":
-                prompt = vendor_prompt_tpl.format(
-                    abbreviation_instructions=abbreviation_instructions,
-                    formatting_instructions=formatting_instructions,
-                    gfr_rule_mapping_instructions=gfr_rule_mapping_instructions,
-                    context=context,
-                    english_query=english_query
-                )
-            else:
-                prompt = officer_prompt_tpl.format(
-                    abbreviation_instructions=abbreviation_instructions,
-                    formatting_instructions=formatting_instructions,
-                    gfr_rule_mapping_instructions=gfr_rule_mapping_instructions,
-                    context=context,
-                    english_query=english_query
-                )
+            unified_prompt_tpl = config.get("unified_prompt", config.get("vendor_prompt", ""))
+
+            prompt = unified_prompt_tpl.format(
+                abbreviation_instructions=abbreviation_instructions,
+                formatting_instructions=formatting_instructions,
+                gfr_rule_mapping_instructions=gfr_rule_mapping_instructions,
+                context=context,
+                english_query=english_query
+            )
 
             # Inject conversation history before the question in the prompt
             if conversation_history_block:

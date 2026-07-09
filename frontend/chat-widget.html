@@ -1623,6 +1623,11 @@
 
                     <!-- Dropdown Menu -->
                     <div class="cg-dropdown" id="dropdownMenu">
+                        <button class="cg-dd-item" onclick="toggleSpeechLanguage()">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="#555">
+                                <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+                            </svg>Speech: <span id="speechLangLabel" style="font-weight: bold; color: #4a74aa; margin-left: 4px;">English</span>
+                        </button>
                         <button class="cg-dd-item" onclick="clearChat()">
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="#555">
                                 <path
@@ -2046,6 +2051,10 @@
         let isMaximised = false;
         let micActive = false;
         let micRecognition = null;
+        // Speech input language (defaults to en-IN unless browser language is Hindi)
+        let speechLanguage = (navigator.language && navigator.language.toLowerCase().startsWith('hi')) ? 'hi-IN' : 'en-IN';
+        let isAwaitingLanguagePreference = false;
+        let langChoiceRecognizer = null;
 
         // ── TTS Voice Output state ────────────────────────────
         let ttsUtterance = null;      // active SpeechSynthesisUtterance
@@ -2711,6 +2720,16 @@
             const menu = document.getElementById('dropdownMenu');
             if (menu) menu.classList.remove('open');
         }
+        function toggleSpeechLanguage() {
+            if (speechLanguage.startsWith('hi')) {
+                speechLanguage = 'en-IN';
+                document.getElementById('speechLangLabel').textContent = 'English';
+            } else {
+                speechLanguage = 'hi-IN';
+                document.getElementById('speechLangLabel').textContent = 'Hindi';
+            }
+            closeMenu();
+        }
         document.addEventListener('click', (e) => {
             const menu = document.getElementById('dropdownMenu');
             const btn = document.getElementById('menuBtn');
@@ -2741,6 +2760,12 @@
                 const roleSpan = document.getElementById('roleNameSpan');
                 if (roleSpan) roleSpan.textContent = 'CG e-Procurement Assistant';
                 document.getElementById('headerSub').textContent = 'Ask anything about procurement';
+
+                // Initialize speech language label
+                const label = document.getElementById('speechLangLabel');
+                if (label) {
+                    label.textContent = speechLanguage.startsWith('hi') ? 'Hindi' : 'English';
+                }
 
                 // No welcome message in chat — content shown on logo hover tooltip
                 renderChips();
@@ -3660,9 +3685,9 @@
                         wakeWordTriggeredMicOpen = false;
                         playWakeChime();
                         lastQueryWasVoice = true;
-                        // Wait slightly for chime to finish then open mic
+                        // Wait slightly for chime to finish then prompt for language choice
                         setTimeout(() => {
-                            if (!micActive) toggleMic();
+                            promptSpeechLanguageChoice();
                         }, 700);
                     } else if (wakeWordActive) {
                         startWakeWord();
@@ -3814,6 +3839,125 @@
             }
         }
 
+        // ── Voice Language Preference Choice Flow ──
+        function promptSpeechLanguageChoice() {
+            stopVoice(true);
+            stopWakeWord();
+            isAwaitingLanguagePreference = true;
+
+            // Make the visual mic button pulsate red like it is getting ready to listen
+            const btn = document.getElementById('micBtn');
+            if (btn) {
+                btn.classList.add('active');
+                btn.title = 'Preparing choice...';
+            }
+
+            const textEn = "Namaste! Please select: English or Hindi?";
+            const textHi = "नमस्ते! कृपया चुनें: अंग्रेजी या हिंदी?";
+
+            const utteranceEn = new SpeechSynthesisUtterance(textEn);
+            utteranceEn.lang = "en-IN";
+            utteranceEn.rate = 1.0;
+
+            const utteranceHi = new SpeechSynthesisUtterance(textHi);
+            utteranceHi.lang = "hi-IN";
+            utteranceHi.rate = 1.0;
+
+            utteranceEn.onend = () => {
+                window.speechSynthesis.speak(utteranceHi);
+            };
+
+            utteranceHi.onend = () => {
+                listenForSpeechLanguageChoice();
+            };
+
+            utteranceEn.onerror = utteranceHi.onerror = () => {
+                listenForSpeechLanguageChoice();
+            };
+
+            window.speechSynthesis.speak(utteranceEn);
+        }
+
+        function listenForSpeechLanguageChoice() {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) {
+                isAwaitingLanguagePreference = false;
+                confirmSpeechLanguageChoice(speechLanguage);
+                return;
+            }
+
+            try {
+                langChoiceRecognizer = new SR();
+                langChoiceRecognizer.lang = 'hi-IN'; // accepts both Hindi & English phonetic inputs
+                langChoiceRecognizer.continuous = false;
+                langChoiceRecognizer.interimResults = false;
+
+                const inputEl = document.getElementById('chatInput');
+                if (inputEl) inputEl.placeholder = "Listening... Speak 'English' or 'Hindi' / 'अंग्रेजी' या 'हिंदी'...";
+
+                langChoiceRecognizer.onresult = (e) => {
+                    const text = e.results[0][0].transcript.toLowerCase().trim();
+                    console.log('[LangChoice] Heard:', text);
+
+                    if (text.includes('english') || text.includes('eng') || text.includes('अंग्रेजी') || text.includes('अंग्रेज़ी')) {
+                        confirmSpeechLanguageChoice('en-IN');
+                    } else if (text.includes('hindi') || text.includes('hind') || text.includes('हिंदी') || text.includes('हिन्दी')) {
+                        confirmSpeechLanguageChoice('hi-IN');
+                    } else {
+                        // Fallback to whatever language is current or browser default
+                        confirmSpeechLanguageChoice(speechLanguage);
+                    }
+                };
+
+                langChoiceRecognizer.onerror = (ev) => {
+                    console.warn('[LangChoice] Error event:', ev.error);
+                    confirmSpeechLanguageChoice(speechLanguage);
+                };
+
+                langChoiceRecognizer.onend = () => {
+                    isAwaitingLanguagePreference = false;
+                    langChoiceRecognizer = null;
+                };
+
+                langChoiceRecognizer.start();
+            } catch (err) {
+                console.warn('[LangChoice] Failed to initialize:', err);
+                isAwaitingLanguagePreference = false;
+                confirmSpeechLanguageChoice(speechLanguage);
+            }
+        }
+
+        function confirmSpeechLanguageChoice(lang) {
+            speechLanguage = lang;
+            const label = document.getElementById('speechLangLabel');
+            if (label) {
+                label.textContent = lang.startsWith('hi') ? 'Hindi' : 'English';
+            }
+
+            const inputEl = document.getElementById('chatInput');
+            if (inputEl) inputEl.placeholder = "Ask about tenders, vendors, EMD...";
+
+            // Remove visual active state temporarily so toggleMic handles it
+            const btn = document.getElementById('micBtn');
+            if (btn) btn.classList.remove('active');
+
+            const confirmationText = lang.startsWith('hi') 
+                ? "हिंदी चुनी गई। मैं आपकी क्या मदद कर सकता हूँ?" 
+                : "English selected. How can I help you?";
+
+            const utter = new SpeechSynthesisUtterance(confirmationText);
+            utter.lang = lang;
+            utter.rate = 1.0;
+            utter.onend = () => {
+                // Now start the actual query mic!
+                if (!micActive) toggleMic();
+            };
+            utter.onerror = () => {
+                if (!micActive) toggleMic();
+            };
+            window.speechSynthesis.speak(utter);
+        }
+
         // ───────────────────────────────────────────────────
         // VOICE INPUT  (Speech-to-Text)
         // ───────────────────────────────────────────────────
@@ -3843,10 +3987,8 @@
             lastQueryWasVoice = true;
 
             micRecognition = new SR();
-            // In unified mode, use hi-IN which accepts both Hindi and English on most devices
-            // The backend auto-detects the query language regardless
-            const langForMic = 'hi-IN';
-            micRecognition.lang = langForMic;
+            // Use user-selected speech language preference
+            micRecognition.lang = speechLanguage;
             micRecognition.continuous = false;
             micRecognition.interimResults = true;   // show live transcript in input box
 

@@ -3450,7 +3450,7 @@
 
             try {
                 wakeWordRecognizer = new SR();
-                wakeWordRecognizer.lang = 'en-IN,hi-IN';
+                wakeWordRecognizer.lang = 'en-IN';
                 wakeWordRecognizer.continuous = true;
                 wakeWordRecognizer.interimResults = false;
 
@@ -3488,7 +3488,7 @@
                         // Wait slightly for chime to finish then open mic
                         setTimeout(() => {
                             if (!micActive) toggleMic();
-                        }, 400);
+                        }, 700);
                     } else if (wakeWordActive) {
                         startWakeWord();
                     }
@@ -3534,7 +3534,7 @@
 
             try {
                 streamTriggerRecognizer = new SR();
-                streamTriggerRecognizer.lang = 'en-IN,hi-IN';
+                streamTriggerRecognizer.lang = 'en-IN';
                 streamTriggerRecognizer.continuous = true;
                 streamTriggerRecognizer.interimResults = false;
 
@@ -3594,7 +3594,7 @@
 
             try {
                 ttsStopTriggerRecognizer = new SR();
-                ttsStopTriggerRecognizer.lang = 'en-IN,hi-IN';
+                ttsStopTriggerRecognizer.lang = 'en-IN';
                 ttsStopTriggerRecognizer.continuous = true;
                 ttsStopTriggerRecognizer.interimResults = false;
 
@@ -3667,8 +3667,8 @@
             lastQueryWasVoice = true;
 
             micRecognition = new SR();
-            // Detect language: prefer Hindi for govt officer role; otherwise try to detect from last response
-            const langForMic = (currentRole === 'government_officer') ? 'hi-IN' : 'hi-IN,en-IN';
+            // Detect language: prefer Hindi for govt officer role; otherwise use Indian English (en-IN)
+            const langForMic = (currentRole === 'government_officer') ? 'hi-IN' : 'en-IN';
             micRecognition.lang = langForMic;
             micRecognition.continuous = false;
             micRecognition.interimResults = true;   // show live transcript in input box

@@ -1944,7 +1944,9 @@
 
         let streamSpeakTextBuffer = '';
         let streamSpeakActive = false;
-        let streamSpeakQueue = [];
+        let ttsQueue = [];
+        let ttsQueueIndex = 0;
+        let ttsQueueActive = false;
 
         let lastUserQuery = '';
 
@@ -3226,11 +3228,13 @@
 
                                     // Initialize stream speaking if voice response is enabled
                                     const shouldSpeak = lastQueryWasVoice;
-                                    if (shouldSpeak && window.speechSynthesis) {
-                                        window.speechSynthesis.cancel();
+                                    if (shouldSpeak) {
+                                        stopVoice(true);
                                         streamSpeakActive = true;
                                         streamSpeakTextBuffer = '';
-                                        streamSpeakQueue = [];
+                                        ttsQueue = [];
+                                        ttsQueueIndex = 0;
+                                        ttsQueueActive = true;
                                     }
                                 }
                                 currentText += parsed.text;
@@ -3418,16 +3422,14 @@
                     // If streamSpeak was active, handle leftover buffer and cleanup
                     if (streamSpeakActive) {
                         if (streamSpeakTextBuffer.trim()) {
-                            queueStreamSentence(streamSpeakTextBuffer, detectedLanguage);
+                            let clean = ttsCleanText(streamSpeakTextBuffer).trim();
+                            if (clean) {
+                                pushToTtsQueue(clean, detectedLanguage);
+                            }
                             streamSpeakTextBuffer = '';
                         }
                         followUpModeActive = lastQueryWasVoice;
-                        setTimeout(() => {
-                            if (!window.speechSynthesis.speaking && streamSpeakActive) {
-                                streamSpeakActive = false;
-                                stopVoice();
-                            }
-                        }, 200);
+                        streamSpeakActive = false;
                     } else {
                         if (lastQueryWasVoice) {
                             followUpModeActive = true;
@@ -3815,7 +3817,7 @@
 
 
         function handleStreamSpeakToken(token, lang) {
-            if (!window.speechSynthesis || !streamSpeakActive) return;
+            if (!streamSpeakActive) return;
             streamSpeakTextBuffer += token;
             
             // Split by sentence end punctuation
@@ -3830,46 +3832,127 @@
                 streamSpeakTextBuffer = sentences[sentences.length - 1] || '';
                 
                 completed.forEach(s => {
-                    queueStreamSentence(s, lang);
+                    let clean = ttsCleanText(s).trim();
+                    if (clean) {
+                        pushToTtsQueue(clean, lang);
+                    }
                 });
             }
         }
 
-        function queueStreamSentence(sentence, lang) {
-            let clean = ttsCleanText(sentence).trim();
-            if (!clean) return;
-
-            const utterance = new SpeechSynthesisUtterance(clean);
-            utterance.lang = (lang === 'hi') ? 'hi-IN' : 'en-IN';
-            utterance.rate = 0.95;
-
-            utterance.onstart = () => {
-                if (!ttsActive) {
-                    ttsActive = true;
-                    ttsUpdateUI(true);
-                    startTtsStopListener();
-                }
+        function pushToTtsQueue(cleanText, lang) {
+            const langCode = (lang === 'hi') ? 'hi' : 'en';
+            const item = {
+                text: cleanText,
+                lang: lang,
+                status: 'pending',
+                audio: null,
+                abortController: new AbortController()
             };
-
-            utterance.onend = () => {
-                checkStreamSpeakFinished();
-            };
-            utterance.onerror = () => {
-                checkStreamSpeakFinished();
-            };
-
-            streamSpeakQueue.push(utterance);
-            window.speechSynthesis.speak(utterance);
+            ttsQueue.push(item);
+            fetchTtsItem(item, langCode);
         }
 
-        function checkStreamSpeakFinished() {
-            setTimeout(() => {
-                if (!window.speechSynthesis.speaking && streamSpeakActive) {
-                    streamSpeakActive = false;
-                    streamSpeakQueue = [];
-                    stopVoice();
+        function fetchTtsItem(item, langCode) {
+            item.status = 'fetching';
+            const ttsUrl = `${API.replace('/api/v1', '')}/api/v1/tts?lang=${langCode}&text=${encodeURIComponent(item.text)}`;
+            
+            fetch(ttsUrl, { signal: item.abortController.signal })
+                .then(res => {
+                    if (!res.ok) throw new Error(`TTS status: ${res.status}`);
+                    return res.blob();
+                })
+                .then(blob => {
+                    const audioUrl = URL.createObjectURL(blob);
+                    const audio = new Audio(audioUrl);
+                    item.audio = audio;
+                    item.status = 'ready';
+                    if (ttsQueueActive) {
+                        playTtsQueue();
+                    }
+                })
+                .catch(err => {
+                    if (err.name === 'AbortError') {
+                        console.log('[TTS] Fetch aborted for:', item.text);
+                        return;
+                    }
+                    console.warn('[TTS] Fetch error for:', item.text, err);
+                    item.status = 'error';
+                    if (ttsQueueActive) {
+                        playTtsQueue();
+                    }
+                });
+        }
+
+        function playTtsQueue() {
+            if (!ttsQueueActive) return;
+            
+            if (ttsQueueIndex >= ttsQueue.length) {
+                if (streamSpeakActive) {
+                    return;
                 }
-            }, 100);
+                stopVoice();
+                return;
+            }
+
+            const item = ttsQueue[ttsQueueIndex];
+            
+            if (item.status === 'ready') {
+                item.status = 'playing';
+                ttsQueueActive = true;
+                ttsActive = true;
+                ttsUpdateUI(true);
+                startTtsStopListener();
+                
+                const audio = item.audio;
+                audio.play()
+                    .then(() => {
+                        audio.onended = () => {
+                            URL.revokeObjectURL(audio.src);
+                            item.status = 'played';
+                            ttsQueueIndex++;
+                            playTtsQueue();
+                        };
+                    })
+                    .catch(e => {
+                        console.warn('[TTS] play() failed, trying browser synthesis fallback:', e);
+                        playBrowserSpeechFallback(item);
+                    });
+            } else if (item.status === 'error') {
+                console.warn('[TTS] Sentence fetch failed, trying browser synthesis fallback:', item.text);
+                playBrowserSpeechFallback(item);
+            } else if (item.status === 'fetching' || item.status === 'pending') {
+                console.log('[TTS] Waiting for sentence at index:', ttsQueueIndex);
+            }
+        }
+
+        function playBrowserSpeechFallback(item) {
+            if (window.speechSynthesis) {
+                item.status = 'playing';
+                ttsQueueActive = true;
+                ttsActive = true;
+                ttsUpdateUI(true);
+                startTtsStopListener();
+
+                const utterance = new SpeechSynthesisUtterance(item.text);
+                utterance.lang = (item.lang === 'hi') ? 'hi-IN' : 'en-IN';
+                utterance.rate = 0.95;
+                utterance.onend = () => {
+                    item.status = 'played';
+                    ttsQueueIndex++;
+                    playTtsQueue();
+                };
+                utterance.onerror = () => {
+                    item.status = 'played';
+                    ttsQueueIndex++;
+                    playTtsQueue();
+                };
+                window.speechSynthesis.speak(utterance);
+            } else {
+                item.status = 'played';
+                ttsQueueIndex++;
+                playTtsQueue();
+            }
         }
 
         function ttsUpdateUI(speaking) {
@@ -3913,15 +3996,26 @@
             if (isManual) {
                 followUpModeActive = false;
                 streamSpeakActive = false;
-                streamSpeakQueue = [];
             }
+            
+            ttsQueueActive = false;
+            
+            ttsQueue.forEach(item => {
+                if (item.abortController) {
+                    item.abortController.abort();
+                }
+                if (item.audio) {
+                    try {
+                        item.audio.pause();
+                        URL.revokeObjectURL(item.audio.src);
+                    } catch(e) {}
+                }
+            });
+            ttsQueue = [];
+            ttsQueueIndex = 0;
+
             if (window.speechSynthesis) window.speechSynthesis.cancel();
-            if (ttsAudio) {
-                try {
-                    ttsAudio.pause();
-                } catch(e) {}
-                ttsAudio = null;
-            }
+            
             // Stop the verbal stop listener
             stopTtsStopListener();
             
@@ -3939,81 +4033,47 @@
             }
         }
 
-        // Active HTML5 Audio object (for gTTS backend playback)
-        let ttsAudio = null;
-
         function speakText(markdownText, detectedLang, speakBtn) {
             const savedFollowUp = followUpModeActive;
-            // Stop any current speech and reset triggers
             stopVoice(true);
             followUpModeActive = savedFollowUp;
 
-            // Temporarily disable wake word detection during playback to prevent acoustic feedback loops
             stopWakeWord();
 
-            // Strip Markdown, URLs and HTML so TTS gets clean readable text
             let cleanText = ttsCleanText(markdownText);
             cleanText = cleanText.replace(/https?:\/\/\S+/g, '');  // remove bare URLs
             cleanText = cleanText.replace(/\s{2,}/g, ' ').trim();
             if (!cleanText) {
-                // If nothing to speak, restore wake-word
                 initWakeWord();
                 return;
             }
 
             ttsActiveSpeakBtn = speakBtn;
-            ttsUpdateUI(true);  // show speaking state immediately
-
-            // Start listening for verbal stop triggers ("stop", "ruko", "shant")
+            ttsUpdateUI(true);
             startTtsStopListener();
 
-            const langCode = (detectedLang === 'hi') ? 'hi' : 'en';
-            const ttsUrl = `${API.replace('/api/v1', '')}/api/v1/tts?lang=${langCode}&text=${encodeURIComponent(cleanText)}`;
+            // Split into sentences and push to queue
+            const sentences = cleanText.split(/([.?!।\n]+)/);
+            let tempBuffer = '';
+            for (let i = 0; i < sentences.length; i++) {
+                tempBuffer += sentences[i];
+                if (i % 2 === 1) {
+                    let clean = tempBuffer.trim();
+                    if (clean) {
+                        pushToTtsQueue(clean, detectedLang);
+                    }
+                    tempBuffer = '';
+                }
+            }
+            if (tempBuffer.trim()) {
+                let clean = tempBuffer.trim();
+                if (clean) {
+                    pushToTtsQueue(clean, detectedLang);
+                }
+            }
 
-            fetch(ttsUrl)
-                .then(res => {
-                    if (!res.ok) throw new Error(`TTS server error: ${res.status}`);
-                    return res.blob();
-                })
-                .then(blob => {
-                    // Check if voice play was cancelled or changed while fetching
-                    if (!ttsActive || ttsActiveSpeakBtn !== speakBtn) {
-                        return;
-                    }
-                    const audioUrl = URL.createObjectURL(blob);
-                    ttsAudio = new Audio(audioUrl);
-                    ttsAudio.onended = () => {
-                        URL.revokeObjectURL(audioUrl);
-                        ttsAudio = null;
-                        stopVoice();
-                    };
-                    ttsAudio.onerror = (e) => {
-                        console.warn('[TTS] Audio play error:', e);
-                        URL.revokeObjectURL(audioUrl);
-                        ttsAudio = null;
-                        stopVoice(true);
-                    };
-                    ttsAudio.play().catch(e => {
-                        console.warn('[TTS] play() rejected:', e);
-                        stopVoice(true);
-                    });
-                })
-                .catch(err => {
-                    console.warn('[TTS] Backend TTS failed, trying browser fallback:', err);
-                    // Fallback to browser SpeechSynthesis if backend unavailable
-                    if (window.speechSynthesis) {
-                        const utterance = new SpeechSynthesisUtterance(cleanText);
-                        utterance.lang = (detectedLang === 'hi') ? 'hi-IN' : 'en-IN';
-                        utterance.rate = 0.9;
-                        ttsActiveSpeakBtn = speakBtn;
-                        utterance.onstart = () => ttsUpdateUI(true);
-                        utterance.onend = () => stopVoice();
-                        utterance.onerror = () => stopVoice(true);
-                        window.speechSynthesis.speak(utterance);
-                    } else {
-                        stopVoice(true);
-                    }
-                });
+            ttsQueueActive = true;
+            playTtsQueue();
         }
 
         // ───────────────────────────────────────────────────

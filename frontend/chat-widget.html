@@ -3830,8 +3830,10 @@
         let ttsAudio = null;
 
         function speakText(markdownText, detectedLang, speakBtn) {
+            const savedFollowUp = followUpModeActive;
             // Stop any current speech and reset triggers
             stopVoice(true);
+            followUpModeActive = savedFollowUp;
 
             // Temporarily disable wake word detection during playback to prevent acoustic feedback loops
             stopWakeWord();

@@ -88,9 +88,9 @@
 
         /* ---------- CHAT WINDOW ---------- */
         #chatWindow {
-            width: 420px;
+            width: 400px;
             max-width: calc(100vw - 30px);
-            height: 590px;
+            height: 630px;
             max-height: calc(100vh - 110px);
             background: #fff;
             border-radius: 14px;
@@ -322,40 +322,32 @@
             flex-shrink: 0;
         }
 
-        /* ---------- ACTION BAR ---------- */
-        #actionBar {
-            background: #628ec8;
-            padding: 5px 14px;
+        /* ---------- HEADER ACTIONS ---------- */
+        .cg-header-actions {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 4px;
             flex-shrink: 0;
-            border-bottom: 1px solid rgba(0, 0, 0, .08);
-            user-select: none;
         }
 
-        .cg-ab-group {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .cg-ab-btn {
+        .cg-header-action-btn {
             background: none;
             border: none;
             cursor: pointer;
-            padding: 5px;
-            border-radius: 5px;
+            padding: 6px;
+            border-radius: 50%;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background .2s, transform 0.2s;
+            opacity: 0.85;
         }
 
-        .cg-ab-btn:hover {
-            background: rgba(255, 255, 255, .25);
+        .cg-header-action-btn:hover {
+            background: rgba(255, 255, 255, .18);
             transform: scale(1.05);
+            opacity: 1;
         }
 
         /* ---------- ROLE SELECTION SCREEN ---------- */
@@ -1588,17 +1580,46 @@
                                 onmouseleave="hideWelcomePopup()">🏛️</span>
                         </div>
                         <div class="cg-header-info">
-                            <span class="cg-header-title">eProcurement Assistant<span class="cg-powered-by"> (powered by
+                            <span class="cg-header-title">CG e-Procurement Assistant<span class="cg-powered-by"> (powered by
                                     AI)</span></span>
-                            <span class="cg-header-sub" id="headerSub">Select your role to begin</span>
+                            <span class="cg-header-sub" id="headerSub">Ask anything about procurement</span>
                         </div>
                     </div>
 
-                    <button class="cg-menu-btn" id="menuBtn" onclick="toggleMenu(event)" title="Menu">
-                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
-                        </svg>
-                    </button>
+                    <div class="cg-header-actions">
+                        <!-- About Assistant -->
+                        <button class="cg-header-action-btn" onclick="showInfo()" title="About Assistant">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                            </svg>
+                        </button>
+                        <!-- Reset Position -->
+                        <button class="cg-header-action-btn" onclick="resetPosition()" title="Reset Position">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
+                                <path
+                                    d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
+                            </svg>
+                        </button>
+                        <!-- Toggle Maximise -->
+                        <button class="cg-header-action-btn" onclick="toggleMaximise()" title="Toggle Maximise">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
+                                <path d="M4 4h16v16H4V4zm2 2v12h12V6H6z" />
+                            </svg>
+                        </button>
+                        <!-- Minimise -->
+                        <button class="cg-header-action-btn" onclick="minimiseChat()" title="Minimise">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
+                                <path d="M19 13H5v-2h14v2z" />
+                            </svg>
+                        </button>
+                        <!-- Menu Toggle -->
+                        <button class="cg-menu-btn" id="menuBtn" onclick="toggleMenu(event)" title="Menu">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+                            </svg>
+                        </button>
+                    </div>
 
                     <!-- Dropdown Menu -->
                     <div class="cg-dropdown" id="dropdownMenu">
@@ -1645,50 +1666,10 @@
                     </div>
                 </div>
 
-                <!-- ── ACTION BAR (quick access controls) ── -->
-                <div id="actionBar" class="hide-when-minimised">
-                    <div class="cg-ab-group">
-                        <!-- About Assistant -->
-                        <button class="cg-ab-btn" onclick="showInfo()" title="About Assistant">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
-                                <path
-                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="cg-ab-group" style="gap: 8px;">
-                        <!-- Reset Position -->
-                        <button class="cg-ab-btn" onclick="resetPosition()" title="Reset Position">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
-                                <path
-                                    d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
-                            </svg>
-                        </button>
-
-                        <!-- Toggle Maximise -->
-                        <button class="cg-ab-btn" onclick="toggleMaximise()" title="Toggle Maximise">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
-                                <path d="M4 4h16v16H4V4zm2 2v12h12V6H6z" />
-                            </svg>
-                        </button>
-
-                        <!-- Minimise -->
-                        <button class="cg-ab-btn" onclick="minimiseChat()" title="Minimise">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
-                                <path d="M19 13H5v-2h14v2z" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
                 <!-- Role selection removed — unified mode, auto-started on widget open -->
 
                 <!-- ── CHAT AREA (shown after role selected) ── -->
                 <div id="chatArea">
-                    <!-- Header label -->
-                    <div id="roleBadge" class="hide-when-minimised">
-                        <span class="badge-label">🏛️ <span class="badge-name" id="roleNameSpan">CG e-Procurement Assistant</span></span>
-                    </div>
 
                     <!-- Messages -->
                     <div id="chatMessages">
@@ -2757,7 +2738,8 @@
 
                 // Show chat area immediately (no role selection screen)
                 document.getElementById('chatArea').classList.add('active');
-                document.getElementById('roleNameSpan').textContent = 'CG e-Procurement Assistant';
+                const roleSpan = document.getElementById('roleNameSpan');
+                if (roleSpan) roleSpan.textContent = 'CG e-Procurement Assistant';
                 document.getElementById('headerSub').textContent = 'Ask anything about procurement';
 
                 // No welcome message in chat — content shown on logo hover tooltip
@@ -2782,7 +2764,6 @@
             const unifiedChips = [
                 'EMD refund process',
                 'Vendor registration steps',
-                'GFR Rule 170',
                 'Bid submission deadline',
                 'CVC compliance',
                 'निविदा में संशोधन'

@@ -3491,7 +3491,10 @@
         }
 
         function initWakeWord() {
-            if (wakeWordActive) return;
+            if (wakeWordActive && wakeWordRecognizer) {
+                startWakeWord();
+                return;
+            }
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SR) return;
 

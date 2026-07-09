@@ -172,7 +172,7 @@ class DocumentProcessor:
                     break
             
             if force_ocr_for_doc:
-                print(f"   ⚠️ Detected Kruti Dev/legacy Hindi font in {Path(pdf_path).name}. Forcing OCR to extract Unicode text...")
+                print(f"   [Warning] Detected Kruti Dev/legacy Hindi font in {Path(pdf_path).name}. Forcing OCR to extract Unicode text...")
             
             for page_num in range(len(doc)):
                 page = doc[page_num]
@@ -263,13 +263,13 @@ class DocumentProcessor:
         files = sorted(list(files))  # Convert back to sorted list
         
         if not files:
-            print(f"⚠️ No matching files found in {directory}")
+            print(f"   [Warning] No matching files found in {directory}")
             return []
         
-        print(f"📄 Found {len(files)} file(s) in {directory.name}")
+        print(f"   [Files] Found {len(files)} file(s) in {directory.name}")
         
         for file_path in files:
-            print(f"\n📑 Processing ({role}): {file_path.name}")
+            print(f"\n   [Processing] ({role}): {file_path.name}")
             
             ext = file_path.suffix.lower()
             if ext == '.pdf':
@@ -282,7 +282,7 @@ class DocumentProcessor:
                 text, force_ocr_for_doc = "", False
             
             if not text.strip():
-                print(f"   ⚠️ Warning: No text extracted from {file_path.name}")
+                print(f"   [Warning] No text extracted from {file_path.name}")
                 continue
             
             # Create document with role metadata
@@ -309,7 +309,7 @@ class DocumentProcessor:
                 is_hindi_doc = True
                 
             if is_hindi_doc:
-                print(f"   🌐 Document detected as Hindi. Translating {len(chunks)} chunks to English for vector indexing...")
+                print(f"   [Hindi Document] Document detected as Hindi. Translating {len(chunks)} chunks to English for vector indexing...")
                 
                 # Extract chunk texts
                 chunk_texts = [chunk.page_content for chunk in chunks]
@@ -334,9 +334,9 @@ class DocumentProcessor:
                     chunk.metadata["language"] = "hi"
             
             all_chunks.extend(chunks)
-            print(f"   ✅ Created {len(chunks)} chunks (Total chars: {len(text):,})")
+            print(f"   [Success] Created {len(chunks)} chunks (Total chars: {len(text):,})")
         
-        print(f"📊 TOTAL for {role}: {len(all_chunks)} chunks from {len(files)} files")
+        print(f"   [Total] TOTAL for {role}: {len(all_chunks)} chunks from {len(files)} files")
         return all_chunks
 
 if __name__ == "__main__":

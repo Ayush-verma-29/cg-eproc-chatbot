@@ -20,7 +20,7 @@ class BatchOllamaEmbeddings(Embeddings):
             return []
             
         embeddings_all = []
-        batch_size = 50  # Group into batches of 50 to optimize CPU utilization
+        batch_size = 15  # Optimize batch size to 15 to prevent CPU timeout with BGE-M3
         
         for i in range(0, len(texts), batch_size):
             batch = texts[i:i+batch_size]
@@ -62,7 +62,8 @@ class BatchOllamaEmbeddings(Embeddings):
                             res = json.loads(response.read().decode('utf-8'))
                             embeddings_all.append(res.get("embeddings", [])[0])
                     except Exception:
-                        embeddings_all.append([0.0] * 768)
+                        dim = 1024 if "bge-m3" in self.model.lower() else 768
+                        embeddings_all.append([0.0] * dim)
                     
         return embeddings_all
         
@@ -86,10 +87,12 @@ class BatchOllamaEmbeddings(Embeddings):
                 embeddings = res.get("embeddings", [])
                 if embeddings:
                     return embeddings[0]
-                return [0.0] * 768
+                dim = 1024 if "bge-m3" in self.model.lower() else 768
+                return [0.0] * dim
         except Exception as e:
             print(f"      Embedding query failed: {e}")
-            return [0.0] * 768
+            dim = 1024 if "bge-m3" in self.model.lower() else 768
+            return [0.0] * dim
 
 class VectorStoreManager:
     def __init__(self):

@@ -893,17 +893,24 @@ Hinglish:"""
         rules_found = self.extract_query_rule_numbers(combined_query_lower)
         for r_num in rules_found:
             search_queries.append(f"Rule {r_num}")
-            if query_lang == "hi":
-                search_queries.append(f"नियम {r_num}")
+            search_queries.append(f"नियम {r_num}")  # Always add Hindi rule keyword for bilingual search
             # Systematically map 1xx to 4xx for the OCR typo
             if len(r_num) == 3 and r_num.startswith('1'):
                 mapped_num = '4' + r_num[1:]
                 search_queries.append(f"Rule {mapped_num}")
-                if query_lang == "hi":
-                    search_queries.append(f"नियम {mapped_num}")
+                search_queries.append(f"नियम {mapped_num}")
                 
         if query_lang == "hi" and original_query:
             search_queries.append(original_query)
+        elif query_lang == "en":
+            # Translate English query to Hindi for matching Hindi-only documents (like Store Purchase Rules)
+            try:
+                translated_hi = language_service.translate_to_hindi(query)
+                if translated_hi and translated_hi != query:
+                    search_queries.append(translated_hi)
+                    print(f"   ℹ️ Added Hindi translation for cross-lingual search: {translated_hi}")
+            except Exception as e:
+                print(f"Failed to translate search query to Hindi: {e}")
             
         search_queries = list(dict.fromkeys(search_queries))
 

@@ -24,7 +24,7 @@ class Settings:
 
     # Ollama Configuration
     OLLAMA_BASE_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
-    EMBEDDING_MODEL = "nomic-embed-text"
+    EMBEDDING_MODEL = "bge-m3"
     LLM_MODEL = "mistral:latest"
     TRANSLATION_MODEL = "sarvam-cpu"
     

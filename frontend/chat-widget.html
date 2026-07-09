@@ -1600,7 +1600,7 @@
                     <!-- Input -->
                     <div id="inputArea" class="hide-when-minimised" style="position:relative;">
                         <!-- Floating stop-voice banner -->
-                        <div id="voiceStopBanner" onclick="stopVoice()" title="Stop voice">
+                        <div id="voiceStopBanner" onclick="stopVoice(true)" title="Stop voice">
                             <svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M6 6h12v12H6z"/></svg>
                             Stop Voice
                         </div>
@@ -1939,6 +1939,7 @@
         let streamTriggerActive = false;
         let streamVoiceRequested = false;
         let wakeWordTriggeredMicOpen = false;
+        let followUpModeActive = false;
 
         let lastUserQuery = '';
 
@@ -3394,9 +3395,10 @@
                     fbActions.appendChild(btnGroup);
                     bubble.appendChild(fbActions);
 
-                    // If user queried via voice, automatically speak the response
+                    // If user queried via voice, automatically speak the response and enable follow-up mode
                     if (lastQueryWasVoice) {
                         lastQueryWasVoice = false;
+                        followUpModeActive = true;
                         speakText(currentText, detectedLanguage, speakBtn);
                     }
                 }
@@ -3644,7 +3646,7 @@
         function toggleMic() {
             const btn = document.getElementById('micBtn');
             // Stop any active TTS so user can speak without interference
-            if (ttsActive) stopVoice();
+            if (ttsActive) stopVoice(true);
 
             if (micActive) {
                 micActive = false;
@@ -3780,7 +3782,26 @@
             }
         }
 
-        function stopVoice() {
+        function playFollowUpChime() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(659.25, ctx.currentTime); // E5
+                gain.gain.setValueAtTime(0.04, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.35);
+            } catch(e) {}
+        }
+
+        function stopVoice(isManual) {
+            if (isManual) {
+                followUpModeActive = false;
+            }
             if (window.speechSynthesis) window.speechSynthesis.cancel();
             if (ttsAudio) {
                 try {
@@ -3793,8 +3814,16 @@
             
             ttsUpdateUI(false);
 
-            // Resume hands-free wake word detection
-            initWakeWord();
+            if (followUpModeActive) {
+                followUpModeActive = false;
+                playFollowUpChime();
+                setTimeout(() => {
+                    if (!micActive) toggleMic();
+                }, 400);
+            } else {
+                // Resume hands-free wake word detection
+                initWakeWord();
+            }
         }
 
         // Active HTML5 Audio object (for gTTS backend playback)
@@ -3802,7 +3831,7 @@
 
         function speakText(markdownText, detectedLang, speakBtn) {
             // Stop any current speech and reset triggers
-            stopVoice();
+            stopVoice(true);
 
             // Temporarily disable wake word detection during playback to prevent acoustic feedback loops
             stopWakeWord();
@@ -3847,11 +3876,11 @@
                         console.warn('[TTS] Audio play error:', e);
                         URL.revokeObjectURL(audioUrl);
                         ttsAudio = null;
-                        stopVoice();
+                        stopVoice(true);
                     };
                     ttsAudio.play().catch(e => {
                         console.warn('[TTS] play() rejected:', e);
-                        stopVoice();
+                        stopVoice(true);
                     });
                 })
                 .catch(err => {
@@ -3864,10 +3893,10 @@
                         ttsActiveSpeakBtn = speakBtn;
                         utterance.onstart = () => ttsUpdateUI(true);
                         utterance.onend = () => stopVoice();
-                        utterance.onerror = () => stopVoice();
+                        utterance.onerror = () => stopVoice(true);
                         window.speechSynthesis.speak(utterance);
                     } else {
-                        stopVoice();
+                        stopVoice(true);
                     }
                 });
         }

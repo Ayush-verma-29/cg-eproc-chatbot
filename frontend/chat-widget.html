@@ -3604,9 +3604,9 @@
                     for (let i = e.resultIndex; i < e.results.length; i++) {
                         const text = e.results[i][0].transcript.toLowerCase();
                         console.log('[TtsStopListener] Heard:', text);
-                        if (text.includes('stop') || text.includes('chup') || text.includes('shant') || text.includes('शांत') || text.includes('चुप')) {
+                        if (text.includes('stop') || text.includes('ruko') || text.includes('shant') || text.includes('शांत') || text.includes('रुको')) {
                             console.log('[TtsStopListener] Stop word detected. Cancelling playback.');
-                            stopVoice();
+                            stopVoice(true);
                             break;
                         }
                     }
@@ -3849,7 +3849,7 @@
             ttsActiveSpeakBtn = speakBtn;
             ttsUpdateUI(true);  // show speaking state immediately
 
-            // Start listening for verbal stop triggers ("stop", "chup", "shant")
+            // Start listening for verbal stop triggers ("stop", "ruko", "shant")
             startTtsStopListener();
 
             const langCode = (detectedLang === 'hi') ? 'hi' : 'en';

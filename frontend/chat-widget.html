@@ -552,6 +552,20 @@
             font-size: 14px;
         }
 
+        /* ── Background Watermark Icon (when chat is active) ── */
+        #cgChatWatermark {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 160px;
+            color: #1e293b;
+            opacity: 0.05;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+        }
 
         #chatMessages::-webkit-scrollbar {
             width: 5px;
@@ -1696,6 +1710,8 @@
                                 <div><span>💼</span><span>GeM Portal &amp; MSME</span></div>
                             </div>
                         </div>
+                        <!-- Background watermark building icon -->
+                        <div id="cgChatWatermark">🏛️</div>
                     </div>
 
                     <!-- Typing indicator -->
@@ -2819,6 +2835,11 @@
             if (overlay) {
                 overlay.style.display = 'flex';
             }
+
+            const watermark = document.getElementById('cgChatWatermark');
+            if (watermark) {
+                watermark.style.display = 'none';
+            }
         }
 
         function saveChat() {
@@ -3033,6 +3054,12 @@
             const overlay = document.getElementById('cgStartOverlay');
             if (overlay) {
                 overlay.style.display = 'none';
+            }
+
+            // Show background watermark icon when chat starts
+            const watermark = document.getElementById('cgChatWatermark');
+            if (watermark) {
+                watermark.style.display = 'block';
             }
 
 

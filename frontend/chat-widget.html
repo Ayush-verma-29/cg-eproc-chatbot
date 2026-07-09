@@ -165,6 +165,68 @@
         .cg-header-logo {
             font-size: 20px;
             flex-shrink: 0;
+            cursor: default;
+        }
+
+        /* ── Welcome Tooltip ── */
+        .cg-logo-tooltip-wrap {
+            position: relative;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .cg-welcome-tooltip {
+            display: none;
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 0;
+            width: 300px;
+            background: #1a2744;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+            z-index: 9999;
+            color: #e8eef8;
+            font-size: 12.5px;
+            line-height: 1.6;
+            pointer-events: none;
+            animation: tooltipFadeIn 0.15s ease;
+        }
+
+        @keyframes tooltipFadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .cg-logo-tooltip-wrap:hover .cg-welcome-tooltip {
+            display: block;
+        }
+
+        .cg-welcome-tooltip .tt-title {
+            font-weight: 700;
+            font-size: 13.5px;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .cg-welcome-tooltip ul {
+            margin: 4px 0 8px 0;
+            padding-left: 16px;
+        }
+
+        .cg-welcome-tooltip ul li {
+            margin-bottom: 3px;
+            opacity: 0.9;
+        }
+
+        .cg-welcome-tooltip .tt-tip {
+            font-size: 11.5px;
+            opacity: 0.7;
+            margin-top: 6px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 6px;
         }
 
         .cg-header-info {
@@ -1448,7 +1510,21 @@
                 <!-- ── HEADER (draggable) ── -->
                 <div id="chatHeader">
                     <div class="cg-header-left">
-                        <span class="cg-header-logo">🏛️</span>
+                        <div class="cg-logo-tooltip-wrap">
+                            <span class="cg-header-logo">🏛️</span>
+                            <div class="cg-welcome-tooltip">
+                                <div class="tt-title">🏛️ CG e-Procurement Assistant</div>
+                                <div>I can help you with:</div>
+                                <ul>
+                                    <li>Vendor registration, DSC setup, bid submission</li>
+                                    <li>EMD, performance security &amp; tender participation</li>
+                                    <li>GFR 2017 rules &amp; procurement compliance</li>
+                                    <li>CVC guidelines, approvals &amp; corrigendum</li>
+                                    <li>GeM portal and MSME price preference</li>
+                                </ul>
+                                <div class="tt-tip">💡 Say <strong>"Hello Assistant"</strong> to speak hands-free, or <strong>"speak" / "bolo"</strong> to hear the answer.</div>
+                            </div>
+                        </div>
                         <div class="cg-header-info">
                             <span class="cg-header-title">eProcurement Assistant<span class="cg-powered-by"> (powered by
                                     AI)</span></span>
@@ -2593,13 +2669,8 @@
                 document.getElementById('roleNameSpan').textContent = 'CG e-Procurement Assistant';
                 document.getElementById('headerSub').textContent = 'Ask anything about procurement';
 
+                // No welcome message in chat — content shown on logo hover tooltip
                 renderChips();
-
-                const welcome = 'Namaste! 🏛️\n\nWelcome to the **CG e-Procurement Assistant**.\n\nI can help you with:\n- Vendor registration, DSC setup, bid submission\n- EMD, performance security, and tender participation\n- GFR 2017 rules and procurement compliance\n- CVC guidelines, approvals, and corrigendum\n- GeM portal and MSME price preference\n\nAsk your question in **English or Hindi**.\n\n💡 *Tip: Say **"Hello Assistant"** to speak hands-free, or say **"speak"** / **"bolo"** to hear the answer.*';
-
-                addMessage('assistant', welcome, null, null, false);
-                
-                // Initialize hands-free wake word detection
                 initWakeWord();
 
             } catch (err) {

@@ -1938,6 +1938,7 @@
         let streamTriggerRecognizer = null;
         let streamTriggerActive = false;
         let streamVoiceRequested = false;
+        let wakeWordTriggeredMicOpen = false;
 
         let lastUserQuery = '';
 
@@ -3462,12 +3463,8 @@
                         console.log('[WakeWord] Heard:', text);
                         if (text.includes('assistant') || text.includes('hello assistant') || text.includes('hey assistant')) {
                             console.log('[WakeWord] Triggered!');
-                            playWakeChime();
-                            lastQueryWasVoice = true;
-                            // Wait slightly for chime to finish then open mic
-                            setTimeout(() => {
-                                if (!micActive) toggleMic();
-                            }, 400);
+                            wakeWordTriggeredMicOpen = true;
+                            stopWakeWord();
                         }
                     }
                 };
@@ -3484,7 +3481,15 @@
                 };
 
                 wakeWordRecognizer.onend = () => {
-                    if (wakeWordActive) {
+                    if (wakeWordTriggeredMicOpen) {
+                        wakeWordTriggeredMicOpen = false;
+                        playWakeChime();
+                        lastQueryWasVoice = true;
+                        // Wait slightly for chime to finish then open mic
+                        setTimeout(() => {
+                            if (!micActive) toggleMic();
+                        }, 400);
+                    } else if (wakeWordActive) {
                         startWakeWord();
                     }
                 };

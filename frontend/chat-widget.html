@@ -1581,14 +1581,7 @@
                     <!-- Role badge -->
                     <div id="roleBadge" class="hide-when-minimised">
                         <span class="badge-label">Role: <span class="badge-name" id="roleNameSpan"></span></span>
-                        <div style="display:flex; align-items:center; gap: 8px;">
-                            <select id="voiceModeSelect" onchange="onVoiceModeChange(this.value)" style="font-size:11px; padding:2px 6px; border-radius:4px; border:1px solid #cbd5e1; background:white; color:#475569; outline:none; font-weight:600; cursor:pointer;" title="Voice Response Mode">
-                                <option value="auto">🎙️ Voice Queries</option>
-                                <option value="always">🔊 Always Speak</option>
-                                <option value="muted">🔇 Mute Voice</option>
-                            </select>
-                            <button class="cg-change-role-btn" onclick="resetRole()">Change Role</button>
-                        </div>
+                        <button class="cg-change-role-btn" onclick="resetRole()">Change Role</button>
                     </div>
 
                     <!-- Messages -->
@@ -1948,7 +1941,7 @@
         let wakeWordTriggeredMicOpen = false;
         let followUpModeActive = false;
 
-        let voiceResponseMode = localStorage.getItem('voiceResponseMode') || 'auto';
+
         let streamSpeakTextBuffer = '';
         let streamSpeakActive = false;
         let streamSpeakQueue = [];
@@ -2631,11 +2624,7 @@
                 document.getElementById('roleNameSpan').textContent = label;
                 document.getElementById('headerSub').textContent = 'Chatting as ' + label;
 
-                // Sync voice setting value in select UI
-                const selectEl = document.getElementById('voiceModeSelect');
-                if (selectEl) {
-                    selectEl.value = voiceResponseMode;
-                }
+
 
                 renderChips();
 
@@ -3236,7 +3225,7 @@
                                     startStreamTriggerListener();
 
                                     // Initialize stream speaking if voice response is enabled
-                                    const shouldSpeak = (voiceResponseMode === 'always') || (voiceResponseMode === 'auto' && lastQueryWasVoice);
+                                    const shouldSpeak = lastQueryWasVoice;
                                     if (shouldSpeak && window.speechSynthesis) {
                                         window.speechSynthesis.cancel();
                                         streamSpeakActive = true;
@@ -3432,6 +3421,7 @@
                             queueStreamSentence(streamSpeakTextBuffer, detectedLanguage);
                             streamSpeakTextBuffer = '';
                         }
+                        followUpModeActive = lastQueryWasVoice;
                         setTimeout(() => {
                             if (!window.speechSynthesis.speaking && streamSpeakActive) {
                                 streamSpeakActive = false;
@@ -3439,10 +3429,8 @@
                             }
                         }, 200);
                     } else {
-                        // Trigger voice response based on voiceResponseMode setting
-                        const shouldSpeak = (voiceResponseMode === 'always') || (voiceResponseMode === 'auto' && lastQueryWasVoice);
-                        if (shouldSpeak) {
-                            followUpModeActive = lastQueryWasVoice; // Only follow-up if asked via voice
+                        if (lastQueryWasVoice) {
+                            followUpModeActive = true;
                             speakText(currentText, detectedLanguage, speakBtn);
                         }
                     }
@@ -3497,10 +3485,6 @@
         }
 
         function initWakeWord() {
-            if (voiceResponseMode === 'muted') {
-                stopWakeWord();
-                return;
-            }
             if (wakeWordActive && wakeWordRecognizer) {
                 startWakeWord();
                 return;
@@ -3570,7 +3554,7 @@
         }
 
         function startWakeWord() {
-            if (voiceResponseMode === 'muted' || !wakeWordActive || !wakeWordRecognizer || micActive || ttsActive || streamLock) {
+            if (!wakeWordActive || !wakeWordRecognizer || micActive || ttsActive || streamLock) {
                 const badge = document.getElementById('wakeWordStatus');
                 if (badge) badge.style.display = 'none';
                 return;
@@ -3597,10 +3581,7 @@
         }
 
         function startStreamTriggerListener() {
-            if (voiceResponseMode === 'muted') {
-                stopStreamTriggerListener();
-                return;
-            }
+
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SR || streamTriggerActive) return;
 
@@ -3831,18 +3812,7 @@
             return v || null;
         }
 
-        function onVoiceModeChange(val) {
-            voiceResponseMode = val;
-            localStorage.setItem('voiceResponseMode', val);
-            console.log('[VoiceMode] Changed to:', val);
-            if (val === 'muted') {
-                stopVoice(true);
-                stopWakeWord();
-                stopStreamTriggerListener();
-            } else if (val === 'auto' || val === 'always') {
-                initWakeWord();
-            }
-        }
+
 
         function handleStreamSpeakToken(token, lang) {
             if (!window.speechSynthesis || !streamSpeakActive) return;

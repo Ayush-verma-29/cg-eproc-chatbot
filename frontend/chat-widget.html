@@ -494,7 +494,64 @@
             background: #f7f7f7;
             min-height: 0;
             scroll-behavior: smooth;
+            position: relative;
         }
+
+        /* ── Start Overlay Translucent Info ── */
+        #cgStartOverlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #1e293b;
+            opacity: 0.18;
+            pointer-events: none;
+            user-select: none;
+            z-index: 1;
+            font-family: inherit;
+        }
+
+        .cg-start-icon {
+            font-size: 52px;
+            margin-bottom: 8px;
+        }
+
+        .cg-start-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .cg-start-topics {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 12px;
+            text-align: left;
+            width: 100%;
+            max-width: 260px;
+            margin: 0 auto;
+        }
+
+        .cg-start-topics div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        
+        .cg-start-topics div span:first-child {
+            font-size: 14px;
+        }
+
 
         #chatMessages::-webkit-scrollbar {
             width: 5px;
@@ -1626,7 +1683,20 @@
                     </div>
 
                     <!-- Messages -->
-                    <div id="chatMessages"></div>
+                    <div id="chatMessages">
+                        <!-- Translucent background info in start space -->
+                        <div id="cgStartOverlay">
+                            <div class="cg-start-icon">🏛️</div>
+                            <div class="cg-start-title">CG e-Procurement</div>
+                            <div class="cg-start-topics">
+                                <div><span>⚡</span><span>Vendor Registration &amp; DSC</span></div>
+                                <div><span>📥</span><span>EMD &amp; Bid Submission</span></div>
+                                <div><span>📖</span><span>GFR 2017 Rules &amp; Compliance</span></div>
+                                <div><span>🛡️</span><span>CVC Guidelines</span></div>
+                                <div><span>💼</span><span>GeM Portal &amp; MSME</span></div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Typing indicator -->
                     <div id="typingIndicator" class="hide-when-minimised">
@@ -2742,8 +2812,13 @@
         // ───────────────────────────────────────────────────
         function clearChat() {
             closeMenu();
-            document.getElementById('chatMessages').innerHTML = '';
-            addMessage('assistant', 'Chat cleared. Ask me anything about e-procurement, vendor registration, GFR rules, or CVC compliance.', null, null, false);
+            const box = document.getElementById('chatMessages');
+            box.querySelectorAll('.cg-msg-row').forEach(row => row.remove());
+            
+            const overlay = document.getElementById('cgStartOverlay');
+            if (overlay) {
+                overlay.style.display = 'flex';
+            }
         }
 
         function saveChat() {
@@ -2953,6 +3028,13 @@
         // ───────────────────────────────────────────────────
         function addMessage(role, content, sources, ruleCitations, streamEffect, duration, sourceRefs) {
             const box = document.getElementById('chatMessages');
+
+            // Hide translucent start overlay info when first message is added
+            const overlay = document.getElementById('cgStartOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+
 
             const row = document.createElement('div');
             row.className = `cg-msg-row ${role}`;

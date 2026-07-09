@@ -2665,8 +2665,9 @@
             document.getElementById('langFooterTime').textContent = '';
             document.getElementById('chipsArea').innerHTML = '';
             
-            // Stop hands-free wake word detection
+            // Stop hands-free wake word detection and stream triggers
             stopWakeWord();
+            stopStreamTriggerListener();
         }
 
         function renderChips() {
@@ -3448,7 +3449,8 @@
                     lastQueryWasVoice = false;
                 }
 
-                // Restart background hands-free listener
+                // Stop stream trigger and restart background hands-free listener
+                stopStreamTriggerListener();
                 initWakeWord();
 
                 scrollToBottom();
@@ -3465,6 +3467,10 @@
                 document.getElementById('langFooterText').style.fontStyle = 'normal';
                 document.getElementById('langFooterTime').textContent = '';
                 console.error(err);
+                
+                // Stop stream trigger and restart background hands-free listener on error
+                stopStreamTriggerListener();
+                initWakeWord();
             }
         }
 
@@ -3491,6 +3497,10 @@
         }
 
         function initWakeWord() {
+            if (voiceResponseMode === 'muted') {
+                stopWakeWord();
+                return;
+            }
             if (wakeWordActive && wakeWordRecognizer) {
                 startWakeWord();
                 return;
@@ -3560,7 +3570,7 @@
         }
 
         function startWakeWord() {
-            if (!wakeWordActive || !wakeWordRecognizer || micActive || ttsActive || streamLock) {
+            if (voiceResponseMode === 'muted' || !wakeWordActive || !wakeWordRecognizer || micActive || ttsActive || streamLock) {
                 const badge = document.getElementById('wakeWordStatus');
                 if (badge) badge.style.display = 'none';
                 return;
@@ -3587,6 +3597,10 @@
         }
 
         function startStreamTriggerListener() {
+            if (voiceResponseMode === 'muted') {
+                stopStreamTriggerListener();
+                return;
+            }
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SR || streamTriggerActive) return;
 
@@ -3823,6 +3837,8 @@
             console.log('[VoiceMode] Changed to:', val);
             if (val === 'muted') {
                 stopVoice(true);
+                stopWakeWord();
+                stopStreamTriggerListener();
             } else if (val === 'auto' || val === 'always') {
                 initWakeWord();
             }

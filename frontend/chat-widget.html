@@ -1581,7 +1581,14 @@
                     <!-- Role badge -->
                     <div id="roleBadge" class="hide-when-minimised">
                         <span class="badge-label">Role: <span class="badge-name" id="roleNameSpan"></span></span>
-                        <button class="cg-change-role-btn" onclick="resetRole()">Change Role</button>
+                        <div style="display:flex; align-items:center; gap: 8px;">
+                            <select id="voiceModeSelect" onchange="onVoiceModeChange(this.value)" style="font-size:11px; padding:2px 6px; border-radius:4px; border:1px solid #cbd5e1; background:white; color:#475569; outline:none; font-weight:600; cursor:pointer;" title="Voice Response Mode">
+                                <option value="auto">🎙️ Voice Queries</option>
+                                <option value="always">🔊 Always Speak</option>
+                                <option value="muted">🔇 Mute Voice</option>
+                            </select>
+                            <button class="cg-change-role-btn" onclick="resetRole()">Change Role</button>
+                        </div>
                     </div>
 
                     <!-- Messages -->
@@ -1940,6 +1947,11 @@
         let streamVoiceRequested = false;
         let wakeWordTriggeredMicOpen = false;
         let followUpModeActive = false;
+
+        let voiceResponseMode = localStorage.getItem('voiceResponseMode') || 'auto';
+        let streamSpeakTextBuffer = '';
+        let streamSpeakActive = false;
+        let streamSpeakQueue = [];
 
         let lastUserQuery = '';
 
@@ -2619,6 +2631,12 @@
                 document.getElementById('roleNameSpan').textContent = label;
                 document.getElementById('headerSub').textContent = 'Chatting as ' + label;
 
+                // Sync voice setting value in select UI
+                const selectEl = document.getElementById('voiceModeSelect');
+                if (selectEl) {
+                    selectEl.value = voiceResponseMode;
+                }
+
                 renderChips();
 
                 const welcome = role === 'vendor'
@@ -3215,8 +3233,20 @@
                                     stopWakeWord();
                                     streamVoiceRequested = false;
                                     startStreamTriggerListener();
+
+                                    // Initialize stream speaking if voice response is enabled
+                                    const shouldSpeak = (voiceResponseMode === 'always') || (voiceResponseMode === 'auto' && lastQueryWasVoice);
+                                    if (shouldSpeak && window.speechSynthesis) {
+                                        window.speechSynthesis.cancel();
+                                        streamSpeakActive = true;
+                                        streamSpeakTextBuffer = '';
+                                        streamSpeakQueue = [];
+                                    }
                                 }
                                 currentText += parsed.text;
+                                if (streamSpeakActive) {
+                                    handleStreamSpeakToken(parsed.text, detectedLanguage);
+                                }
                                 bubble.innerHTML = parseMarkdownToHtml(currentText);
                                 scrollToBottom();
                             } else if (parsed.type === 'replace') {
@@ -3395,12 +3425,27 @@
                     fbActions.appendChild(btnGroup);
                     bubble.appendChild(fbActions);
 
-                    // If user queried via voice, automatically speak the response and enable follow-up mode
-                    if (lastQueryWasVoice) {
-                        lastQueryWasVoice = false;
-                        followUpModeActive = true;
-                        speakText(currentText, detectedLanguage, speakBtn);
+                    // If streamSpeak was active, handle leftover buffer and cleanup
+                    if (streamSpeakActive) {
+                        if (streamSpeakTextBuffer.trim()) {
+                            queueStreamSentence(streamSpeakTextBuffer, detectedLanguage);
+                            streamSpeakTextBuffer = '';
+                        }
+                        setTimeout(() => {
+                            if (!window.speechSynthesis.speaking && streamSpeakActive) {
+                                streamSpeakActive = false;
+                                stopVoice();
+                            }
+                        }, 200);
+                    } else {
+                        // Trigger voice response based on voiceResponseMode setting
+                        const shouldSpeak = (voiceResponseMode === 'always') || (voiceResponseMode === 'auto' && lastQueryWasVoice);
+                        if (shouldSpeak) {
+                            followUpModeActive = lastQueryWasVoice; // Only follow-up if asked via voice
+                            speakText(currentText, detectedLanguage, speakBtn);
+                        }
                     }
+                    lastQueryWasVoice = false;
                 }
 
                 // Restart background hands-free listener
@@ -3761,6 +3806,75 @@
             return v || null;
         }
 
+        function onVoiceModeChange(val) {
+            voiceResponseMode = val;
+            localStorage.setItem('voiceResponseMode', val);
+            console.log('[VoiceMode] Changed to:', val);
+            if (val === 'muted') {
+                stopVoice(true);
+            } else if (val === 'auto' || val === 'always') {
+                initWakeWord();
+            }
+        }
+
+        function handleStreamSpeakToken(token, lang) {
+            if (!window.speechSynthesis || !streamSpeakActive) return;
+            streamSpeakTextBuffer += token;
+            
+            // Split by sentence end punctuation
+            const sentences = streamSpeakTextBuffer.split(/([.?!।\n]+)/);
+            if (sentences.length > 2) {
+                let completed = [];
+                let i = 0;
+                while (i < sentences.length - 1) {
+                    completed.push(sentences[i] + (sentences[i+1] || ''));
+                    i += 2;
+                }
+                streamSpeakTextBuffer = sentences[sentences.length - 1] || '';
+                
+                completed.forEach(s => {
+                    queueStreamSentence(s, lang);
+                });
+            }
+        }
+
+        function queueStreamSentence(sentence, lang) {
+            let clean = ttsCleanText(sentence).trim();
+            if (!clean) return;
+
+            const utterance = new SpeechSynthesisUtterance(clean);
+            utterance.lang = (lang === 'hi') ? 'hi-IN' : 'en-IN';
+            utterance.rate = 0.95;
+
+            utterance.onstart = () => {
+                if (!ttsActive) {
+                    ttsActive = true;
+                    ttsUpdateUI(true);
+                    startTtsStopListener();
+                }
+            };
+
+            utterance.onend = () => {
+                checkStreamSpeakFinished();
+            };
+            utterance.onerror = () => {
+                checkStreamSpeakFinished();
+            };
+
+            streamSpeakQueue.push(utterance);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function checkStreamSpeakFinished() {
+            setTimeout(() => {
+                if (!window.speechSynthesis.speaking && streamSpeakActive) {
+                    streamSpeakActive = false;
+                    streamSpeakQueue = [];
+                    stopVoice();
+                }
+            }, 100);
+        }
+
         function ttsUpdateUI(speaking) {
             ttsActive = speaking;
             const banner = document.getElementById('voiceStopBanner');
@@ -3801,6 +3915,8 @@
         function stopVoice(isManual) {
             if (isManual) {
                 followUpModeActive = false;
+                streamSpeakActive = false;
+                streamSpeakQueue = [];
             }
             if (window.speechSynthesis) window.speechSynthesis.cancel();
             if (ttsAudio) {

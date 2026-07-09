@@ -3845,6 +3845,13 @@
             stopWakeWord();
             isAwaitingLanguagePreference = true;
 
+            // Auto-open chat window so user sees the visual instructions
+            openChat();
+
+            // Display visual choice prompt in chat box
+            addMessage('assistant', '🗣️ **Voice Language Selection / भाषा चयन**\n\nI heard "Hello Assistant". Please say:\n- **"English"** / **"अंग्रेजी"**\n- **"Hindi"** / **"हिंदी"**', null, null, false);
+            requestAnimationFrame(() => scrollToBottom(true));
+
             // Make the visual mic button pulsate red like it is getting ready to listen
             const btn = document.getElementById('micBtn');
             if (btn) {
@@ -3944,6 +3951,10 @@
             const confirmationText = lang.startsWith('hi') 
                 ? "हिंदी चुनी गई। मैं आपकी क्या मदद कर सकता हूँ?" 
                 : "English selected. How can I help you?";
+
+            // Display visual confirmation message in chat box
+            addMessage('assistant', confirmationText, null, null, false);
+            requestAnimationFrame(() => scrollToBottom(true));
 
             const utter = new SpeechSynthesisUtterance(confirmationText);
             utter.lang = lang;

@@ -81,12 +81,18 @@ _GREETING_PATTERNS = re.compile(
 _DOMAIN_KEYWORDS = re.compile(
     # ── Core procurement terms ──────────────────────────────────────────────
     r'tender|bid|bidder|bidding|vendor|supplier|procurement|purchase|buying|'
-    r'emd|gfr|gem|dsc|portal|contract|contractor|subcontract|'
+    r'emd|e\.?m\.?d\.?|\u0908\u090f\u092e\u0921\u0940|\u090f\u092e\u0921\u0940|\u0907\u090f\u092e\u0921\u0940|\u090f\s*\u092e\u0921\u0940|'
+    r'gfr|g\.?f\.?r\.?|\u091c\u0940\u090f\u092b\u0906\u0930|'
+    r'gem|g\.?e\.?m\.?|\u091c\u0947\u092e|\u091c\u0940\u0908\u090f\u092e|'
+    r'dsc|d\.?s\.?c\.?|\u0921\u0940\u090f\u0938\u094d\u0938\u0940|\u0921\u0940\s*\u0938\s*\u0938\u0940|'
+    r'cvc|c\.?v\.?c\.?|\u0938\u0940\u0935\u0940\u0938\u0940|\u0938\u0940\s*\u0935\u0940\s*\u0938\u0940|'
+    r'portal|contract|contractor|subcontract|'
     r'register|registration|enroll|enrolment|empanel|empanelment|'
     r'document|certificate|clause|rule|section|chapter|manual|act|statute|'
     r'payment|challan|bank|guarantee|msme|mse|startup|'
     r'corrigendum|addendum|amendment|auction|'
-    r'l1|l2|l3|fee|refund|forfeit|earnest|security|deposit|'
+    r'l1|l2|l3|l-1|l-2|l-3|\u090f\u0932\u0967|\u090f\u0932\u0968|\u090f\u0932\u0969|\u090f\u0932-\u0967|\u090f\u0932-\u0968|\u090f\u0932-\u0969|'
+    r'fee|refund|forfeit|earnest|security|deposit|'
 
     # ── Tender types & processes ─────────────────────────────────────────────
     r'open.?tender|limited.?tender|single.?tender|global.?tender|'

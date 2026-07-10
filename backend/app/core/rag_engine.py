@@ -31,7 +31,22 @@ TOPIC_KEYWORDS = {
     "service_procurement": ["service procurement", "consulting services", "outsourcing", "service", "procurement of services"],
     "msme": ["msme", "mse", "micro and small", "price preference", "l1+15", "l-1"],
     "faq": ["faq", "frequently asked questions", "questions"],
-    "store_purchase_rules": ["store purchase", "store purchase rule", "cg store", "bhandar kray", "bhandar", "cg rules", "cg rule", "chhattisgarh", "छत्तीसगढ़", "भंडार क्रय", "projector", "laptop", "ac", "air conditioner", "goods", "items", "furniture", "computer", "printer"],
+    "store_purchase_rules": [
+        # Explicit CG document terms
+        "store purchase", "store purchase rule", "cg store", "bhandar kray", "bhandar",
+        "cg rules", "cg rule", "chhattisgarh", "छत्तीसगढ़", "भंडार क्रय",
+        # General goods/items purchased by government
+        "projector", "laptop", "ac", "air conditioner", "goods", "items", "furniture",
+        "computer", "printer", "vehicle", "equipment",
+        # General procurement procedure terms — ensures CG rules are always retrieved
+        "procurement", "purchase", "tender", "limit", "threshold", "committee",
+        "limited tender", "open tender", "single tender", "direct purchase",
+        "emd", "earnest money", "emand", "bid security",
+        "local purchase", "lpc", "lpc committee", "rate contract",
+        "repeat order", "inspection", "payment", "penalty", "preference",
+        "msme", "startup", "sc st", "obc", "handicraft", "handloom",
+        "क्रय", "खरीद", "निविदा", "सीमा", "समिति", "भुगतान", "जुर्माना",
+    ],
 }
 
 TOPIC_BOOSTS = {
@@ -46,7 +61,7 @@ TOPIC_BOOSTS = {
     "service_procurement": 12,
     "msme": 15,
     "faq": 8,
-    "store_purchase_rules": 25,
+    "store_purchase_rules": 50,  # Highest priority — state-specific rules for CG e-Procurement
 }
 
 COMMON_QUERY_NORMALIZATIONS = {
@@ -638,7 +653,16 @@ Hinglish:"""
         orig_hindi = (metadata or {}).get("original_hindi", "") if metadata else ""
         doc_lower = f"{doc_text} {orig_hindi}".lower()
 
-        # Language-based source prioritization (Option A) - Refined to target parallel GFR documents
+        # ── Universal Chhattisgarh State Document Priority ─────────────────────
+        # This is a STATE e-Procurement portal. The CG Store Purchase Rules document
+        # is the PRIMARY authority for ALL procurement questions in this system.
+        # It must ALWAYS rank above central GFR rules for state-level procurement.
+        CG_STATE_FILENAME = "store purchase rule cg hindi"
+        if CG_STATE_FILENAME in source.lower():
+            score += 60.0  # Universal boost — state rules always take highest priority
+            print(f"   [CG State Priority] +60 boost applied to '{source}'")
+
+        # Language-based source prioritization — Refined to target parallel GFR documents
         is_gfr_source = "gfr" in source.lower()
         if is_gfr_source:
             is_hindi_source = "hindi" in source.lower()

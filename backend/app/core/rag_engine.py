@@ -31,6 +31,7 @@ TOPIC_KEYWORDS = {
     "service_procurement": ["service procurement", "consulting services", "outsourcing", "service", "procurement of services"],
     "msme": ["msme", "mse", "micro and small", "price preference", "l1+15", "l-1"],
     "faq": ["faq", "frequently asked questions", "questions"],
+    "store_purchase_rules": ["store purchase", "store purchase rule", "cg store", "bhandar kray", "bhandar", "cg rules", "cg rule", "chhattisgarh", "छत्तीसगढ़", "भंडार क्रय", "projector", "laptop", "ac", "air conditioner", "goods", "items", "furniture", "computer", "printer"],
 }
 
 TOPIC_BOOSTS = {
@@ -45,6 +46,7 @@ TOPIC_BOOSTS = {
     "service_procurement": 12,
     "msme": 15,
     "faq": 8,
+    "store_purchase_rules": 25,
 }
 
 COMMON_QUERY_NORMALIZATIONS = {
@@ -767,10 +769,12 @@ Hinglish:"""
                 
         # Purchase methods semantic boost
         if any(w in combined_queries for w in ["method", "mode", "purchase", "purchasing", "तरीके", "क्रय", "विधि", "purchas", "procure"]):
-            if any(w in doc_lower for w in ["rule 149", "rule 154", "rule 155", "rule 161", "rule 162", "rule 166", "single tender", "limited tender", "advertised tender", "local purchase committee"]):
+            if any(w in doc_lower for w in ["rule 149", "rule 154", "rule 155", "rule 161", "rule 162", "rule 166", "single tender", "limited tender", "advertised tender", "local purchase committee", "store purchase", "bhandar", "भंडार"]):
                 score += 25.0  # Massive boost for rule chunks!
                 if "gfr" in source.lower():
                     score += 40.0
+                if "store purchase" in source.lower() or "cg hindi" in source.lower():
+                    score += 50.0  # Higher boost for local Chhattisgarh Store Purchase Rules!
             elif any(w in doc_lower for w in ["method", "mode", "purchase", "purchasing", "तरीके", "क्रय", "विधि"]):
                 score += 10.0
                 
@@ -888,6 +892,9 @@ Hinglish:"""
                 search_queries.append("MSME MSE Price Preference L1 15%")
             elif topic == "faq":
                 search_queries.append("FAQ Frequently Asked Questions")
+            elif topic == "store_purchase_rules":
+                search_queries.append("Chhattisgarh Store Purchase Rules छत्तीसगढ़ भंडार क्रय नियम")
+                search_queries.append("भंडार क्रय नियम नियम 4")
 
         # Parse all rule numbers in the query and add targeted search queries
         rules_found = self.extract_query_rule_numbers(combined_query_lower)
@@ -937,8 +944,8 @@ Hinglish:"""
                             chunk_key = f"{db_label}::{doc.metadata.get('chunk_id', content_snippet)}"
                             
                             if chunk_key not in seen_chunks:
-                                # Allow up to 3 chunks per source, or 25 if GFR rules document, to prevent domination while allowing depth
-                                max_source_chunks = 25 if "gfr" in source.lower() else 3
+                                # Allow up to 3 chunks per source, or 25 if GFR/Store Purchase rules document, to prevent domination while allowing depth
+                                max_source_chunks = 25 if any(x in source.lower() for x in ["gfr", "store purchase", "cg hindi"]) else 3
                                 if source_counts.get(source, 0) < max_source_chunks:
                                     seen_chunks.add(chunk_key)
                                     source_counts[source] = source_counts.get(source, 0) + 1

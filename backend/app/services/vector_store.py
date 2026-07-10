@@ -220,18 +220,19 @@ class QdrantVectorStore:
     def similarity_search_by_vector(self, query_vector: List[float], k: int = 4) -> List[Document]:
         client = QdrantClient(path=self.path)
         try:
-            search_result = client.search(
+            search_result = client.query_points(
                 collection_name=self.collection_name,
-                query_vector=query_vector,
+                query=query_vector,
                 limit=k
             )
+            hits = search_result.points
         except Exception:
-            search_result = []
+            hits = []
         finally:
             client.close()
         
         docs = []
-        for hit in search_result:
+        for hit in hits:
             payload = hit.payload or {}
             docs.append(Document(
                 page_content=payload.get("page_content", ""),
@@ -261,7 +262,7 @@ class QdrantVectorStore:
 
 class VectorStoreManager:
     def __init__(self):
-        print("🔧 Initializing Vector Store Manager (with Qdrant DB)...")
+        print("[Init] Initializing Vector Store Manager (with Qdrant DB)...")
         self.embeddings = BatchOllamaEmbeddings(
             base_url=settings.OLLAMA_BASE_URL,
             model=settings.EMBEDDING_MODEL
@@ -338,14 +339,14 @@ class VectorStoreManager:
     def delete_all_collections(self):
         try:
             self.get_vendor_store().delete_collection()
-            print("🗑️ Vendor collection deleted programmatically")
+            print("[Success] Vendor collection deleted programmatically")
         except Exception as e:
-            print(f"⚠️ Error deleting vendor collection: {e}")
+            print(f"[Warning] Error deleting vendor collection: {e}")
         try:
             self.get_govt_store().delete_collection()
-            print("🗑️ Govt collection deleted programmatically")
+            print("[Success] Govt collection deleted programmatically")
         except Exception as e:
-            print(f"⚠️ Error deleting govt collection: {e}")
+            print(f"[Warning] Error deleting govt collection: {e}")
         self.vendor_store = None
         self.govt_store = None
-        print("🗑️ Both collections cleared")
+        print("[Success] Both collections cleared")

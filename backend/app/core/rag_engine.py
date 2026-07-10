@@ -226,8 +226,12 @@ def _check_intent(question: str, detected_lang: str) -> Optional[str]:
         return _GREETING_RESPONSE_HI if detected_lang == "hi" else _GREETING_RESPONSE_EN
 
     # ── Buying intent follow-up validation ──────────────────────────────────
+    is_general_question = re.search(
+        r'\b(?:what|which|who|whom|when|why|where|how\s+many|how\s+much|limit|rate|percentage|exempt|timeline|difference|penalty|recommendation|binding|hours|days|rule|clause|नियम|प्रतिशत|पेनाल्टी|जुर्माना|समय|घंटे|दिन|अंतर|सीमा|अमानत)\b',
+        stripped, re.I
+    )
     buying_match = re.search(r'\b(?:buy|purchase|procure|order|acquire|खरीद|क्रय|लेना|सामग्री)\b', stripped, re.I)
-    if buying_match:
+    if buying_match and not is_general_question:
         # Check if the query already has both quantity and price/value details
         has_price_details = any(term in stripped.lower() for term in ["rs", "rupee", "lakh", "thousand", "budget", "cost", "रुपए", "लाख", "हजार", "बजट", "कीमत"]) or re.search(r'\b\d+\b', stripped)
         has_qty_details = any(term in stripped.lower() for term in ["quantity", "qty", "units", "pieces", "laptops", "projectors", "computers", "मात्रा", "पीस", "इकाई"]) or re.search(r'\b\d+\b', stripped)

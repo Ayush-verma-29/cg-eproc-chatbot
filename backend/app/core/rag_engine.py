@@ -1188,6 +1188,19 @@ Hinglish:"""
     def get_query_sources(self, query: str, role: str, detected_lang: str) -> Dict:
         """Helper to retrieve vector DB sources and rule citations for a query, to show promising references on overrides."""
         try:
+            # If it matches an override, bypass slow translation and vector DB search entirely
+            if self.get_override_answer(query, role) is not None:
+                return {
+                    "sources": ["store purchase rule cg hindi.pdf"],
+                    "source_refs": [{
+                        "file": "store purchase rule cg hindi.pdf",
+                        "pages": [1],
+                        "url": "/docs/govt/store purchase rule cg hindi.pdf#page=1",
+                        "category": "govt"
+                    }],
+                    "rule_citations": ["Rule 3", "Rule 4", "Rule 11", "Rule 13"]
+                }
+
             if detected_lang == "hi":
                 english_query = language_service.translate_to_english(query)
             else:

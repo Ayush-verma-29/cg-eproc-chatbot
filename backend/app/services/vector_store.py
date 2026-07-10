@@ -17,56 +17,96 @@ class BatchOllamaEmbeddings(Embeddings):
         self.model = model
         
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
-        """Embed a list of documents using Ollama's batch API (9x faster)."""
+        """Embed a list of documents using Ollama's batch API (9x faster) with local caching."""
         if not texts:
             return []
             
-        embeddings_all = []
-        batch_size = 15  # Optimize batch size to 15 to prevent CPU timeout with BGE-M3
-        
-        for i in range(0, len(texts), batch_size):
-            batch = texts[i:i+batch_size]
-            prefixed_batch = [f"search_document: {t}" for t in batch]
-            url = f"{self.base_url}/api/embed"
-            payload = {
-                "model": self.model,
-                "input": prefixed_batch
-            }
+        # Load local embedding cache
+        cache_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "scratch", "embedding_cache.json")
+        cache = {}
+        if os.path.exists(cache_path):
             try:
-                data = json.dumps(payload).encode('utf-8')
-                req = urllib.request.Request(
-                    url,
-                    data=data,
-                    headers={'Content-Type': 'application/json'},
-                    method='POST'
-                )
-                with urllib.request.urlopen(req, timeout=60) as response:
-                    res = json.loads(response.read().decode('utf-8'))
-                    embeddings = res.get("embeddings", [])
-                    embeddings_all.extend(embeddings)
+                with open(cache_path, "r", encoding="utf-8") as f:
+                    cache = json.load(f)
             except Exception as e:
-                print(f"      Batch embedding failed: {e}. Falling back to sequential.")
-                for text in batch:
-                    url = f"{self.base_url}/api/embed"
-                    payload = {
-                        "model": self.model,
-                        "input": [f"search_document: {text}"]
-                    }
-                    try:
-                        data = json.dumps(payload).encode('utf-8')
-                        req = urllib.request.Request(
-                            url,
-                            data=data,
-                            headers={'Content-Type': 'application/json'},
-                            method='POST'
-                        )
-                        with urllib.request.urlopen(req, timeout=30) as response:
-                            res = json.loads(response.read().decode('utf-8'))
-                            embeddings_all.append(res.get("embeddings", [])[0])
-                    except Exception:
-                        dim = 1024 if "bge-m3" in self.model.lower() else 768
-                        embeddings_all.append([0.0] * dim)
-                    
+                print(f"Error loading embedding cache: {e}")
+
+        # Check which texts can be retrieved from cache
+        embeddings_all = [None] * len(texts)
+        missing_indices = []
+        missing_texts = []
+        
+        for idx, text in enumerate(texts):
+            if text in cache:
+                embeddings_all[idx] = cache[text]
+            else:
+                missing_indices.append(idx)
+                missing_texts.append(text)
+                
+        if missing_texts:
+            print(f"   [Embedding Cache] Cache hit: {len(texts) - len(missing_texts)}/{len(texts)}. Generating {len(missing_texts)} new embeddings...")
+            
+            # Embed missing texts in batches of 15
+            batch_size = 15
+            new_embeddings = []
+            
+            for i in range(0, len(missing_texts), batch_size):
+                batch = missing_texts[i:i+batch_size]
+                prefixed_batch = [f"search_document: {t}" for t in batch]
+                url = f"{self.base_url}/api/embed"
+                payload = {
+                    "model": self.model,
+                    "input": prefixed_batch
+                }
+                try:
+                    data = json.dumps(payload).encode('utf-8')
+                    req = urllib.request.Request(
+                        url,
+                        data=data,
+                        headers={'Content-Type': 'application/json'},
+                        method='POST'
+                    )
+                    with urllib.request.urlopen(req, timeout=60) as response:
+                        res = json.loads(response.read().decode('utf-8'))
+                        embeddings = res.get("embeddings", [])
+                        new_embeddings.extend(embeddings)
+                except Exception as e:
+                    print(f"      Batch embedding failed: {e}. Falling back to sequential.")
+                    for text in batch:
+                        url = f"{self.base_url}/api/embed"
+                        payload = {
+                            "model": self.model,
+                            "input": [f"search_document: {text}"]
+                        }
+                        try:
+                            data = json.dumps(payload).encode('utf-8')
+                            req = urllib.request.Request(
+                                url,
+                                data=data,
+                                headers={'Content-Type': 'application/json'},
+                                method='POST'
+                            )
+                            with urllib.request.urlopen(req, timeout=30) as response:
+                                res = json.loads(response.read().decode('utf-8'))
+                                new_embeddings.append(res.get("embeddings", [])[0])
+                        except Exception:
+                            dim = 1024 if "bge-m3" in self.model.lower() else 768
+                            new_embeddings.append([0.0] * dim)
+
+            # Assign new embeddings back to correct indices
+            for idx, emb in zip(missing_indices, new_embeddings):
+                embeddings_all[idx] = emb
+                # Update cache
+                cache[texts[idx]] = emb
+                
+            # Save updated cache
+            try:
+                os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+                with open(cache_path, "w", encoding="utf-8") as f:
+                    json.dump(cache, f)
+            except Exception as e:
+                print(f"Error saving embedding cache: {e}")
+                
         return embeddings_all
         
     def embed_query(self, text: str) -> List[float]:

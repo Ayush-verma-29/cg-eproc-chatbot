@@ -82,7 +82,7 @@ _GREETING_PATTERNS = re.compile(
 # Procurement-domain keywords — if NONE of these are present the query is off-topic
 _DOMAIN_KEYWORDS = re.compile(
     # ── Core procurement terms ──────────────────────────────────────────────
-    r'tender|bid|bidder|bidding|vendor|supplier|procurement|purchase|buying|'
+    r'tender|bid|bidder|bidding|vendor|supplier|procurement|purchase|buying|buy|'
     r'emd|e\.?m\.?d\.?|\u0908\u090f\u092e\u0921\u0940|\u090f\u092e\u0921\u0940|\u0907\u090f\u092e\u0921\u0940|\u090f\s*\u092e\u0921\u0940|'
     r'gfr|g\.?f\.?r\.?|\u091c\u0940\u090f\u092b\u0906\u0930|'
     r'gem|g\.?e\.?m\.?|\u091c\u0947\u092e|\u091c\u0940\u0908\u090f\u092e|'
@@ -209,6 +209,27 @@ def _check_intent(question: str, detected_lang: str) -> Optional[str]:
     # Very short input (≤4 chars) with no domain keyword → treat as greeting/noise
     if len(stripped) <= 4 and not _DOMAIN_KEYWORDS.search(stripped):
         return _GREETING_RESPONSE_HI if detected_lang == "hi" else _GREETING_RESPONSE_EN
+
+    # ── Buying intent follow-up validation ──────────────────────────────────
+    buying_match = re.search(r'\b(?:buy|purchase|procure|order|acquire|खरीद|क्रय|लेना|सामग्री)\b', stripped, re.I)
+    if buying_match:
+        # Check if the query already has both quantity and price/value details
+        has_price_details = any(term in stripped.lower() for term in ["rs", "rupee", "lakh", "thousand", "budget", "cost", "रुपए", "लाख", "हजार", "बजट", "कीमत"]) or re.search(r'\b\d+\b', stripped)
+        has_qty_details = any(term in stripped.lower() for term in ["quantity", "qty", "units", "pieces", "laptops", "projectors", "computers", "मात्रा", "पीस", "इकाई"]) or re.search(r'\b\d+\b', stripped)
+        
+        # If it's missing details, prompt the user with a follow-up question
+        if not (has_price_details and has_qty_details):
+            if detected_lang == "hi":
+                return (
+                    "छत्तीसगढ़ भंडार क्रय नियमों और GFR के तहत सही खरीद दिशानिर्देश प्रदान करने के लिए, क्या आप कृपया निर्दिष्ट कर सकते हैं:\n"
+                    "1. आप कितनी **मात्रा** (quantity) में लैपटॉप/सामग्री खरीदना चाहते हैं?\n"
+                    "2. अनुमानित **कुल बजट** (estimated budget) या प्रति-इकाई मूल्य क्या है?"
+                )
+            return (
+                "To provide the correct procurement guidelines under the Chhattisgarh Store Purchase Rules and GFR, could you please specify:\n"
+                "1. The **quantity** of laptops/items you wish to purchase?\n"
+                "2. The **estimated total budget** or per-unit price?"
+            )
 
     # Explicit greeting pattern match
     if _GREETING_PATTERNS.match(stripped):

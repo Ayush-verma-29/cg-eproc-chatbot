@@ -3,10 +3,12 @@ import shutil
 import os
 import urllib.request
 import json
+import uuid
 from typing import List, Optional, Dict
 from langchain.schema import Document
 from langchain.embeddings.base import Embeddings
-from langchain_community.vectorstores import Chroma
+from qdrant_client import QdrantClient
+from qdrant_client.http import models
 from app.core.config import settings
 
 class BatchOllamaEmbeddings(Embeddings):
@@ -94,9 +96,172 @@ class BatchOllamaEmbeddings(Embeddings):
             dim = 1024 if "bge-m3" in self.model.lower() else 768
             return [0.0] * dim
 
+class MockCollection:
+    def __init__(self, store: 'QdrantVectorStore'):
+        self.store = store
+
+    def count(self) -> int:
+        client = QdrantClient(path=self.store.path)
+        try:
+            return client.count(collection_name=self.store.collection_name).count
+        except Exception:
+            return 0
+        finally:
+            client.close()
+
+    def get(self, where: Optional[Dict] = None, limit: Optional[int] = None, include: Optional[List[str]] = None) -> Dict:
+        filter_obj = None
+        if where:
+            conditions = []
+            for key, val in where.items():
+                if isinstance(val, dict) and "$in" in val:
+                    conditions.append(models.FieldCondition(
+                        key=f"metadata.{key}",
+                        match=models.MatchAny(any=val["$in"])
+                    ))
+                else:
+                    conditions.append(models.FieldCondition(
+                        key=f"metadata.{key}",
+                        match=models.MatchValue(value=val)
+                    ))
+            if conditions:
+                filter_obj = models.Filter(must=conditions)
+                
+        client = QdrantClient(path=self.store.path)
+        try:
+            scroll_res, _ = client.scroll(
+                collection_name=self.store.collection_name,
+                scroll_filter=filter_obj,
+                limit=limit or 10000,
+                with_payload=True,
+                with_vectors=False
+            )
+        except Exception:
+            scroll_res = []
+        finally:
+            client.close()
+        
+        formatted = {"ids": [], "metadatas": [], "documents": []}
+        for point in scroll_res:
+            formatted["ids"].append(point.id)
+            payload = point.payload or {}
+            formatted["metadatas"].append(payload.get("metadata", {}))
+            formatted["documents"].append(payload.get("page_content", ""))
+            
+        return formatted
+
+class MockRetriever:
+    def __init__(self, store, k):
+        self.store = store
+        self.k = k
+        
+    def get_relevant_documents(self, query: str) -> List[Document]:
+        return self.store.similarity_search(query, k=self.k)
+
+class QdrantVectorStore:
+    def __init__(self, path: str, collection_name: str, embedding_function):
+        self.path = path
+        self.collection_name = collection_name
+        self.embedding_function = embedding_function
+        self._init_collection()
+        self._collection = MockCollection(self)
+
+    def _init_collection(self):
+        dummy_vector = self.embedding_function.embed_query("test")
+        vector_dim = len(dummy_vector)
+        
+        client = QdrantClient(path=self.path)
+        try:
+            collections = client.get_collections().collections
+            exists = any(c.name == self.collection_name for c in collections)
+            if not exists:
+                client.create_collection(
+                    collection_name=self.collection_name,
+                    vectors_config=models.VectorParams(
+                        size=vector_dim,
+                        distance=models.Distance.COSINE
+                    )
+                )
+        except Exception:
+            pass
+        finally:
+            client.close()
+
+    def add_documents(self, documents: List[Document]):
+        if not documents:
+            return
+        
+        texts = [doc.page_content for doc in documents]
+        embeddings = self.embedding_function.embed_documents(texts)
+        
+        points = []
+        for i, (doc, vector) in enumerate(zip(documents, embeddings)):
+            chunk_id = doc.metadata.get("chunk_id", str(uuid.uuid4()))
+            point_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, chunk_id))
+            
+            points.append(models.PointStruct(
+                id=point_id,
+                vector=vector,
+                payload={
+                    "page_content": doc.page_content,
+                    "metadata": doc.metadata
+                }
+            ))
+            
+        client = QdrantClient(path=self.path)
+        try:
+            client.upsert(
+                collection_name=self.collection_name,
+                points=points
+            )
+        finally:
+            client.close()
+
+    def similarity_search_by_vector(self, query_vector: List[float], k: int = 4) -> List[Document]:
+        client = QdrantClient(path=self.path)
+        try:
+            search_result = client.search(
+                collection_name=self.collection_name,
+                query_vector=query_vector,
+                limit=k
+            )
+        except Exception:
+            search_result = []
+        finally:
+            client.close()
+        
+        docs = []
+        for hit in search_result:
+            payload = hit.payload or {}
+            docs.append(Document(
+                page_content=payload.get("page_content", ""),
+                metadata=payload.get("metadata", {})
+            ))
+        return docs
+
+    def similarity_search(self, query: str, k: int = 4) -> List[Document]:
+        query_vector = self.embedding_function.embed_query(query)
+        return self.similarity_search_by_vector(query_vector, k)
+
+    def delete_collection(self):
+        client = QdrantClient(path=self.path)
+        try:
+            client.delete_collection(self.collection_name)
+        except Exception:
+            pass
+        finally:
+            client.close()
+
+    def persist(self):
+        pass
+
+    def as_retriever(self, search_kwargs: Dict):
+        k = search_kwargs.get("k", 5)
+        return MockRetriever(self, k)
+
 class VectorStoreManager:
     def __init__(self):
-        print("🔧 Initializing Vector Store Manager (with Batch Embeddings)...")
+        print("🔧 Initializing Vector Store Manager (with Qdrant DB)...")
         self.embeddings = BatchOllamaEmbeddings(
             base_url=settings.OLLAMA_BASE_URL,
             model=settings.EMBEDDING_MODEL
@@ -104,23 +269,23 @@ class VectorStoreManager:
         self.vendor_store = None
         self.govt_store = None
     
-    def get_vendor_store(self) -> Chroma:
+    def get_vendor_store(self) -> QdrantVectorStore:
         if self.vendor_store is None:
             settings.VENDOR_DB_DIR.mkdir(parents=True, exist_ok=True)
-            self.vendor_store = Chroma(
-                persist_directory=str(settings.VENDOR_DB_DIR),
-                embedding_function=self.embeddings,
-                collection_name=settings.VENDOR_COLLECTION
+            self.vendor_store = QdrantVectorStore(
+                path=str(settings.VENDOR_DB_DIR),
+                collection_name=settings.VENDOR_COLLECTION,
+                embedding_function=self.embeddings
             )
         return self.vendor_store
     
-    def get_govt_store(self) -> Chroma:
+    def get_govt_store(self) -> QdrantVectorStore:
         if self.govt_store is None:
             settings.GOVT_DB_DIR.mkdir(parents=True, exist_ok=True)
-            self.govt_store = Chroma(
-                persist_directory=str(settings.GOVT_DB_DIR),
-                embedding_function=self.embeddings,
-                collection_name=settings.GOVT_COLLECTION
+            self.govt_store = QdrantVectorStore(
+                path=str(settings.GOVT_DB_DIR),
+                collection_name=settings.GOVT_COLLECTION,
+                embedding_function=self.embeddings
             )
         return self.govt_store
     
@@ -129,7 +294,6 @@ class VectorStoreManager:
             return 0
         store = self.get_vendor_store()
         
-        # Batch insert to avoid ChromaDB/SQLite parameter limits (max 5461)
         batch_size = 1000
         for i in range(0, len(documents), batch_size):
             batch = documents[i:i+batch_size]
@@ -143,7 +307,6 @@ class VectorStoreManager:
             return 0
         store = self.get_govt_store()
         
-        # Batch insert to avoid ChromaDB/SQLite parameter limits (max 5461)
         batch_size = 1000
         for i in range(0, len(documents), batch_size):
             batch = documents[i:i+batch_size]

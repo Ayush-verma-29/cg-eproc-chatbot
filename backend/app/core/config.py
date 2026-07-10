@@ -14,8 +14,8 @@ class Settings:
     PROCESSED_DIR = DATA_DIR / "processed"
     
     # Separate vector DBs for different roles
-    VENDOR_DB_DIR = BACKEND_DIR / "db" / "chroma_vendor"
-    GOVT_DB_DIR = BACKEND_DIR / "db" / "chroma_govt"
+    VENDOR_DB_DIR = BACKEND_DIR / "db" / "qdrant_vendor"
+    GOVT_DB_DIR = BACKEND_DIR / "db" / "qdrant_govt"
 
     # Create directories
     for dir_path in [VENDOR_PDF_DIR, GOVT_PDF_DIR, PROCESSED_DIR, 
@@ -28,7 +28,7 @@ class Settings:
     LLM_MODEL = "mistral:latest"
     TRANSLATION_MODEL = "sarvam-cpu"
     
-    # ChromaDB Configuration
+    # Qdrant Configuration
     VENDOR_COLLECTION = "vendor_manuals"
     GOVT_COLLECTION = "govt_rules"
 

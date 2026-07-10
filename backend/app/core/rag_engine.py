@@ -221,14 +221,16 @@ def _check_intent(question: str, detected_lang: str) -> Optional[str]:
         if not (has_price_details and has_qty_details):
             if detected_lang == "hi":
                 return (
-                    "छत्तीसगढ़ भंडार क्रय नियमों और GFR के तहत सही खरीद दिशानिर्देश प्रदान करने के लिए, क्या आप कृपया निर्दिष्ट कर सकते हैं:\n"
-                    "1. आप कितनी **मात्रा** (quantity) में लैपटॉप/सामग्री खरीदना चाहते हैं?\n"
-                    "2. अनुमानित **कुल बजट** (estimated budget) या प्रति-इकाई मूल्य क्या है?"
+                    "छत्तीसगढ़ भंडार क्रय नियमों और GFR के तहत सही खरीद रोडमैप और दिशानिर्देश प्रदान करने के लिए, क्या आप कृपया निर्दिष्ट कर सकते हैं:\n"
+                    "1. आप कितनी **मात्रा** (quantity) में सामग्री/लैपटॉप खरीदना चाहते हैं?\n"
+                    "2. अनुमानित **कुल बजट** (estimated budget) या लागत क्या है?\n"
+                    "3. क्या सामग्री **GeM पोर्टल पर उपलब्ध है** (या क्या आपको ऑफलाइन निविदा/स्थानीय क्रय समिति के दिशानिर्देशों की आवश्यकता है)?"
                 )
             return (
-                "To provide the correct procurement guidelines under the Chhattisgarh Store Purchase Rules and GFR, could you please specify:\n"
-                "1. The **quantity** of laptops/items you wish to purchase?\n"
-                "2. The **estimated total budget** or per-unit price?"
+                "To provide the correct step-by-step procurement roadmap under the Chhattisgarh Store Purchase Rules and GFR, could you please specify:\n"
+                "1. The **quantity** of items (laptops, etc.) you wish to purchase?\n"
+                "2. The **estimated total budget** or cost?\n"
+                "3. Whether the item is **available on the GeM portal** (or if you require guidelines for offline tendering/LPC)?"
             )
 
     # Explicit greeting pattern match
@@ -1565,11 +1567,22 @@ Rewrite this as a clear, self-contained search query (1 sentence, English only, 
         
         detected_lang = language_service.detect_language(question)
         
+        # Check if current question is a follow-up answer to our buying intent question
+        is_follow_up_reply = False
+        if conversation_history:
+            last_turn = conversation_history[-1]
+            last_ans = last_turn.get("answer", "")
+            if "To provide the correct step-by-step procurement roadmap" in last_ans or "सही खरीद रोडमैप और दिशानिर्देश प्रदान करने के लिए" in last_ans:
+                prev_q = last_turn.get("question", "")
+                question = f"{prev_q} {question}"
+                print(f"🔄 Merged follow-up reply: '{question}'")
+                is_follow_up_reply = True
+        
         print(f"❓ Original Question (stream): {question[:80]}...")
         print(f"👤 Role: {role} | 🌐 Language: {detected_lang}")
         
         # --- Intent guard: short-circuit greetings / off-topic inputs ---
-        intent_response = _check_intent(question, detected_lang)
+        intent_response = None if is_follow_up_reply else _check_intent(question, detected_lang)
         if intent_response is not None:
             print("   💬 Greeting / off-topic detected — returning canned response (stream).")
             yield {"type": "start", "sources": [], "rule_citations": [], "detected_language": detected_lang, "role_used": role}

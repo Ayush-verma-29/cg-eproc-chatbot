@@ -49,6 +49,10 @@
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
+.cg-chat-toggle.open {
+    display: none !important;
+}
+
 /* ─── Chat window ────────────────────────────────── */
 .cg-chat-window {
     position: relative;

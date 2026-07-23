@@ -93,23 +93,7 @@
         }
 
         #chatToggleBtn.open-state {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            animation: none;
-            background: linear-gradient(135deg, #1e3a8a, #2563eb);
-        }
-
-        #chatToggleBtn.open-state .pill-text {
-            display: none;
-        }
-
-        #chatToggleBtn.open-state .icon-chat {
             display: none !important;
-        }
-
-        #chatToggleBtn.open-state .icon-close {
-            display: block !important;
         }
 
         /* ---------- CHAT WINDOW (Exact GeM 407px x 468px Specs) ---------- */
@@ -117,7 +101,7 @@
             width: 407px;
             max-width: calc(100vw - 25px);
             height: 468px;
-            max-height: calc(100vh - 90px);
+            max-height: calc(100vh - 40px);
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
@@ -126,8 +110,7 @@
             flex-direction: column;
             overflow: hidden;
             border: 1px solid #d0d0d0;
-            margin-bottom: 55px;
-            /* Leave space for fixed launcher btn below */
+            margin-bottom: 0px;
             font-family: 'Roboto', 'Segoe UI', sans-serif;
             font-size: 13px;
             transition: height 0.25s ease, width 0.25s ease;

@@ -2925,6 +2925,54 @@
                 let line = lines[i];
                 let trimmed = line.trim();
 
+                // Markdown Table Parser (| Header | Header |)
+                if (trimmed.startsWith('|')) {
+                    closeAllLists();
+                    let tableLines = [trimmed];
+                    while (i + 1 < lines.length && lines[i + 1].trim().startsWith('|')) {
+                        i++;
+                        tableLines.push(lines[i].trim());
+                    }
+
+                    if (tableLines.length >= 2) {
+                        const parseRow = (rowStr) => {
+                            let s = rowStr.trim();
+                            if (s.startsWith('|')) s = s.slice(1);
+                            if (s.endsWith('|')) s = s.slice(0, -1);
+                            return s.split('|').map(c => c.trim());
+                        };
+
+                        const headerCells = parseRow(tableLines[0]);
+                        const bodyStartIdx = (tableLines.length > 1 && tableLines[1].includes('---')) ? 2 : 1;
+                        const bodyRows = tableLines.slice(bodyStartIdx).map(parseRow);
+
+                        let tableHtml = '<div class="cg-table-wrapper" style="overflow-x: auto; margin: 14px 0; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.06); background: #ffffff;">';
+                        tableHtml += '<table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; table-layout: auto;">';
+                        
+                        // Header
+                        tableHtml += '<thead><tr style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: #ffffff;">';
+                        headerCells.forEach(cell => {
+                            tableHtml += `<th style="padding: 10px 12px; border: 1px solid #334155; font-weight: 600; white-space: nowrap; text-transform: uppercase; font-size: 11px; letter-spacing: 0.4px;">${parseInlineMarkdownToHtml(cell, sourceRefs, ruleCitations)}</th>`;
+                        });
+                        tableHtml += '</tr></thead>';
+
+                        // Body
+                        tableHtml += '<tbody>';
+                        bodyRows.forEach((row, rIdx) => {
+                            const bg = (rIdx % 2 === 0) ? '#ffffff' : '#f8fafc';
+                            tableHtml += `<tr style="background: ${bg}; border-bottom: 1px solid #e2e8f0;">`;
+                            row.forEach(cell => {
+                                tableHtml += `<td style="padding: 9px 12px; border: 1px solid #e2e8f0; color: #1e293b; font-size: 12px; line-height: 1.4;">${parseInlineMarkdownToHtml(cell, sourceRefs, ruleCitations)}</td>`;
+                            });
+                            tableHtml += '</tr>';
+                        });
+                        tableHtml += '</tbody></table></div>';
+
+                        htmlElements.push(tableHtml);
+                        continue;
+                    }
+                }
+
                 // Horizontal Rule
                 if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
                     closeAllLists();
@@ -3031,6 +3079,12 @@
 
             // Inline code
             escaped = escaped.replace(/`(.*?)`/g, '<code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; font-size: 90%; font-family: monospace; color: #0f172a;">$1</code>');
+
+            // Downloadable link button parser [Label](URL)
+            escaped = escaped.replace(/(?:📥\s*)?\[(.*?)\]\((.*?)\)/g, (match, label, url) => {
+                const fullUrl = url.startsWith('/') ? `${API.replace('/api/v1', '')}${url}` : url;
+                return `<a href="${fullUrl}" target="_blank" rel="noopener noreferrer" download style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 13px; text-decoration: none; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); margin: 8px 0; cursor: pointer; transition: all 0.2s ease;" class="gem-pdf-download-btn">📥 ${label}</a>`;
+            });
 
             // Clickable inline citations [Page N] or [Page N-M]
             if (sourceRefs && sourceRefs.length) {

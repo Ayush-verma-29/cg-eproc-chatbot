@@ -31,13 +31,44 @@ function parseBold(text = '') {
 
 function parseInlineMarkdown(text = '', sourceRefs = [], ruleCitations = [], onPdfLinkClick = null) {
     if (!text) return '';
-    const parts = text.split(/(\*\*.*?\*\*|__.*?__|`.*?`|\[Page\s*\d+(?:-\d+)?\])/g);
+    const parts = text.split(/(\*\*.*?\*\*|__.*?__|`.*?`|\[Page\s*\d+(?:-\d+)?\]|\[.*?\]\(.*?\))/g);
     return parts.map((part, i) => {
         if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('__') && part.endsWith('__'))) {
             return <strong key={i}>{part.slice(2, -2)}</strong>;
         }
         if (part.startsWith('`') && part.endsWith('`')) {
             return <code key={i} style={{ background: '#f1f5f9', padding: '2px 4px', borderRadius: '4px', fontSize: '90%', fontFamily: 'monospace', color: '#0f172a' }}>{part.slice(1, -1)}</code>;
+        }
+        const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
+        if (linkMatch) {
+            const label = linkMatch[1];
+            const url = linkMatch[2];
+            const fullUrl = url.startsWith('/') ? `${API_BASE.replace('/api/v1', '')}${url}` : url;
+            return (
+                <a
+                    key={i}
+                    href={fullUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)',
+                        color: '#ffffff',
+                        padding: '6px 12px',
+                        borderRadius: '6px',
+                        fontWeight: '600',
+                        fontSize: '12px',
+                        textDecoration: 'none',
+                        boxShadow: '0 2px 4px rgba(59, 130, 246, 0.25)',
+                        margin: '4px 0',
+                        cursor: 'pointer'
+                    }}
+                >
+                    📥 {label}
+                </a>
+            );
         }
         const pageMatch = part.match(/^\[Page\s*(\d+)(?:-(\d+))?\]$/i);
         if (pageMatch && sourceRefs && sourceRefs.length > 0 && onPdfLinkClick) {

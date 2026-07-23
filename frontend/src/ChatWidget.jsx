@@ -31,7 +31,7 @@ function parseBold(text = '') {
 
 function parseInlineMarkdown(text = '', sourceRefs = [], ruleCitations = [], onPdfLinkClick = null) {
     if (!text) return '';
-    const parts = text.split(/(\*\*.*?\*\*|__.*?__|`.*?`|\[Page\s*\d+(?:-\d+)?\]|\[.*?\]\(.*?\))/g);
+    const parts = text.split(/(\*\*.*?\*\*|__.*?__|`.*?`|\[Page\s*\d+(?:-\d+)?\]|(?:📥\s*)?\[.*?\]\(.*?\))/g);
     return parts.map((part, i) => {
         if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('__') && part.endsWith('__'))) {
             return <strong key={i}>{part.slice(2, -2)}</strong>;
@@ -39,7 +39,9 @@ function parseInlineMarkdown(text = '', sourceRefs = [], ruleCitations = [], onP
         if (part.startsWith('`') && part.endsWith('`')) {
             return <code key={i} style={{ background: '#f1f5f9', padding: '2px 4px', borderRadius: '4px', fontSize: '90%', fontFamily: 'monospace', color: '#0f172a' }}>{part.slice(1, -1)}</code>;
         }
-        const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
+        
+        // Link parser (e.g. [Download Official GeM Financial Sanction Note (PDF)](/api/v1/...))
+        const linkMatch = part.match(/(?:📥\s*)?\[(.*?)\]\((.*?)\)/);
         if (linkMatch) {
             const label = linkMatch[1];
             const url = linkMatch[2];
@@ -50,26 +52,30 @@ function parseInlineMarkdown(text = '', sourceRefs = [], ruleCitations = [], onP
                     href={fullUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    download
                     style={{
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)',
+                        gap: '8px',
+                        background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)',
                         color: '#ffffff',
-                        padding: '6px 12px',
-                        borderRadius: '6px',
-                        fontWeight: '600',
-                        fontSize: '12px',
+                        padding: '8px 16px',
+                        borderRadius: '8px',
+                        fontWeight: '700',
+                        fontSize: '13px',
                         textDecoration: 'none',
-                        boxShadow: '0 2px 4px rgba(59, 130, 246, 0.25)',
-                        margin: '4px 0',
-                        cursor: 'pointer'
+                        boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                        margin: '8px 0',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
                     }}
+                    className="gem-pdf-download-btn"
                 >
                     📥 {label}
                 </a>
             );
         }
+
         const pageMatch = part.match(/^\[Page\s*(\d+)(?:-(\d+))?\]$/i);
         if (pageMatch && sourceRefs && sourceRefs.length > 0 && onPdfLinkClick) {
             const firstRef = sourceRefs[0];
@@ -147,7 +153,52 @@ function parseMarkdownToReact(text = '', sourceRefs = [], ruleCitations = [], on
         const line = lines[i];
         const trimmedLine = line.trim();
 
-        // 1. Check for horizontal rule
+        // 1. Check for Markdown Table (| col1 | col2 |)
+        if (trimmedLine.startsWith('|') && trimmedLine.endsWith('|')) {
+            flushList(`list-${elementKey++}`);
+            const tableLines = [trimmedLine];
+            while (i + 1 < lines.length && lines[i + 1].trim().startsWith('|') && lines[i + 1].trim().endsWith('|')) {
+                i++;
+                tableLines.push(lines[i].trim());
+            }
+
+            if (tableLines.length >= 2) {
+                const parseRow = (rowStr) => rowStr.split('|').slice(1, -1).map(c => c.trim());
+                const headerCells = parseRow(tableLines[0]);
+                const bodyStartIdx = (tableLines.length > 1 && tableLines[1].includes('---')) ? 2 : 1;
+                const bodyRows = tableLines.slice(bodyStartIdx).map(parseRow);
+
+                elements.push(
+                    <div key={`table-wrapper-${elementKey++}`} className="cg-table-wrapper" style={{ overflowX: 'auto', margin: '14px 0', borderRadius: '8px', border: '1px solid #cbd5e1', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', textAlign: 'left', background: '#ffffff' }}>
+                            <thead>
+                                <tr style={{ background: '#1e3a8a', color: '#ffffff' }}>
+                                    {headerCells.map((cell, cIdx) => (
+                                        <th key={cIdx} style={{ padding: '9px 12px', border: '1px solid #334155', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+                                            {parseInlineMarkdown(cell, sourceRefs, ruleCitations, onPdfLinkClick)}
+                                        </th>
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {bodyRows.map((row, rIdx) => (
+                                    <tr key={rIdx} style={{ background: rIdx % 2 === 0 ? '#ffffff' : '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                                        {row.map((cell, cIdx) => (
+                                            <td key={cIdx} style={{ padding: '8px 12px', border: '1px solid #e2e8f0', color: '#1e293b' }}>
+                                                {parseInlineMarkdown(cell, sourceRefs, ruleCitations, onPdfLinkClick)}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                );
+                continue;
+            }
+        }
+
+        // 2. Check for horizontal rule
         if (trimmedLine === '---' || trimmedLine === '***' || trimmedLine === '___') {
             flushList(`list-${elementKey++}`);
             elements.push(<hr key={`hr-${elementKey++}`} style={{ border: 'none', borderTop: '1px solid #e2e8f0', margin: '14px 0' }} />);

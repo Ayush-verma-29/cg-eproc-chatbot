@@ -754,11 +754,19 @@ class RAGEngine:
         
         has_budget_signal = any(w in q_lower for w in ["lakh", "lakhs", "lac", "lacs", "budget", "cost", "rupees", "rs", "₹", "price", "kharidna", "purchase", "need", "chahiye", "requirement", "require"])
         
+        # Robust universal category matcher (handles 'table' in 'steel office tables', 'laptop' in 'laptops', 'chair' in 'office chairs')
+        q_tokens = [w.strip() for w in re.findall(r'[a-zA-Z]{3,}', q_lower)]
+        ignored_tokens = {"office", "system", "equipment", "with", "from", "need", "have", "want", "type", "unit", "units", "budget", "lakh", "lakhs", "rupees", "cost", "price", "kharidna", "purchase"}
+        
         matched_category = None
         for cat_kw in MAXIMUM_TARGET_CATEGORIES:
-            cat_words = cat_kw.split()
-            if any(w in q_lower for w in cat_words if len(w) > 3):
-                matched_category = cat_kw
+            cat_lower = cat_kw.lower()
+            for token in q_tokens:
+                if token not in ignored_tokens:
+                    if token in cat_lower or cat_lower.rstrip('s') in token:
+                        matched_category = cat_kw
+                        break
+            if matched_category:
                 break
                 
         if not matched_category and not (has_budget_signal and any(w in q_lower for w in ["buy", "procure", "purchase", "need", "requirement"])):
@@ -2931,8 +2939,8 @@ Rewrite this as a clear, self-contained search query (1 sentence, English only, 
             max_context_chars = int(config_max_chars * 1.5) if is_bid_sub_q else config_max_chars
             
             is_threshold_query = any(w in english_query.lower() for w in [
-                "threshold", "limit", "ceiling", "monetary", "value range", "amount", "budget", 
-                "direct purchase limit", "limited tender limit", "open tender limit", "₹", "rupee", "सीमा", "लाख"
+                "threshold limit", "monetary limit", "value range limit", "direct purchase limit", 
+                "limited tender limit", "open tender limit", "monetary threshold", "rule threshold"
             ])
             is_detailed_requested = any(w in english_query.lower() for w in ["detail", "explain", "elaborate", "comprehensive", "deep", "description", "full", "complete", "step", "procedure", "process", "guide", "how to", "how do", "registration"]) and not is_threshold_query
             

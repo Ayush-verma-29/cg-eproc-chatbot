@@ -2763,6 +2763,22 @@ Rewrite this as a clear, self-contained search query (1 sentence, English only, 
         print(f"❓ Original Question (stream): {question[:80]}...")
         print(f"👤 Role: {role} | 🌐 Language: {detected_lang}")
 
+        # Check GeM Budget & Catalog Feasibility Queries
+        gem_budget_response = self.evaluate_gem_budget_query(question)
+        if gem_budget_response:
+            print("   📊 [GeM Budget Engine] Returning GeM catalog breakdown & DFP sanction authority (stream)...")
+            yield {
+                "type": "start",
+                "sources": ["GeM Public Catalog", "CG Store Purchase Rules"],
+                "source_refs": [],
+                "rule_citations": ["Rule 3.1.1", "Rule 4.7(अ)"],
+                "detected_language": detected_lang,
+                "role_used": role
+            }
+            yield {"type": "token", "text": gem_budget_response}
+            yield {"type": "done"}
+            return
+
         # Check custom Q&A overrides / corrections
         try:
             override_answer = self.get_override_answer(question, role)

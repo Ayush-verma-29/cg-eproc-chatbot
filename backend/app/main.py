@@ -27,6 +27,9 @@ from app.core.config import settings
 from app.core.session import session_manager
 from app.services.analytics_service import analytics_service
 
+from app.services.scheduler_service import start_scheduler, stop_scheduler
+from app.services.sanction_pdf_service import SANCTION_DIR
+
 app = FastAPI(
     title="CG e-Procurement Chatbot API",
     description="AI-powered RAG chatbot with separated vendor/government knowledge bases",
@@ -41,9 +44,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def startup_event():
+    start_scheduler()
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    stop_scheduler()
+
+@app.get("/api/v1/download-sanction-pdf/{filename}")
+async def download_sanction_pdf(filename: str):
+    file_path = SANCTION_DIR / filename
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Sanction PDF Note not found")
+    return FileResponse(
+        path=str(file_path),
+        filename=filename,
+        media_type="application/pdf"
+    )
+
 # ── Serve PDF source documents statically ─────────────────────────────────────
-# Both govt_rules and vendor_manuals directories are mounted under /docs.
-# PDFs can then be linked as: /docs/govt/<filename>#page=N
 app.mount("/docs/govt", StaticFiles(directory=str(settings.GOVT_PDF_DIR)), name="govt_docs")
 app.mount("/docs/vendor", StaticFiles(directory=str(settings.VENDOR_PDF_DIR)), name="vendor_docs")
 app.mount("/static", StaticFiles(directory=str(settings.BASE_DIR / "frontend")), name="static")

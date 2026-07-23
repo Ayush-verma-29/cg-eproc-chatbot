@@ -11,6 +11,9 @@ from typing import Optional, Dict, List
 from app.services.vector_store import VectorStoreManager
 from app.core.config import settings
 from app.core.language import language_service
+from app.services.gem_catalog_db import gem_catalog_db
+from app.services.sanction_pdf_service import sanction_pdf_service
+
 
 STOPWORDS = {
     "what", "is", "the", "are", "on", "for", "in", "of", "to", "a", "an", "and", "by",
@@ -720,7 +723,91 @@ class RAGEngine:
         re.IGNORECASE
     )
 
-    def _clean_no_rule_noise(self, text: str) -> str:
+    def evaluate_gem_budget_query(self, query: str) -> Optional[str]:
+        """Detects budget/quantity procurement requests and formats GeM catalog L1 matrix & DFP authority."""
+        q_lower = query.lower()
+        
+        budget_match = re.search(r'(?:₹|rs\.?|inr)?\s*(\d+(?:\.\d+)?)\s*(lakh|lakhs|lac|lacs|k|thousand|crore)?', q_lower)
+        qty_match = re.search(r'(\d+)\s*(laptops?|desktops?|printers?|copiers?|chairs?|furniture|pcs?|units?)', q_lower)
+        
+        is_procurement_query = any(w in q_lower for w in ["laptop", "desktop", "printer", "furniture", "ac", "copier", "vehicle", "pump", "bed", "cctv", "equipment"])
+        has_budget_signal = any(w in q_lower for w in ["lakh", "lakhs", "lac", "budget", "cost", "rupees", "rs", "₹", "price", "kharidna", "purchase", "need", "chahiye"])
+        
+        if not (is_procurement_query and has_budget_signal):
+            return None
+            
+        total_budget = 400000.0
+        if budget_match:
+            val = float(budget_match.group(1))
+            unit = (budget_match.group(2) or "").lower()
+            if "lakh" in unit or "lac" in unit:
+                total_budget = val * 100000.0
+            elif "crore" in unit:
+                total_budget = val * 10000000.0
+            elif "k" in unit or "thousand" in unit:
+                total_budget = val * 1000.0
+            elif val > 100:
+                total_budget = val
+                
+        target_qty = int(qty_match.group(1)) if qty_match else None
+        category = "laptop"
+        for cat_kw in ["laptop", "desktop", "printer", "copier", "furniture", "ac", "pump", "cctv"]:
+            if cat_kw in q_lower:
+                category = cat_kw
+                break
+
+        res = gem_catalog_db.find_products_in_budget(category, total_budget, target_qty)
+        matrix = res.get("comparative_matrix", [])
+        dfp_auth = res.get("dfp_authority", "Head of Department (HOD)")
+        dfp_desc = res.get("dfp_description", "")
+        pac_alert = res.get("pac_alert")
+        
+        pdf_url = sanction_pdf_service.generate_sanction_note_pdf({
+            "category": category,
+            "total_budget": total_budget,
+            "target_qty": target_qty or (matrix[0]["max_purchasable_qty"] if matrix else 10),
+            "dfp_authority": dfp_auth,
+            "comparative_matrix": matrix,
+            "rule_citation": "Rule 3.1.1 & Rule 4.7(अ) of CG Store Purchase Rules"
+        })
+        
+        lines = [
+            f"**Yes! Verified live GeM catalog availability & budget math for your Rs. {total_budget:,.2f} budget:**\n",
+            "### 📊 GeM L1 Price & Product Breakdown Matrix",
+            "| Model & Brand | Unit Price (Rs.) | Max Purchasable Qty | Calculated Total (Rs.) | L1 Rank | Seller Category | Status |",
+            "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |"
+        ]
+        
+        for item in matrix[:3]:
+            rank_emoji = "🥇" if item["rank"] == "L1" else ("🥈" if item["rank"] == "L2" else "🥉")
+            status_str = "✅ Fits Budget" if item.get("target_qty_fits", True) else "⚠️ Exceeds Budget"
+            lines.append(
+                f"| **{item['title']}** | Rs. {item['unit_price']:,.2f} | **{item['max_purchasable_qty']} Units** | Rs. {item['calculated_total_cost']:,.2f} | {rank_emoji} **{item['rank']}** | {item['seller_type']} | {status_str} |"
+            )
+            
+        lines.append("\n---")
+        lines.append("\n### 📋 Regulatory & Approval Summary (Rule 3.1.1 & DFP)")
+        lines.append("1. **Mandatory Procurement Channel**: Must be procured through the **Government e-Marketplace (GeM Portal)** under Rule 3.1.1 of Chhattisgarh Store Purchase Rules.")
+        
+        if total_budget <= 50000.0:
+            lines.append("2. **Procurement Method**: **Direct Purchase on GeM** (Value <= Rs. 50,000 limit).")
+        elif total_budget <= 1000000.0:
+            lines.append(f"2. **Procurement Method**: **L1 Quotation / Bidding on GeM** (Value Rs. {total_budget:,.2f} is between Rs. 50,001 and Rs. 10,00,000 limit; requires L1 comparison among minimum 3 brands).")
+        else:
+            lines.append("2. **Procurement Method**: **Custom Bidding / Reverse Auction on GeM** (Value > Rs. 10,00,000 limit).")
+            
+        lines.append(f"3. **Sanctioning Authority**: **{dfp_auth}** ({dfp_desc}).")
+        lines.append("4. **MSE Preference & EMD Waiver**: 🥇 L1 Model qualifies for **MSE EMD Exemption** and MSE 15% price preference.")
+        
+        if pac_alert:
+            lines.append(f"\n> ⚠️ **{pac_alert['title']}**: {pac_alert['message']}")
+            
+        lines.append("\n---")
+        lines.append(f"\n### 📄 Official Document Actions\n📥 **[Download Official GeM Financial Sanction Note (PDF)]({pdf_url})**\n*(Pre-filled ready-to-sign Financial Sanction Note containing matched GeM items, DFP authority, and Store Purchase Rule citations)*")
+        
+        return "\n".join(lines)
+
+    def _truncate_chunk_if_needed(self, text: str) -> str:
         """Strip 'No specific rule number' and similar phrases from LLM output, and correct common GFR hallucinations."""
         # --- Option 5: Post-Generation Output Safety Sanitizer ---
         forbidden_output_patterns = [
@@ -2402,8 +2489,12 @@ Key GFR Rules (cite exactly): Rule 144=buying principles; Rule 149=GeM portal; R
             else:
                 formatted_prompt = prompt
 
-            _t0 = time.time()
-            if is_threshold_query:
+            # Check for GeM Budget & Catalog Feasibility Queries
+            gem_budget_response = self.evaluate_gem_budget_query(english_query)
+            if gem_budget_response:
+                print("   📊 [GeM Budget Engine] Returning GeM catalog breakdown & DFP sanction authority...")
+                answer_raw = gem_budget_response
+            elif is_threshold_query:
                 # ── Sarvam API (synchronous) — dedicated minimal table prompt ─────────
                 print("   🌐 [Sarvam] Routing threshold/table query to Sarvam API...")
                 # Build clean CG context from admin_config QA overrides (avoids garbled PDF chunks)

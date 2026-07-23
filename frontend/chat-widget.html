@@ -49,33 +49,59 @@
             transition: width 0.25s ease, height 0.25s ease, left 0.25s ease, top 0.25s ease, right 0.25s ease, bottom 0.25s ease;
         }
 
-        /* ---------- LAUNCHER BUTTON ---------- */
+        /* ── GeM Bounce Animation Specs ── */
+        @keyframes bounce1 {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-8px);
+            }
+            60% {
+                transform: translateY(-4px);
+            }
+        }
+
+        /* ---------- LAUNCHER BUTTON (Exact GeM 227px x 42px Pill Specs) ---------- */
         #chatToggleBtn {
             position: fixed;
-            bottom: 20px;
+            bottom: 30px;
             right: 20px;
             z-index: 999999;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #628ec8, #4a74aa);
+            width: 227px;
+            height: 42px;
+            background: rgb(65, 165, 224);
             border: none;
-            border-radius: 50%;
+            border-radius: 25px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
-            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
             color: white;
+            font-family: 'Roboto', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            animation: bounce1 1.7s ease infinite;
+            transition: all 0.25s ease;
         }
 
         #chatToggleBtn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.36);
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
         #chatToggleBtn.open-state {
-            background: linear-gradient(135deg, #628ec8, #4a74aa);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            animation: none;
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+        }
+
+        #chatToggleBtn.open-state .pill-text {
+            display: none;
         }
 
         #chatToggleBtn.open-state .icon-chat {
@@ -86,12 +112,12 @@
             display: block !important;
         }
 
-        /* ---------- CHAT WINDOW ---------- */
+        /* ---------- CHAT WINDOW (Exact GeM 407px x 468px Specs) ---------- */
         #chatWindow {
-            width: 440px;
+            width: 407px;
             max-width: calc(100vw - 25px);
-            height: 580px;
-            max-height: calc(100vh - 120px);
+            height: 468px;
+            max-height: calc(100vh - 90px);
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
@@ -100,8 +126,10 @@
             flex-direction: column;
             overflow: hidden;
             border: 1px solid #d0d0d0;
-            margin-bottom: 85px;
+            margin-bottom: 55px;
             /* Leave space for fixed launcher btn below */
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+            font-size: 13px;
             transition: height 0.25s ease, width 0.25s ease;
         }
 
@@ -2041,6 +2069,11 @@
             </div>
 
         </div><!-- /chatWindow -->
+        <button id="chatToggleBtn" onclick="toggleChat()" title="Open CG e-Procurement Assistant">
+            <span class="pill-text">💬 Ask CG e-Procurement AI</span>
+            <span class="icon-chat" style="display: none;">💬</span>
+            <span class="icon-close" style="display: none; font-size: 18px; font-weight: bold;">✕</span>
+        </button>
     </div><!-- /chatContainer -->
 
     <!-- ===================== SCRIPT ===================== -->

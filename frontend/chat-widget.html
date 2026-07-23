@@ -94,6 +94,9 @@
 
         #chatToggleBtn.open-state {
             display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
         }
 
         /* ---------- CHAT WINDOW (Exact GeM 407px x 468px Specs) ---------- */
@@ -2147,7 +2150,10 @@
             const win = document.getElementById('chatWindow');
             const btn = document.getElementById('chatToggleBtn');
             win.classList.add('open');
-            btn.classList.add('open-state');
+            if (btn) {
+                btn.classList.add('open-state');
+                btn.style.setProperty('display', 'none', 'important');
+            }
             // If no session yet, auto-start with unified role (no selection screen)
             if (!sessionId) {
                 selectRole('unified');
@@ -2160,7 +2166,10 @@
             const win = document.getElementById('chatWindow');
             const btn = document.getElementById('chatToggleBtn');
             win.classList.remove('open', 'maximised');
-            btn.classList.remove('open-state');
+            if (btn) {
+                btn.classList.remove('open-state');
+                btn.style.setProperty('display', 'flex', 'important');
+            }
             isMaximised = false;
 
             // Hide backdrop

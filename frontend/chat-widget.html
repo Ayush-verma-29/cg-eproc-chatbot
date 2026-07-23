@@ -699,6 +699,26 @@
             opacity: 0.9;
         }
 
+        .cg-inline-citation {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            background: #eff6ff;
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-size: 11px;
+            border: 1px solid #bfdbfe;
+            margin: 0 2px;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .cg-inline-citation:hover {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-color: #93c5fd;
+        }
+
         /* Typing indicator */
         #typingIndicator {
             padding: 0 14px 8px;
@@ -2863,7 +2883,7 @@
             return (text || '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         }
 
-        function parseMarkdownToHtml(text) {
+        function parseMarkdownToHtml(text, sourceRefs, ruleCitations) {
             if (!text) return '';
 
             let lines = text.split('\n');
@@ -2917,7 +2937,7 @@
                 if (headerMatch) {
                     closeAllLists();
                     let level = headerMatch[1].length;
-                    let titleHtml = parseInlineMarkdownToHtml(headerMatch[2]);
+                    let titleHtml = parseInlineMarkdownToHtml(headerMatch[2], sourceRefs, ruleCitations);
                     if (level === 1) {
                         htmlElements.push(`<h2 style="margin: 14px 0 6px 0; font-weight: 700; color: #1e293b; font-size: 17px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">${titleHtml}</h2>`);
                     } else if (level === 2) {
@@ -2931,7 +2951,7 @@
                 // Blockquotes
                 if (trimmed.indexOf('>') === 0) {
                     closeAllLists();
-                    let quoteHtml = parseInlineMarkdownToHtml(trimmed.replace(/^>\s*/, ''));
+                    let quoteHtml = parseInlineMarkdownToHtml(trimmed.replace(/^>\s*/, ''), sourceRefs, ruleCitations);
                     htmlElements.push(`<blockquote style="margin: 10px 0; padding: 8px 12px; background: #f8fafc; border-left: 4px solid #cbd5e1; border-radius: 4px; font-size: 13px; color: #475569; font-style: italic;">${quoteHtml}</blockquote>`);
                     continue;
                 }
@@ -2945,7 +2965,7 @@
                     if (listStack.length === 0 || listStack[listStack.length - 1].indent < indent) {
                         openList('ul', indent);
                     }
-                    htmlElements.push(`<li style="margin-bottom: 5px; list-style-type: circle;">${parseInlineMarkdownToHtml(itemContent)}</li>`);
+                    htmlElements.push(`<li style="margin-bottom: 5px; list-style-type: circle;">${parseInlineMarkdownToHtml(itemContent, sourceRefs, ruleCitations)}</li>`);
                     continue;
                 }
 
@@ -2964,7 +2984,7 @@
                         }
                         openList('ol', indent);
                     }
-                    htmlElements.push(`<li style="margin-bottom: 6px;">${parseInlineMarkdownToHtml(itemContent)}</li>`);
+                    htmlElements.push(`<li value="${numberMatch[2]}" style="margin-bottom: 6px;">${parseInlineMarkdownToHtml(itemContent, sourceRefs, ruleCitations)}</li>`);
                     continue;
                 }
 
@@ -2993,15 +3013,15 @@
 
                 // Normal Paragraph
                 closeAllLists();
-                htmlElements.push(`<p style="margin: 0 0 8px 0; line-height: 1.6;">${parseInlineMarkdownToHtml(line)}</p>`);
+                htmlElements.push(`<p style="margin: 0 0 8px 0; line-height: 1.6;">${parseInlineMarkdownToHtml(line, sourceRefs, ruleCitations)}</pblank>`);
             }
 
             closeAllLists();
-            return htmlElements.join('');
+            return htmlElements.join('').replace(/<\/pblank>/g, '</p>');
         }
 
 
-        function parseInlineMarkdownToHtml(text) {
+        function parseInlineMarkdownToHtml(text, sourceRefs, ruleCitations) {
             if (!text) return '';
             let escaped = escapeHtml(text);
 
@@ -3011,6 +3031,23 @@
 
             // Inline code
             escaped = escaped.replace(/`(.*?)`/g, '<code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; font-size: 90%; font-family: monospace; color: #0f172a;">$1</code>');
+
+            // Clickable inline citations [Page N] or [Page N-M]
+            if (sourceRefs && sourceRefs.length) {
+                const firstRef = sourceRefs[0];
+                if (firstRef && firstRef.file !== 'Learned satisfied Q&As') {
+                    const baseUrl = API.replace('/api/v1', '');
+                    const docBaseUrl = firstRef.url.startsWith('http') ? firstRef.url : (baseUrl + firstRef.url);
+                    const docBaseUrlEscaped = docBaseUrl.split('#')[0].replace(/'/g, "\\'");
+                    const highlightTerm = ruleCitations && ruleCitations.length ? ruleCitations[0] : extractHighlightTerm(lastUserQuery || '');
+                    const highlightTermEscaped = highlightTerm.replace(/'/g, "\\'");
+                    
+                    escaped = escaped.replace(/\[Page\s*(\d+)(?:-(\d+))?\]/g, (match, p1, p2) => {
+                        const pageNum = parseInt(p1, 10);
+                        return `<a href="#" onclick="event.preventDefault(); openPdfViewer('${docBaseUrlEscaped}', ${pageNum}, '${highlightTermEscaped}')" class="cg-inline-citation">[Page ${p1}${p2 ? '-' + p2 : ''}]</a>`;
+                    });
+                }
+            }
 
             return escaped;
         }
@@ -3221,14 +3258,14 @@
                         return;
                     }
                     const currentText = tokens.slice(0, i + 1).join('');
-                    bubble.innerHTML = parseMarkdownToHtml(currentText);
+                    bubble.innerHTML = parseMarkdownToHtml(currentText, sourceRefs, ruleCitations);
                     i++;
                     scrollToBottom();
                     setTimeout(nextToken, 35);
                 })();
 
             } else {
-                bubble.innerHTML = parseMarkdownToHtml(content);
+                bubble.innerHTML = parseMarkdownToHtml(content, sourceRefs, ruleCitations);
                 if (role === 'assistant' && duration) {
                     document.getElementById('langFooterTime').textContent = `Response: ${duration}s`;
                 }
@@ -3385,12 +3422,22 @@
                                 if (streamSpeakActive) {
                                     handleStreamSpeakToken(parsed.text, detectedLanguage);
                                 }
-                                bubble.innerHTML = parseMarkdownToHtml(currentText);
+                                bubble.innerHTML = parseMarkdownToHtml(currentText, sourceRefs, ruleCitations);
                                 scrollToBottom();
                             } else if (parsed.type === 'replace') {
+                                // Fallback: if replace is the first event, add bubble to DOM and hide dots
+                                if (!firstTokenReceived) {
+                                    firstTokenReceived = true;
+                                    box.appendChild(row);
+                                    document.getElementById('typingIndicator').style.display = 'none';
+                                    scrollToBottom(true);
+                                    stopWakeWord();
+                                    streamVoiceRequested = false;
+                                    startStreamTriggerListener();
+                                }
                                 // Clean up noise phrases after streaming — swap bubble content
                                 currentText = parsed.text;
-                                bubble.innerHTML = parseMarkdownToHtml(currentText);
+                                bubble.innerHTML = parseMarkdownToHtml(currentText, sourceRefs, ruleCitations);
                                 scrollToBottom();
                             }
                         } catch (e) {

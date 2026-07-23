@@ -30,3 +30,7 @@ scratch/
 .idea/
 .vscode/
 .DS_Store
+
+# Large model files
+*.gguf
+

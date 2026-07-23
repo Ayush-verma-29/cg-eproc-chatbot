@@ -123,6 +123,7 @@ async def chat(request: ChatRequest):
     """Send a question to the chatbot and receive a stream of tokens"""
     # Get session
     session = session_manager.get_session(request.session_id)
+    print(f"   💬 [Debug main.py] Session loaded for {request.session_id}: history_len={len(session.get('history', [])) if session else None}")
     if not session:
         raise HTTPException(status_code=401, detail="Invalid or expired session. Please start a new session with /start")
     
@@ -155,6 +156,8 @@ async def chat(request: ChatRequest):
                     break
                 if event["type"] == "start":
                     event["log_id"] = log_id  # Inject log_id for frontend to send feedback later
+                elif event["type"] == "replace":
+                    accumulated_answer = event["text"]
                 elif event["type"] == "token":
                     accumulated_answer += event["text"]
                 yield f"data: {json.dumps(event)}\n\n"

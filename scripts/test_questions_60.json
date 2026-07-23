@@ -1,0 +1,302 @@
+[
+  {
+    "id": 1,
+    "language": "en",
+    "question": "What is the mandatory procurement threshold on the GeM portal for CG state departments under Rule 3.1.1?"
+  },
+  {
+    "id": 2,
+    "language": "en",
+    "question": "What are the GFR 2017 tiered limits for direct laptop purchase from GeM without a traditional tender?"
+  },
+  {
+    "id": 3,
+    "language": "en",
+    "question": "How can a department purchase goods from other government-approved agencies under Rule 145?"
+  },
+  {
+    "id": 4,
+    "language": "en",
+    "question": "What is the emergency purchase procedure for materials under GFR Rule 162/166?"
+  },
+  {
+    "id": 5,
+    "language": "en",
+    "question": "What are the service procurement rules and thresholds for computer AMCs?"
+  },
+  {
+    "id": 6,
+    "language": "en",
+    "question": "Is it permissible under CVC and GFR guidelines to split a single bulk purchase order into multiple smaller orders?"
+  },
+  {
+    "id": 7,
+    "language": "en",
+    "question": "What approvals are required before procuring standard desktop computers for an office?"
+  },
+  {
+    "id": 8,
+    "language": "en",
+    "question": "What is the difference between Limited Tender and Open Tender under CG Store Purchase Rules?"
+  },
+  {
+    "id": 9,
+    "language": "en",
+    "question": "When is a department allowed to use the Single Tender method of procurement?"
+  },
+  {
+    "id": 10,
+    "language": "en",
+    "question": "How does a Department Operator initiate the 7-step tender creation process on the portal?"
+  },
+  {
+    "id": 11,
+    "language": "en",
+    "question": "What is the Maker-Checker division of roles for tender publication on the CG portal?"
+  },
+  {
+    "id": 12,
+    "language": "en",
+    "question": "What steps must be followed to issue a Date Extension Corrigendum on the portal?"
+  },
+  {
+    "id": 13,
+    "language": "en",
+    "question": "How do department openers open technical bids and decrypt them?"
+  },
+  {
+    "id": 14,
+    "language": "en",
+    "question": "What are the requirements and timelines for opening price bids on the portal?"
+  },
+  {
+    "id": 15,
+    "language": "en",
+    "question": "How does a Department Admin compile and generate the Bid Evaluation Report?"
+  },
+  {
+    "id": 16,
+    "language": "en",
+    "question": "What is the online EMD refund timeline and process for unsuccessful bidders?"
+  },
+  {
+    "id": 17,
+    "language": "en",
+    "question": "What options are available to departments for handling L1 bidder EMD refunds?"
+  },
+  {
+    "id": 18,
+    "language": "en",
+    "question": "How can a new vendor register on the CG e-Procurement Portal?"
+  },
+  {
+    "id": 19,
+    "language": "en",
+    "question": "What documents are mandatory for a new supplier registration?"
+  },
+  {
+    "id": 20,
+    "language": "en",
+    "question": "What is the procedure for mapping a renewed DSC on the vendor portal profile?"
+  },
+  {
+    "id": 21,
+    "language": "hi",
+    "question": "छत्तीसगढ़ स्टोर परचेज रूल्स के नियम 3.1.1 के तहत जेम (GeM) से खरीद करने की क्या सीमाएं हैं?"
+  },
+  {
+    "id": 22,
+    "language": "hi",
+    "question": "क्या कोई सरकारी विभाग बिना टेंडर के जेम से सीधे लैपटॉप खरीद सकता है?"
+  },
+  {
+    "id": 23,
+    "language": "hi",
+    "question": "नियम 145 के तहत एक सरकारी विभाग दूसरे सरकारी विभाग से सीधे सामग्री कैसे खरीद सकता है?"
+  },
+  {
+    "id": 24,
+    "language": "hi",
+    "question": "आपातकालीन परिस्थितियों में सामग्री की सीधी खरीद के लिए सीवीसी (CVC) और जीएफआर के क्या नियम हैं?"
+  },
+  {
+    "id": 25,
+    "language": "hi",
+    "question": "कार्यालय कंप्यूटरों के एएमसी (AMC) के लिए गैर-परामर्श सेवाओं के तहत क्या प्रक्रिया है?"
+  },
+  {
+    "id": 26,
+    "language": "hi",
+    "question": "टेंडर अनुमोदन से बचने के लिए बड़ी खरीद को छोटे ऑर्डर्स में विभाजित करना क्यों प्रतिबंधित है?"
+  },
+  {
+    "id": 27,
+    "language": "hi",
+    "question": "निविदा आमंत्रण सूचना (NIT) और बीओक्यू (BOQ) टेम्पलेट अपलोड करने के लिए ऑपरेटर को क्या करना चाहिए?"
+  },
+  {
+    "id": 28,
+    "language": "hi",
+    "question": "तकनीकी तुलनात्मक विवरण और वित्तीय तुलनात्मक विवरण में क्या मुख्य अंतर है?"
+  },
+  {
+    "id": 29,
+    "language": "hi",
+    "question": "सीवीसी नियमों के अनुसार निविदा प्रक्रिया में पोस्ट-टेंडर वार्ता (Negotiations) कब की जा सकती है?"
+  },
+  {
+    "id": 30,
+    "language": "hi",
+    "question": "छत्तीसगढ़ ई-प्रोक्योरमेंट पोर्टल पर नया टेंडर बनाने की चरण-दर-चरण प्रक्रिया क्या है?"
+  },
+  {
+    "id": 31,
+    "language": "hi",
+    "question": "ऑपरेटर द्वारा तैयार किए गए टेंडर को अप्रूवर/पब्लिशर कैसे अप्रूव और पब्लिश करते हैं?"
+  },
+  {
+    "id": 32,
+    "language": "hi",
+    "question": "टेंडर की अंतिम तिथि बढ़ाने के लिए कॉरिजेंडम (शुद्धिपत्र) जारी करने की क्या प्रक्रिया है?"
+  },
+  {
+    "id": 33,
+    "language": "hi",
+    "question": "तकनीकी निविदा को खोलने के लिए कितने अधिकृत ओपनर्स की आवश्यकता होती है?"
+  },
+  {
+    "id": 34,
+    "language": "hi",
+    "question": "प्राइस बिड ओपनिंग के समय पात्र बोलीदाताओं को ईमेल/एसएमएस भेजने की क्या व्यवस्था है?"
+  },
+  {
+    "id": 35,
+    "language": "hi",
+    "question": "मूल्यांकन समिति द्वारा हस्ताक्षरित बिड इवैल्यूएशन रिपोर्ट को पोर्टल पर कैसे अपलोड किया जाता है?"
+  },
+  {
+    "id": 36,
+    "language": "hi",
+    "question": "असफल बोलीदाताओं की ईएमडी (EMD) ऑनलाइन रिफंड होने में कितने दिन का समय लगता है?"
+  },
+  {
+    "id": 37,
+    "language": "hi",
+    "question": "एल-1 बोलीदाता की ईएमडी को विभाग के खाते में जमा करने या वापस करने की क्या शर्तें हैं?"
+  },
+  {
+    "id": 38,
+    "language": "hi",
+    "question": "नए विक्रेता (Vendor) पंजीकरण के लिए कौन-कौन से दस्तावेज अनिवार्य हैं?"
+  },
+  {
+    "id": 39,
+    "language": "hi",
+    "question": "यदि कोई विक्रेता अपना पासवर्ड भूल जाता है तो पासवर्ड रिसेट करने की क्या प्रक्रिया है?"
+  },
+  {
+    "id": 40,
+    "language": "hi",
+    "question": "नवीनीकृत डिजिटल सिग्नेचर सर्टिफिकेट (Class-III DSC) को पोर्टल पर कैसे मैप किया जाता है?"
+  },
+  {
+    "id": 41,
+    "language": "hi-Latn",
+    "question": "Office laptops direct GeM portal se purchase karne ke liye kya thresholds hain?"
+  },
+  {
+    "id": 42,
+    "language": "hi-Latn",
+    "question": "Kya department bina tender nikale GeM se computer directly kharid sakta hai?"
+  },
+  {
+    "id": 43,
+    "language": "hi-Latn",
+    "question": "Rule 145 ke under inter-departmental purchase direct procurement kaise ki jati hai?"
+  },
+  {
+    "id": 44,
+    "language": "hi-Latn",
+    "question": "Emergency situation me direct purchase karne ke liye GFR me kya rule hai?"
+  },
+  {
+    "id": 45,
+    "language": "hi-Latn",
+    "question": "Computers ka AMC karne ke liye limited tender ya open tender kab karna hoga?"
+  },
+  {
+    "id": 46,
+    "language": "hi-Latn",
+    "question": "Kya hum higher approval se bachne ke liye order split karke small purchases kar sakte hain?"
+  },
+  {
+    "id": 47,
+    "language": "hi-Latn",
+    "question": "Department operator ko portal par new tender creation wizard kaise start karna hoga?"
+  },
+  {
+    "id": 48,
+    "language": "hi-Latn",
+    "question": "Maker-checker rules ke according operator directly tender publish kyu nahi kar sakta?"
+  },
+  {
+    "id": 49,
+    "language": "hi-Latn",
+    "question": "Tender ki last submission date extend karne ke liye corrigendum kaise initiate kare?"
+  },
+  {
+    "id": 50,
+    "language": "hi-Latn",
+    "question": "Due date change corrigendum ko approver Class-III DSC se kaise publish karega?"
+  },
+  {
+    "id": 51,
+    "language": "hi-Latn",
+    "question": "Technical bid open karne ke liye open ka physical DSC tokens mapping mandatory hai kya?"
+  },
+  {
+    "id": 52,
+    "language": "hi-Latn",
+    "question": "Price bid opening kab aur kis state ke approval ke baad active hoti hai?"
+  },
+  {
+    "id": 53,
+    "language": "hi-Latn",
+    "question": "Unsuccessful bidders ki online EMD auto-refund account me kitne din me credit hoti hai?"
+  },
+  {
+    "id": 54,
+    "language": "hi-Latn",
+    "question": "L1 bidder ki EMD ko performance security deposit me adjust karne ka kya option hai?"
+  },
+  {
+    "id": 55,
+    "language": "hi-Latn",
+    "question": "Evaluation committee members final bid evaluation report draft kaise download karte hain?"
+  },
+  {
+    "id": 56,
+    "language": "hi-Latn",
+    "question": "New supplier registration portal profile create karne ke liye kya documentation chahiye?"
+  },
+  {
+    "id": 57,
+    "language": "hi-Latn",
+    "question": "Vendor password reset karne ke liye security questions ka use kaise kiya jata hai?"
+  },
+  {
+    "id": 58,
+    "language": "hi-Latn",
+    "question": "Renewed Class-III DSC token portal account profile pe map kaise kare?"
+  },
+  {
+    "id": 59,
+    "language": "hi-Latn",
+    "question": "Kya MSMEs ya startups ko e-procurement tender participate karne me EMD exemption milta hai?"
+  },
+  {
+    "id": 60,
+    "language": "hi-Latn",
+    "question": "EMD payment online cut hone ke baad agar receipt na mile toh bank transaction ticket kaise check kare?"
+  }
+]

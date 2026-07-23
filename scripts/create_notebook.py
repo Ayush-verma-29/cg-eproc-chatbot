@@ -1,0 +1,263 @@
+import json
+
+def create_notebook():
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "# 🚀 Chhattisgarh e-Procurement Chatbot - Fine-Tuning Notebook\n",
+                    "This notebook fine-tunes **Llama 3 (8B)** or **Mistral 7B** on your custom bilingual 2,000-sample Chhattisgarh Store Purchase Rules dataset using **Unsloth**.\n",
+                    "\n",
+                    "### ⏳ Estimated Training Time: ~15 to 20 minutes on a Free T4 GPU.\n",
+                    "\n",
+                    "### 📋 Steps to Follow:\n",
+                    "1. Set Colab Runtime to **GPU** (Runtime -> Change runtime type -> T4 GPU).\n",
+                    "2. Run all cells in sequence.\n",
+                    "3. When prompted, upload the `mistral_train_dataset.jsonl` file created in your workspace."
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "### 1. Install Unsloth and Dependencies"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "# Install Unsloth (specifically optimized for Colab GPUs)\n",
+                    "!pip install \"unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git\"\n",
+                    "!pip install --no-deps xformers trl peft accelerate bitsandbytes"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "### 2. Mount Google Drive\n",
+                    "We will save our final fine-tuned model (GGUF format) directly to Google Drive so it isn't lost when the Colab session terminates."
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "from google.colab import drive\n",
+                    "drive.mount('/content/drive')"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "### 3. Upload your Training Dataset\n",
+                    "Run this cell and upload the `mistral_train_dataset.jsonl` file from your computer's `c:\\cg-eproc-chatbot\\data\\` directory."
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "from google.colab import files\n",
+                    "import os\n",
+                    "\n",
+                    "uploaded = files.upload()\n",
+                    "dataset_filename = list(uploaded.keys())[0]\n",
+                    "print(f\"Uploaded dataset: {dataset_filename}\")"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "### 4. Load Base Model (optimized 4-bit Llama-3-8B)"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "from unsloth import FastLanguageModel\n",
+                    "import torch\n",
+                    "\n",
+                    "max_seq_length = 2048\n",
+                    "dtype = None  # None for auto-detection\n",
+                    "load_in_4bit = True  # Use 4bit quantization to save memory\n",
+                    "\n",
+                    "model, tokenizer = FastLanguageModel.from_pretrained(\n",
+                    "    model_name = \"unsloth/llama-3-8b-Instruct-bnb-4bit\",\n",
+                    "    max_seq_length = max_seq_length,\n",
+                    "    dtype = dtype,\n",
+                    "    load_in_4bit = load_in_4bit,\n",
+                    ")"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "### 5. Setup PEFT (LoRA) Adapters\n",
+                    "We configure Parameter-Efficient Fine-Tuning (PEFT) targeting the self-attention projection weights of the model."
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "model = FastLanguageModel.get_peft_model(\n",
+                    "    model,\n",
+                    "    r = 16,\n",
+                    "    target_modules = [\"q_proj\", \"k_proj\", \"v_proj\", \"o_proj\",\n",
+                    "                      \"gate_proj\", \"up_proj\", \"down_proj\",],\n",
+                    "    lora_alpha = 16,\n",
+                    "    lora_dropout = 0,\n",
+                    "    bias = \"none\",\n",
+                    "    use_gradient_checkpointing = \"unsloth\",\n",
+                    "    random_state = 3407,\n",
+                    "    use_rslora = False,\n",
+                    "    loftq_config = None,\n",
+                    ")"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "### 6. Process the Dataset\n",
+                    "Apply the model's chat template structure to the training entries."
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "import json\n",
+                    "from datasets import Dataset\n",
+                    "\n",
+                    "dataset_data = []\n",
+                    "with open(dataset_filename, \"r\", encoding=\"utf-8\") as f:\n",
+                    "    for line in f:\n",
+                    "        if line.strip():\n",
+                    "            dataset_data.append(json.loads(line))\n",
+                    "\n",
+                    "def format_prompts(examples):\n",
+                    "    texts = []\n",
+                    "    for messages in examples[\"messages\"]:\n",
+                    "        text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)\n",
+                    "        texts.append(text)\n",
+                    "    return { \"text\" : texts }\n",
+                    "\n",
+                    "raw_dataset = Dataset.from_list(dataset_data)\n",
+                    "dataset = raw_dataset.map(format_prompts, batched=True)\n",
+                    "print(f\"Loaded and formatted {len(dataset)} training samples.\")"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "### 7. Configure SFTTrainer and Run Fine-Tuning"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "from trl import SFTTrainer\n",
+                    "from transformers import TrainingArguments\n",
+                    "\n",
+                    "trainer = SFTTrainer(\n",
+                    "    model = model,\n",
+                    "    tokenizer = tokenizer,\n",
+                    "    train_dataset = dataset,\n",
+                    "    dataset_text_field = \"text\",\n",
+                    "    max_seq_length = max_seq_length,\n",
+                    "    dataset_num_proc = 2,\n",
+                    "    packing = False,\n",
+                    "    args = TrainingArguments(\n",
+                    "        per_device_train_batch_size = 2,\n",
+                    "        gradient_accumulation_steps = 4,\n",
+                    "        warmup_steps = 5,\n",
+                    "        max_steps = 300, # ~3 epochs on batch size 8 for 2000 samples\n",
+                    "        learning_rate = 2e-4,\n",
+                    "        fp16 = not torch.cuda.is_bf16_supported(),\n",
+                    "        bf16 = torch.cuda.is_bf16_supported(),\n",
+                    "        logging_steps = 10,\n",
+                    "        optim = \"adamw_8bit\",\n",
+                    "        weight_decay = 0.01,\n",
+                    "        lr_scheduler_type = \"linear\",\n",
+                    "        seed = 3407,\n",
+                    "        output_dir = \"outputs\",\n",
+                    "    ),\n",
+                    ")\n",
+                    "\n",
+                    "print(\"Starting fine-tuning...\")\n",
+                    "trainer_stats = trainer.train()\n",
+                    "print(\"Fine-tuning complete!\")"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "### 8. Export the Merged Model to GGUF (for offline/Ollama use)\n",
+                    "We merge our trained adapter weights with the base model and convert it to a 4-bit quantized GGUF file. This file will be saved directly into your Google Drive under `MyDrive/cg_procurement_model.gguf`."
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "save_path = \"/content/drive/MyDrive/cg_procurement_model\"\n",
+                    "print(f\"Saving merged GGUF model directly to Google Drive: {save_path}.gguf\")\n",
+                    "\n",
+                    "# unsloth automatically handles GGUF quantization\n",
+                    "model.save_pretrained_gguf(\n",
+                    "    save_path,\n",
+                    "    tokenizer,\n",
+                    "    quantization_method = \"q4_k_m\" # Quantized standard format\n",
+                    ")\n",
+                    "print(\"🎉 Model GGUF saved successfully to your Google Drive!\")"
+                ]
+            }
+        ],
+        "metadata": {
+            "kernelspec": {
+                "display_name": "Python 3",
+                "language": "python",
+                "name": "python3"
+            },
+            "language_info": {
+                "name": "python"
+            }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+    }
+    
+    with open(r"c:\cg-eproc-chatbot\scripts\fine_tune_cg_procurement.ipynb", "w", encoding="utf-8") as f:
+        json.dump(notebook, f, indent=2, ensure_ascii=False)
+    print("Notebook created successfully.")
+
+if __name__ == "__main__":
+    create_notebook()

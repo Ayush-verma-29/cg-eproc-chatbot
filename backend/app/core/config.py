@@ -25,7 +25,7 @@ class Settings:
     # Ollama Configuration
     OLLAMA_BASE_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
     EMBEDDING_MODEL = "bge-m3"
-    LLM_MODEL = "mistral:latest"
+    LLM_MODEL = "cg-procurement-chatbot"
     TRANSLATION_MODEL = "sarvam-cpu"
     
     # Qdrant Configuration

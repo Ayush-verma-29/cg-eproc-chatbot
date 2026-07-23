@@ -29,7 +29,7 @@ def process_single_file(file_path: Path, role: str, processor: DocumentProcessor
         text, force_ocr_for_doc = processor.extract_text_from_pdf(str(file_path))
     elif ext == '.docx':
         text, force_ocr_for_doc = processor.extract_text_from_docx(str(file_path))
-    elif ext == '.txt':
+    elif ext in ('.txt', '.md'):
         text, force_ocr_for_doc = processor.extract_text_from_txt(str(file_path))
     else:
         text, force_ocr_for_doc = "", False
@@ -52,7 +52,7 @@ def process_single_file(file_path: Path, role: str, processor: DocumentProcessor
         }
     )
     
-    chunks = processor.text_splitter.split_documents([doc])
+    chunks = processor.split_documents_semantically([doc])
     
     # Determine if Hindi document based on filename, forced OCR, or character density
     is_hindi_doc = False
@@ -104,7 +104,8 @@ def main():
     ]
     
     govt_files = [
-        (Path("backend/data/govt_rules/Précis  e-Procurement Project.docx"), "Précis  e-Procurement Project.docx")
+        (Path("backend/data/govt_rules/Précis  e-Procurement Project.docx"), "Précis  e-Procurement Project.docx"),
+        (Path("backend/data/govt_rules/portal_operations_manual.md"), "portal_operations_manual.md")
     ]
     
     # Process and add Vendor Files

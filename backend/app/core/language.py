@@ -2,14 +2,19 @@
 import re
 import time
 from typing import List
-import httpx
-from googletrans import Translator
+from deep_translator import GoogleTranslator
+from langdetect import detect
 
 HINDI_RANGE = re.compile(r'[\u0900-\u097F]')
-HINGLISH_WORDS = re.compile(r'\b(?:kya|ko|hain|ke|liye|hona|chahiye|fayde|fayda|milega|milte|kab|kaise|kon|kis|nhi|nahi|sakte)\b', re.IGNORECASE)
-
-# Initialize Google Translate with robust 30-second timeout
-translator = Translator(timeout=httpx.Timeout(30.0))
+STRONG_HINGLISH_WORDS = re.compile(
+    r'\b(?:kya|hain|ke|liye|hona|chahiye|fayde|fayda|milega|milte|kab|kaise|nhi|nahi|sakte|mujhe|kharidna|kharidne|kharid|batao|batayein|dekho|kare|karna|karo|gaya|gaye|rha|raha|rhi|rahi|apna|apne|mera|meri|hum|humein)\b',
+    re.IGNORECASE
+)
+WEAK_HINGLISH_WORDS = re.compile(
+    r'\b(?:lakh|lakhs|ko|hai|tak|kon|kis)\b',
+    re.IGNORECASE
+)
+HINGLISH_WORDS = STRONG_HINGLISH_WORDS
 
 class LanguageService:
     @staticmethod
@@ -17,21 +22,21 @@ class LanguageService:
         """Check if text contains Hindi characters or Hinglish patterns"""
         if HINDI_RANGE.search(text):
             return True
-        if HINGLISH_WORDS.search(text):
+        if STRONG_HINGLISH_WORDS.search(text):
             return True
         if text.isascii():
             return False
         try:
-            # Check with googletrans detection
-            detection = translator.detect(text)
-            if detection.lang in ['hi', 'mr', 'ne', 'hi-Latn']:
+            # Check with langdetect offline detection
+            lang = detect(text)
+            if lang in ['hi', 'mr', 'ne']:
                 return True
         except:
             pass
         return False
 
     @staticmethod
-    def is_hindi_document(text: str) -> bool:
+    def is_hindi_document(text: str, threshold: float = 0.15) -> bool:
         """Check density of Devanagari characters in text to distinguish Hindi documents from English documents."""
         if not text:
             return False
@@ -41,8 +46,8 @@ class LanguageService:
         if not all_letters:
             return False
         ratio = len(devanagari_chars) / len(all_letters)
-        # Threshold of 15% Devanagari characters (real Hindi docs have >30%)
-        return ratio >= 0.15
+        # Real Hindi docs usually have >30%; use higher threshold for English-named files
+        return ratio >= threshold
 
     @staticmethod
     def detect_language(text: str) -> str:
@@ -92,8 +97,7 @@ class LanguageService:
     
     @staticmethod
     def translate_to_english(text: str) -> str:
-        """Translate Hindi/Hinglish to English using Google Translate with retries and session recreation"""
-        global translator
+        """Translate Hindi/Hinglish to English using Google Translate with retries"""
         if not text or not text.strip():
             return text
 
@@ -108,39 +112,40 @@ class LanguageService:
         if not LanguageService.is_hindi(text):
             return text
             
-        if getattr(LanguageService, "_offline_mode", False):
-            return text
-            
         translated_text = None
-        for attempt in range(3):
-            try:
-                translation = translator.translate(text, dest='en')
-                if translation and translation.text:
-                    translated_text = translation.text
-                    break
-            except Exception as e:
-                err_str = str(e)
-                if any(err in err_str for err in ["getaddrinfo failed", "unreachable host", "10065", "11001", "10060", "10054", "10061", "timed out", "timeout", "connection"]):
-                    print("   [Network/timeout error detected. Bypassing further translation attempts.]")
-                    LanguageService._offline_mode = True
-                    return text
-                    
-                print(f"   [Attempt {attempt+1}/3] Translation to English failed: {e}")
+        
+        # Check if the query is written in Latin script (ASCII) but detected as Hinglish.
+        # Google Translate's auto-detect will horribly fail on this, so we bypass it directly to local LLM.
+        is_latin_hinglish = not HINDI_RANGE.search(text) and LanguageService.is_hindi(text)
+        
+        if not is_latin_hinglish and not getattr(LanguageService, "_offline_mode", False):
+            for attempt in range(3):
                 try:
-                    translator = Translator(timeout=httpx.Timeout(30.0))
-                except:
-                    pass
-                time.sleep(1 + attempt)
-                
+                    translation = GoogleTranslator(source='auto', target='en').translate(text)
+                    if translation:
+                        translated_text = translation
+                        break
+                except Exception as e:
+                    err_str = str(e)
+                    if any(err in err_str for err in ["getaddrinfo failed", "unreachable host", "10065", "11001", "10060", "10054", "10061", "timed out", "timeout", "connection"]):
+                        print("   [Network/timeout error detected. Bypassing further Google Translate attempts.]")
+                        LanguageService._offline_mode = True
+                        break
+                        
+                    print(f"   [Attempt {attempt+1}/3] Translation to English failed: {e}")
+                    time.sleep(1 + attempt)
+                    
         if translated_text is None or translated_text == text:
             # Fall back to local Ollama translation
             try:
                 from langchain_community.llms import Ollama
                 from app.core.config import settings
-                print(f"   [Google Translate offline/failed. Falling back to local model {settings.LLM_MODEL} for Hindi->English query translation...]")
+                # Use the main chatbot model (much more capable) for Latin Hinglish, fallback to translation model for others
+                target_model = settings.LLM_MODEL if is_latin_hinglish else settings.TRANSLATION_MODEL
+                print(f"   [Translating using local model {target_model} for Hindi/Hinglish query translation...]")
                 local_translator = Ollama(
                     base_url=settings.OLLAMA_BASE_URL,
-                    model=settings.LLM_MODEL,
+                    model=target_model,
                     temperature=0,
                     num_ctx=1024,
                     timeout=30
@@ -170,7 +175,13 @@ class LanguageService:
                 if res.startswith("'") and res.endswith("'"):
                     res = res[1:-1].strip()
                 if res and res != text:
-                    translated_text = res
+                    # Defense-in-depth: Reject translation if local LLM returned safety/refusal phrases
+                    refusal_keywords = ["cannot", "sorry", "apologize", "illegal", "violate", "safety", "guideline", "ethics", "unethical"]
+                    res_lower = res.lower()
+                    if any(kw in res_lower for kw in refusal_keywords):
+                        print(f"   [Local translator returned safety refusal. Discarding translation: {res}]")
+                    else:
+                        translated_text = res
             except Exception as ex:
                 print(f"   [Ollama fallback query translation failed: {ex}]")
 
@@ -497,7 +508,7 @@ class LanguageService:
 
     @staticmethod
     def translate_to_hindi(text: str) -> str:
-        """Translate English to Hindi using local Ollama translator model with fallback to English"""
+        """Translate English to Hindi using Google Translate with local Ollama fallback"""
         if not text or not text.strip():
             return text
 
@@ -509,11 +520,36 @@ class LanguageService:
         except Exception:
             config = {}
 
+        translated_text = None
+
+        # Try Google Translate first if not offline
+        if not getattr(LanguageService, "_offline_mode", False):
+            for attempt in range(3):
+                try:
+                    translation = GoogleTranslator(source='auto', target='hi').translate(text)
+                    if translation:
+                        translated_text = translation
+                        break
+                except Exception as e:
+                    err_str = str(e)
+                    if any(err in err_str for err in ["getaddrinfo failed", "unreachable host", "10065", "11001", "10060", "10054", "10061", "timed out", "timeout", "connection"]):
+                        print("   [Network/timeout error detected. Bypassing further Google Translate attempts.]")
+                        LanguageService._offline_mode = True
+                        break
+                    print(f"   [Attempt {attempt+1}/3] Translation to Hindi failed: {e}")
+                    time.sleep(1 + attempt)
+
+        if translated_text is not None and translated_text != text:
+            cleaned_text = LanguageService.clean_translated_hindi(translated_text)
+            if LanguageService._is_valid_hindi_output(text, cleaned_text):
+                return cleaned_text
+
+        # Fall back to local Ollama translation
         try:
             from langchain_community.llms import Ollama
             from app.core.config import settings
 
-            print(f"   [Translating English response to Hindi using {settings.TRANSLATION_MODEL}...]")
+            print(f"   [Translating English response to Hindi using local model {settings.TRANSLATION_MODEL}...]")
             local_translator = Ollama(
                 base_url=settings.OLLAMA_BASE_URL,
                 model=settings.TRANSLATION_MODEL,
@@ -754,71 +790,266 @@ class LanguageService:
             return text
 
     @staticmethod
+    def translate_to_hinglish(text: str) -> str:
+        """Convert Devanagari Hindi text into a Roman-script Hinglish answer."""
+        if not text or not text.strip():
+            return text
+
+        try:
+            from app.services.admin_config_service import admin_config_service
+            config = admin_config_service.get_config()
+            if not config.get("translation_enabled", True):
+                return text
+        except Exception:
+            config = {}
+
+        # Prefer a local model conversion for natural Hinglish output.
+        try:
+            from langchain_community.llms import Ollama
+            from app.core.config import settings
+
+            print(f"   [Converting Hindi to Hinglish using local model {settings.TRANSLATION_MODEL}...]")
+            local_translator = Ollama(
+                base_url=settings.OLLAMA_BASE_URL,
+                model=settings.TRANSLATION_MODEL,
+                temperature=0,
+                num_ctx=4096,
+                timeout=120
+            )
+            prompt = (
+                "You are a translator that converts Hindi written in Devanagari script into natural, conversational Roman-script Hinglish.\n"
+                "Preserve all formatting, bullets, numbered lists, headings, and line breaks exactly.\n"
+                "Keep abbreviations and technical terms like EMD, GFR, GeM, L1, DSC, CRN, PAN, GST, and portal names unchanged.\n"
+                "Do NOT output any Devanagari or other non-Latin script.\n"
+                "Output only the Hinglish translation without any explanations.\n\n"
+                f"Text:\n{text}\n\nHinglish:"
+            )
+            translated_text = local_translator.invoke(prompt).strip()
+            for sep in ["Hinglish:", "Translation:", "Note:", "नोट:", "Output:"]:
+                if sep in translated_text:
+                    translated_text = translated_text.split(sep)[-1].strip()
+
+            if translated_text.startswith('"') and translated_text.endswith('"'):
+                translated_text = translated_text[1:-1].strip()
+            if translated_text.startswith("'") and translated_text.endswith("'"):
+                translated_text = translated_text[1:-1].strip()
+
+            if translated_text and not HINDI_RANGE.search(translated_text):
+                return re.sub(r'\s+', ' ', translated_text).strip()
+        except Exception as e:
+            print(f"   [Hinglish conversion failed: {e}]")
+
+        # Fallback: transliterate Hindi text to Latin script using indic-transliteration.
+        try:
+            import builtins
+            if not hasattr(builtins, 'unicode'):
+                builtins.unicode = str
+
+            from indic_transliteration import sanscript
+            from indic_transliteration.sanscript import transliterate
+
+            raw = transliterate(text, sanscript.DEVANAGARI, sanscript.IAST)
+            normalized = raw.lower()
+
+            # Remove stray Devanagari characters that may appear in the transliteration output.
+            normalized = re.sub(r'[\u0900-\u097F]+', '', normalized)
+
+            replacements = {
+                'ā': 'a', 'ī': 'i', 'ū': 'u', 'ṝ': 'r', 'ṛ': 'r', 'ḷ': 'l',
+                'ṅ': 'ng', 'ñ': 'n', 'ṇ': 'n', 'ś': 'sh', 'ṣ': 'sh',
+                'ṭ': 't', 'ḍ': 'd', 'ḥ': 'h', 'ṃ': 'm', 'ṁ': 'm',
+                'ē': 'e', 'ō': 'o', 'ç': 'ch', 'ǒ': 'o', 'á': 'a', 'é': 'e',
+                'í': 'i', 'ó': 'o', 'ú': 'u', 'ä': 'a', 'ë': 'e', 'ï': 'i',
+            }
+            for src, dst in replacements.items():
+                normalized = normalized.replace(src, dst)
+
+            # Common Hinglish lexical fixes
+            normalized = re.sub(r'\bhaiṃ\b', 'hain', normalized)
+            normalized = re.sub(r'\bhaiṁ\b', 'hain', normalized)
+            normalized = re.sub(r'\bjaṃ\b', 'jam', normalized)
+            normalized = re.sub(r'\bjā\b', 'ja', normalized)
+            normalized = re.sub(r'\bsaṃbhavit\b', 'sambhavit', normalized)
+            normalized = re.sub(r'\bāyā\b', 'aya', normalized)
+            normalized = re.sub(r'\bā\b', 'a', normalized)
+            normalized = re.sub(r'\bī\b', 'i', normalized)
+            normalized = re.sub(r'\s+', ' ', normalized).strip()
+
+            normalized = re.sub(r'[\u0900-\u097F]+', '', normalized)
+            if normalized and not HINDI_RANGE.search(normalized):
+                return normalized
+        except Exception as e:
+            print(f"   [Hinglish romanization fallback failed: {e}]")
+
+        return text
+
+    @staticmethod
+    def _is_network_translation_error(err_str: str) -> bool:
+        return any(
+            err in err_str
+            for err in [
+                "getaddrinfo failed", "unreachable host", "10065", "11001", "10060",
+                "10054", "10061", "timed out", "timeout", "connection", "429", "Too Many Requests",
+            ]
+        )
+
+    @staticmethod
+    def translate_ingestion_chunk_local_ollama(text: str) -> str:
+        """Translate a single document chunk to English during ingestion (not chat queries)."""
+        if not text or not text.strip() or not LanguageService.is_hindi(text):
+            return text
+        try:
+            from langchain_community.llms import Ollama
+            from app.core.config import settings
+            local_translator = Ollama(
+                base_url=settings.OLLAMA_BASE_URL,
+                model=settings.TRANSLATION_MODEL,
+                temperature=0,
+                num_ctx=4096,
+                timeout=120,
+            )
+            prompt = (
+                "You are a professional Hindi to English translator specializing in government procurement.\n"
+                "Translate the following Hindi document text into clean, natural English.\n"
+                "Preserve numbers, rule references, page markers, and formatting.\n"
+                "Output ONLY the English translation without notes or explanations.\n\n"
+                f"Text:\n{text}\n\nEnglish Translation:"
+            )
+            res = local_translator.invoke(prompt).strip()
+            for sep in ["English Translation:", "Translation:", "Note:"]:
+                if sep in res:
+                    res = res.split(sep)[-1].strip()
+            return res or text
+        except Exception as e:
+            print(f"      [Ingestion chunk Ollama translation failed: {e}]")
+            return text
+
+    @staticmethod
     def translate_chunks_to_english(chunks_text: List[str]) -> List[str]:
         """Translate a list of Hindi chunks to English using batched Google Translate requests"""
-        global translator
         translated_all = []
-        LanguageService._offline_mode = False
-        
-        # Batch chunks into groups of up to 4 chunks (approx 4000 characters total)
-        batch_size = 4
-        for idx in range(0, len(chunks_text), batch_size):
-            batch = chunks_text[idx:idx+batch_size]
-            
-            # If network connection went offline, bypass translation
-            if getattr(LanguageService, "_offline_mode", False):
-                translated_all.extend(batch)
+        ingestion_offline = False
+
+        # Dynamically batch chunks so combined character count is under 4200 (Google Translate limit is 5000)
+        batches = []
+        current_batch = []
+        current_len = 0
+        for chunk in chunks_text:
+            chunk_len = len(chunk)
+            if current_batch and (current_len + chunk_len + 15 > 4200):
+                batches.append(current_batch)
+                current_batch = [chunk]
+                current_len = chunk_len
+            else:
+                current_batch.append(chunk)
+                current_len += chunk_len + 15
+        if current_batch:
+            batches.append(current_batch)
+
+        for batch_idx, batch in enumerate(batches, start=1):
+            if ingestion_offline:
+                print(f"      [Ingestion offline mode] Translating batch {batch_idx}/{len(batches)} ({len(batch)} chunks) via Ollama...")
+                translated_batch = LanguageService.translate_batch_local_ollama(batch)
+                translated_all.extend(translated_batch)
                 continue
-                
-            # Check if any chunk in the batch is Hindi (usually all are, if doc is Hindi)
+
+            # Only translate chunks that actually contain Hindi
             has_hindi = any(LanguageService.is_hindi(t) for t in batch)
             if not has_hindi:
                 translated_all.extend(batch)
                 continue
-                
+
             delimiter = "\n=== CHUNK ===\n"
             combined = delimiter.join(batch)
-            
             translated_batch = None
-            try:
-                res = translator.translate(combined, dest='en')
-                if res and res.text:
-                    # Split using regex to handle spacing and case alterations from translator
-                    parts = re.split(r'===?\s*CHUNK\s*===?', res.text, flags=re.IGNORECASE)
-                    parts = [p.strip() for p in parts]
-                    
-                    # Ensure the translated chunks match the input chunk list length
-                    if len(parts) == len(batch):
-                        translated_batch = parts
-                    else:
-                        print(f"      [Batch split mismatch: got {len(parts)} parts, expected {len(batch)}. Falling back to individual.]")
-            except Exception as e:
-                err_str = str(e)
-                if any(err in err_str for err in ["getaddrinfo failed", "unreachable host", "10065", "11001", "10060", "10054", "10061", "timed out", "timeout", "connection"]):
-                    print("      [Network/timeout error or rate limit detected during batch. Skipping translation for this document.]")
-                    LanguageService._offline_mode = True
-                    translated_all.extend(batch)
-                    continue
-                    
-                print(f"      [Batch translation failed: {e}. Falling back to individual.]")
+
+            for attempt in range(3):
                 try:
-                    translator = Translator(timeout=httpx.Timeout(30.0))
-                except:
-                    pass
-            
-            # Fallback to individual translation if batch translation failed or mismatch occurred
+                    res = GoogleTranslator(source='auto', target='en').translate(combined)
+                    if res:
+                        parts = re.split(r'===?\s*CHUNK\s*===?', res, flags=re.IGNORECASE)
+                        parts = [p.strip() for p in parts]
+                        if len(parts) == len(batch):
+                            translated_batch = parts
+                            break
+                        print(
+                            f"      [Batch split mismatch: got {len(parts)} parts, expected {len(batch)}. "
+                            f"Retry {attempt + 1}/3..."
+                        )
+                except Exception as e:
+                    err_str = str(e)
+                    if LanguageService._is_network_translation_error(err_str):
+                        print(f"      [Google Translate network error (attempt {attempt + 1}/3): {e}]")
+                        time.sleep(2 + attempt * 2)
+                        if attempt == 2:
+                            print("      [Switching ingestion to local Ollama translation fallback.]")
+                            ingestion_offline = True
+                            translated_batch = LanguageService.translate_batch_local_ollama(batch)
+                            translated_all.extend(translated_batch)
+                            break
+                    else:
+                        print(f"      [Batch translation failed: {e}. Falling back to individual chunks.]")
+                        break
+
+            if ingestion_offline:
+                continue
+
             if translated_batch is None:
-                if getattr(LanguageService, "_offline_mode", False):
-                    translated_batch = batch
-                else:
-                    translated_batch = []
-                    for t in batch:
-                        translated_batch.append(LanguageService.translate_to_english(t))
-                    
+                translated_batch = []
+                for t in batch:
+                    if LanguageService.is_hindi(t):
+                        translated_batch.append(LanguageService.translate_ingestion_chunk_local_ollama(t))
+                    else:
+                        translated_batch.append(t)
+
             translated_all.extend(translated_batch)
-            # Optional: short sleep to prevent rate limiting
-            time.sleep(0.2)
-            
+            time.sleep(1.5)
+
         return translated_all
+
+    @staticmethod
+    def translate_batch_local_ollama(batch: List[str]) -> List[str]:
+        """Translate a batch of chunks to English using the local Ollama model"""
+        hindi_batch = [t for t in batch if LanguageService.is_hindi(t)]
+        if not hindi_batch:
+            return batch
+
+        try:
+            from langchain_community.llms import Ollama
+            from app.core.config import settings
+            local_translator = Ollama(
+                base_url=settings.OLLAMA_BASE_URL,
+                model=settings.TRANSLATION_MODEL,
+                temperature=0,
+                num_ctx=4096,
+                timeout=120,
+            )
+
+            delimiter = "\n=== CHUNK ===\n"
+            combined = delimiter.join(hindi_batch)
+
+            prompt = (
+                "You are a professional Hindi to English translator specializing in government procurement.\n"
+                "Translate the following Hindi text chunk by chunk into clean, natural English.\n"
+                "Keep the delimiter '=== CHUNK ===' exactly where it is to separate the translated chunks.\n\n"
+                "Constraints:\n"
+                "- Output ONLY the English translations separated by '=== CHUNK ==='. Do NOT add any notes, headers, or explanations.\n\n"
+                f"Content to translate:\n{combined}\n\n"
+                "English Translation:"
+            )
+            res = local_translator.invoke(prompt).strip()
+            parts = re.split(r'===?\s*CHUNK\s*===?', res, flags=re.IGNORECASE)
+            parts = [p.strip() for p in parts]
+            if len(parts) == len(hindi_batch):
+                translated_map = dict(zip(hindi_batch, parts))
+                return [translated_map.get(t, t) for t in batch]
+            print(f"      [Ollama batch count mismatch: got {len(parts)}, expected {len(hindi_batch)}. Falling back to individual.]")
+        except Exception as e:
+            print(f"      [Local batch Ollama translation failed: {e}]")
+
+        return [
+            LanguageService.translate_ingestion_chunk_local_ollama(t) if LanguageService.is_hindi(t) else t
+            for t in batch
+        ]
 
 language_service = LanguageService()

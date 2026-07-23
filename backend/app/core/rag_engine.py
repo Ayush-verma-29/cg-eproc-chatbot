@@ -4,6 +4,8 @@ import os
 import time
 import queue
 import threading
+import requests
+import json
 from langchain_community.llms import Ollama
 from typing import Optional, Dict, List
 from app.services.vector_store import VectorStoreManager
@@ -17,6 +19,13 @@ STOPWORDS = {
     "transparency", "having", "with", "from", "that", "this", "these", "those", "under",
     "rules/sections", "related", "document", "documents", "reference"
 }
+
+# ── Sarvam API (used ONLY for threshold/comparison table queries) ──────────────
+SARVAM_API_KEY  = "sk_wnn7d9p5_Wwo3KdUINlvAYW0GkKEh4WRv"
+SARVAM_API_URL  = "https://api.sarvam.ai/v1/chat/completions"
+SARVAM_MODEL    = "sarvam-105b"
+# ──────────────────────────────────────────────────────────────────────────────
+
 
 # Domain topics for metadata-driven retrieval
 TOPIC_KEYWORDS = {
@@ -127,7 +136,7 @@ _DOMAIN_KEYWORDS = re.compile(
     r'post.?tender.?negotiation|split|splitting|'
 
     # ── GFR / financial rules ─────────────────────────────────────────────────
-    r'financial|general.?financial|gfr.?2017|'
+    r'financial|general.?financial|\bgfr\b|gfr.?2017|'
     r'rate|price|quota|estimate|budget|expenditure|appropriation|'
     r'works|goods|service|consulting|consultancy|'
     r'policy|guideline|circular|notification|order|instruction|office.?memo|'
@@ -164,15 +173,12 @@ _DOMAIN_KEYWORDS = re.compile(
     r'\u0938\u0930\u0915\u093e\u0930\u0940|\u0916\u0930\u0940\u0926|\u092a\u094d\u0930\u0915\u094d\u0930\u093f\u092f\u093e|\u0926\u0938\u094d\u0924\u093e\u0935\u0947\u091c\u093c|\u092a\u094d\u0930\u092e\u093e\u0923\u092a\u0924\u094d\u0930|'
 
     # ── Hinglish phrases ─────────────────────────────────────────────────────
-    r'kaise|kese|karna|kare|hoga|bhare|kitna|kitni|kitne|percent|'
-    r'register\s+kese|register\s+kaise|kese\s+register|kaise\s+register|'
+    r'percent|register\s+kese|register\s+kaise|kese\s+register|kaise\s+register|'
     r'panjikar|panjikaran|bijak|jama|darj|nayi|naya\s+user|new\s+user|'
-    r'tender\s+kaise|bid\s+kaise|kya\s+hai|kya\s+hota|'
+    r'tender\s+kaise|bid\s+kaise|'
 
     # ── Common query action words ─────────────────────────────────────────────
-    r'how\s+to|what\s+is|explain|describe|define|steps\s+for|procedure|'
-    r'difference\s+between|maximum|minimum|mandatory|required|eligible|'
-    r'deadline|last\s+date|duration|days|month|year',
+    r'procedure|deadline|last\s+date',
     re.IGNORECASE | re.UNICODE
 )
 
@@ -201,16 +207,32 @@ _GREETING_RESPONSE_HI = (
 )
 
 
-def _check_intent(question: str, detected_lang: str) -> Optional[str]:
+def _check_greeting_or_assistant(question: str, detected_lang: str) -> Optional[str]:
     """
-    Returns a ready-made response string if the query is a greeting / off-topic,
-    or matches any blacklist rules, or None if the query should proceed through the normal RAG pipeline.
+    Returns a greeting or assistant warning response if the query is a greeting,
+    wake word, or matches blacklist rules, otherwise None.
     """
-    # Check custom blacklist rules first
+    q_lower = question.lower().strip()
+    
+    # Check for voice assistant wake words / names (e.g. siri, alexa, bixby, cortana, google assistant) in English and Devanagari
+    assistant_pattern = re.compile(r'\b(?:siri|alexa|bixby|cortana|hey\s+google|ok\s+google)\b|सिरी|एलेक्सा|गूगल', re.IGNORECASE)
+    if assistant_pattern.search(q_lower):
+        if detected_lang == "hi":
+            return (
+                "नमस्ते! मैं आपका **छत्तीसगढ़ ई-प्रोक्योरमेंट सहायक** हूँ (सिरी/एलेक्सा/गूगल नहीं)।\n\n"
+                "मैं पोर्टल पंजीकरण, बोली जमा करने और छत्तीसगढ़ भंडार क्रय नियमों से संबंधित प्रश्नों में आपकी सहायता कर सकता हूँ। "
+                "कृपया मुझसे ई-प्रोक्योरमेंट से संबंधित कोई प्रश्न पूछें!"
+            )
+        return (
+            "Hello! I am your **CG e-Procurement Assistant** (not Siri/Alexa/Google).\n\n"
+            "I can help you with portal registration, bid submission, and Chhattisgarh Store Purchase Rules. "
+            "Please ask me a question related to e-procurement!"
+        )
+
+    # Check custom blacklist rules
     try:
         from app.services.admin_config_service import admin_config_service
         config = admin_config_service.get_config()
-        q_lower = question.lower()
         for rule in config.get("blacklist_rules", []):
             pattern_str = rule.get("pattern", "")
             if pattern_str:
@@ -225,39 +247,33 @@ def _check_intent(question: str, detected_lang: str) -> Optional[str]:
     if len(stripped) <= 4 and not _DOMAIN_KEYWORDS.search(stripped):
         return _GREETING_RESPONSE_HI if detected_lang == "hi" else _GREETING_RESPONSE_EN
 
-    # ── Buying intent follow-up validation ──────────────────────────────────
-    is_general_question = re.search(
-        r'\b(?:what|which|who|whom|when|why|where|how\s+many|how\s+much|limit|rate|percentage|exempt|timeline|difference|penalty|recommendation|binding|hours|days|rule|clause|नियम|प्रतिशत|पेनाल्टी|जुर्माना|समय|घंटे|दिन|अंतर|सीमा|अमानत)\b',
-        stripped, re.I
-    )
-    buying_match = re.search(r'\b(?:buy|purchase|procure|order|acquire|खरीद|क्रय|लेना|सामग्री)\b', stripped, re.I)
-    if buying_match and not is_general_question:
-        # Check if the query already has both quantity and price/value details
-        has_price_details = any(term in stripped.lower() for term in ["rs", "rupee", "lakh", "thousand", "budget", "cost", "रुपए", "लाख", "हजार", "बजट", "कीमत"]) or re.search(r'\b\d+\b', stripped)
-        has_qty_details = any(term in stripped.lower() for term in ["quantity", "qty", "units", "pieces", "laptops", "projectors", "computers", "मात्रा", "पीस", "इकाई"]) or re.search(r'\b\d+\b', stripped)
-        
-        # If it's missing details, prompt the user with a follow-up question
-        if not (has_price_details and has_qty_details):
-            if detected_lang == "hi":
-                return (
-                    "छत्तीसगढ़ भंडार क्रय नियमों और GFR के तहत सही खरीद रोडमैप और दिशानिर्देश प्रदान करने के लिए, क्या आप कृपया निर्दिष्ट कर सकते हैं:\n"
-                    "1. आप कितनी **मात्रा** (quantity) में सामग्री/लैपटॉप खरीदना चाहते हैं?\n"
-                    "2. अनुमानित **कुल बजट** (estimated budget) या लागत क्या है?\n"
-                    "3. क्या सामग्री **GeM पोर्टल पर उपलब्ध है** (या क्या आपको ऑफलाइन निविदा/स्थानीय क्रय समिति के दिशानिर्देशों की आवश्यकता है)?"
-                )
-            return (
-                "To provide the correct step-by-step procurement roadmap under the Chhattisgarh Store Purchase Rules and GFR, could you please specify:\n"
-                "1. The **quantity** of items (laptops, etc.) you wish to purchase?\n"
-                "2. The **estimated total budget** or cost?\n"
-                "3. Whether the item is **available on the GeM portal** (or if you require guidelines for offline tendering/LPC)?"
-            )
-
     # Explicit greeting pattern match
     if _GREETING_PATTERNS.match(stripped):
         return _GREETING_RESPONSE_HI if detected_lang == "hi" else _GREETING_RESPONSE_EN
 
-    # Medium-length input (≤30 chars) with NO domain keyword → likely off-topic
-    if len(stripped) <= 30 and not _DOMAIN_KEYWORDS.search(stripped):
+    return None
+
+
+def _check_off_topic(question: str, detected_lang: str) -> Optional[str]:
+    """
+    Returns an off-topic redirection warning if the query is off-topic, an entertainment/joke request,
+    or a non-procurement query, otherwise None.
+    """
+    stripped = question.strip()
+    q_lower = stripped.lower()
+
+    # 1. Explicit Entertainment / Off-Topic / Non-Procurement Intent Patterns
+    # (Matches jokes, riddles, recipes, sports, entertainment, coding/programming, casual insults/complaints)
+    offtopic_patterns = re.compile(
+        r'\b(?:joke|jokes|funny|chutkula|chutkule|story|kahani|poem|poetry|song|geet|'
+        r'recipe|biryani|cricket|football|world\s+cup|fifa|movie|film|game|riddle|'
+        r'weather|sing|dance|useless|stupid|rubbish|nonsense|trash|'
+        r'python|c\+\+|coding|programming|neural\s+network|machine\s+learning|'
+        r'binary\s+search|java\s+code|code\s+error|derivative)\b',
+        re.IGNORECASE
+    )
+
+    if offtopic_patterns.search(q_lower):
         if detected_lang == "hi":
             return (
                 "कृपया ई-प्रोक्योरमेंट से संबंधित कोई प्रश्न पूछें।\n"
@@ -268,12 +284,117 @@ def _check_intent(question: str, detected_lang: str) -> Optional[str]:
             "Example: *'How do I register as a vendor?'* or *'What is the EMD rate?'*"
         )
 
-    return None  # Proceed with RAG
+    # 2. General input without domain keywords
+    if not _DOMAIN_KEYWORDS.search(stripped):
+        if detected_lang == "hi":
+            return (
+                "कृपया ई-प्रोक्योरमेंट से संबंधित कोई प्रश्न पूछें।\n"
+                "उदाहरण: *'वेंडर पंजीकरण कैसे करें?'* या *'EMD की दर क्या है?'*"
+            )
+        return (
+            "Please ask a question related to the Chhattisgarh e-Procurement Portal.\n"
+            "Example: *'How do I register as a vendor?'* or *'What is the EMD rate?'*"
+        )
+
+    return None
+
+class SarvamLLM:
+    def __init__(self, api_key: str, api_url: str, model: str, fallback_llm=None):
+        self.api_key = api_key
+        self.api_url = api_url
+        self.model = model
+        self.temperature = 0.0
+        self.fallback_llm = fallback_llm
+
+    def invoke(self, prompt: str) -> str:
+        payload = {
+            "model": self.model,
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 4096,
+            "temperature": self.temperature,
+        }
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json"
+        }
+        try:
+            resp = requests.post(self.api_url, headers=headers, json=payload, timeout=60)
+            if resp.status_code == 200:
+                data = resp.json()
+                msg = data["choices"][0]["message"]
+                content = msg.get("content", "")
+                reasoning = msg.get("reasoning_content", "")
+                if content:
+                    return content.strip()
+                elif reasoning:
+                    return reasoning.strip()
+            print(f"⚠️ [Sarvam API] HTTP Error {resp.status_code}: {resp.text} — falling back to local LLM")
+            if self.fallback_llm:
+                return self.fallback_llm.invoke(prompt)
+            return f"Error {resp.status_code}: {resp.text}"
+        except Exception as e:
+            print(f"⚠️ [Sarvam API Connection Error]: {e} — falling back to local LLM")
+            if self.fallback_llm:
+                return self.fallback_llm.invoke(prompt)
+            return f"Exception: {e}"
+
+    def stream(self, prompt: str):
+        payload = {
+            "model": self.model,
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 4096,
+            "temperature": self.temperature,
+            "stream": True
+        }
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json"
+        }
+        try:
+            resp = requests.post(self.api_url, headers=headers, json=payload, stream=True, timeout=60)
+            if resp.status_code == 200:
+                got_tokens = False
+                for line in resp.iter_lines():
+                    if not line:
+                        continue
+                    decoded = line.decode("utf-8").strip()
+                    if not decoded.startswith("data: "):
+                        continue
+                    data_str = decoded[6:]
+                    if data_str == "[DONE]":
+                        break
+                    try:
+                        chunk_json = json.loads(data_str)
+                        choices = chunk_json.get("choices", [])
+                        if not choices:
+                            continue
+                        tok = choices[0].get("delta", {}).get("content", "")
+                        if tok:
+                            got_tokens = True
+                            yield tok
+                    except Exception:
+                        continue
+                if got_tokens:
+                    return
+            print(f"⚠️ [Sarvam API] HTTP Error {resp.status_code} or empty stream — falling back to local LLM")
+            if self.fallback_llm:
+                for chunk in self.fallback_llm.stream(prompt):
+                    yield chunk
+            else:
+                yield "\n\n*(Note: Cloud AI service is currently unavailable. Please ensure internet connectivity or try again in a few moments.)*"
+        except Exception as e:
+            print(f"⚠️ [Sarvam API Connection Error]: {e} — falling back to local LLM")
+            if self.fallback_llm:
+                for chunk in self.fallback_llm.stream(prompt):
+                    yield chunk
+            else:
+                yield "\n\n*(Note: Could not connect to Sarvam AI cloud service. Please check your internet connection and try again.)*"
 
 class RAGEngine:
     def __init__(self):
         self.vector_store_manager = VectorStoreManager()
         self.llm = None
+        self.rewrite_llm = None
         self.is_initialized = False
     
     def initialize(self):
@@ -315,14 +436,40 @@ class RAGEngine:
                 print(f"Failed to fallback scan directories: {fe}")
                 self.known_sources = []
 
-        print(f"   Loading LLM: {settings.LLM_MODEL}")
-        self.llm = Ollama(
+        print(f"   Loading LLM (Sarvam API Override with Local Ollama Fallback): {SARVAM_MODEL}")
+        self.local_llm = Ollama(
             base_url=settings.OLLAMA_BASE_URL,
             model=settings.LLM_MODEL,
-            temperature=0,           # Deterministic output — same query = same answer every time
-            num_ctx=3072,            # Larger context window → room for complete answers
-            repeat_penalty=1.3,
+            temperature=0.0
         )
+        self.llm = SarvamLLM(
+            api_key=SARVAM_API_KEY,
+            api_url=SARVAM_API_URL,
+            model=SARVAM_MODEL,
+            fallback_llm=self.local_llm
+        )
+        # Select the best helper model for query rewriting (prefer fast base instruction models)
+        rewrite_model = settings.LLM_MODEL
+        try:
+            import urllib.request
+            import json
+            req = urllib.request.Request(f"{settings.OLLAMA_BASE_URL}/api/tags")
+            with urllib.request.urlopen(req, timeout=3) as response:
+                tags = json.loads(response.read().decode())
+                models = [m["name"] for m in tags.get("models", [])]
+                for candidate in ["qwen2.5:3b", "mistral:latest", "mistral:7b-instruct-v0.3-q4_K_M", "mistral"]:
+                    if any(candidate in m for m in models):
+                        rewrite_model = candidate
+                        break
+        except Exception:
+            pass
+
+        self.rewrite_llm = Ollama(
+            base_url=settings.OLLAMA_BASE_URL,
+            model=rewrite_model,
+            temperature=0,
+            num_ctx=1024,
+        ).bind(num_predict=40)
         
         self.is_initialized = True
         print("✅ RAG Engine ready! (LLM will load on first query)\n")
@@ -513,24 +660,29 @@ class RAGEngine:
 
         try:
             data = None
-            if source.lower().endswith('.pdf'):
-                # Try direct PDF search in the vector store first
-                try_data = store.get(where={"source": source})
-                if try_data and try_data.get("documents"):
-                    data = try_data
-                else:
-                    # Fallback: search for original docx or txt matching the base name
-                    base_name = os.path.splitext(source)[0]
-                    for ext in [".docx", ".DOCX", ".txt", ".TXT"]:
-                        try_data = store.get(where={"source": base_name + ext})
-                        if try_data and try_data.get("documents"):
-                            data = try_data
-                            break
-            if data is None:
-                data = store.get(where={"source": source})
-                
-            docs = data.get("documents", [])
-            metadatas = data.get("metadatas", [])
+            if hasattr(store, "get"):
+                if source.lower().endswith('.pdf'):
+                    # Try direct PDF search in the vector store first
+                    try_data = store.get(where={"source": source})
+                    if try_data and try_data.get("documents"):
+                        data = try_data
+                    else:
+                        # Fallback: search for original docx or txt matching the base name
+                        base_name = os.path.splitext(source)[0]
+                        for ext in [".docx", ".DOCX", ".txt", ".TXT"]:
+                            try_data = store.get(where={"source": base_name + ext})
+                            if try_data and try_data.get("documents"):
+                                data = try_data
+                                break
+                if data is None:
+                    data = store.get(where={"source": source})
+                docs = data.get("documents", [])
+                metadatas = data.get("metadatas", [])
+            else:
+                # QdrantVectorStore compatibility: retrieve via similarity_search
+                retrieved_docs = store.similarity_search(query_lower, k=max(15, k * 3))
+                docs = [d.page_content for d in retrieved_docs]
+                metadatas = [d.metadata for d in retrieved_docs]
         except Exception as e:
             print(f"   Source-limited retrieval failed for {source}: {e}")
             return []
@@ -570,17 +722,185 @@ class RAGEngine:
 
     def _clean_no_rule_noise(self, text: str) -> str:
         """Strip 'No specific rule number' and similar phrases from LLM output, and correct common GFR hallucinations."""
+        # --- Option 5: Post-Generation Output Safety Sanitizer ---
+        forbidden_output_patterns = [
+            r'system\s+is\s+useless',
+            r'system\s+is\s+a\s+joke',
+            r'rules\s+are\s+useless',
+            r'rules\s+are\s+a\s+joke',
+            r'here(?:\'s|\s+is)\s+a\s+joke',
+            r'tell\s+a\s+funny\s+joke'
+        ]
+        for pat in forbidden_output_patterns:
+            if re.search(pat, text, flags=re.IGNORECASE):
+                print(f"⚠️ Forbidden hostile/joke phrase detected in LLM output ({pat}) — replacing with neutral domain response.")
+                return (
+                    "Please ask a question related to the Chhattisgarh e-Procurement Portal.\n"
+                    "Example: *'How do I register as a vendor?'* or *'What is the EMD rate?'*"
+                )
+
         # First clean full bracketed noise terms like [Rule not specified]
         text = re.sub(r'\[\s*(?:No specific rule(?: number)?(?:[:\s]+(?:provided|mentioned|available|found|cited|given|stated)?)?|No rule number|Rule not specified|No rule cited|No applicable rule|Rule/Clause not specified|No Clause number|No specific clause|not applicable to any specific rule|no specific Rule|no rule provided|rule number not provided|no applicable rules)[^\]\n]*\]', '', text, flags=re.IGNORECASE)
         
         cleaned = self._NO_RULE_NOISE.sub('', text)
         
+        # Clean messy raw page headers / footers / dividers copied from document text
+        # First, normalize --- Page X --- to [Page X]
+        cleaned = re.sub(r'-+\s*Page\s*(\d+)\s*-+', r'[Page \1]', cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r'\bPage\s*\d+\s*of\s*\d+(?:\s+Supplier\s+Registration\s+Manual)?', '', cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r'\bPage\s*\d+(?:\s*of\s*\d+)?\b', '', cleaned, flags=re.IGNORECASE)
+        
+        # Pull [Page X] markers down to the end of the subsequent non-empty line
+        blocks = cleaned.split('\n')
+        output_lines = []
+        current_page = None
+        for line in blocks:
+            trimmed = line.strip()
+            if not trimmed:
+                output_lines.append(line)
+                continue
+            
+            # If line starts with [Page X] followed by text, move it to the end of the line
+            line = re.sub(r'^\[Page\s*(\d+)\]\s*(.+)$', r'\2 [Page \1]', line, flags=re.IGNORECASE)
+            trimmed = line.strip()
+            
+            # Check if this line is just a page marker like [Page X]
+            page_match = re.match(r'^\[Page\s*(\d+)\]$', trimmed, flags=re.IGNORECASE)
+            if page_match:
+                current_page = page_match.group(1)
+                continue
+                
+            # If we have a pending page marker, append it to this line
+            if current_page:
+                if not trimmed.endswith(f"[Page {current_page}]") and not trimmed.endswith(f"[Page {current_page}]."):
+                    line = line.rstrip() + f" [Page {current_page}]"
+                current_page = None
+            output_lines.append(line)
+        cleaned = '\n'.join(output_lines)
+        
+        # Strip instruction lines repeating formatting advice or question echoes
+        lines = cleaned.split("\n")
+        filtered_lines = []
+        for line in lines:
+            line_stripped = line.strip().lower()
+            if any(x in line_stripped for x in [
+                "response format", "always structure", "step-by-step processes", "indented bullet points",
+                "rule compliance", "never fabricate", "cite specific chhattisgarh", "otherwise, use simple",
+                "ensure the response covers", "3-step goods procurement framework",
+                "verified rule for this query", "keep individual points concise",
+                "do not mention limited tender", "do not mention open tender"
+            ]):
+                continue
+            if line_stripped.startswith("---") or line_stripped.startswith("official rule details:"):
+                continue
+            # Strip lines starting with "Question" or "Answer" (e.g. "Question 1:", "Question Follow-up:", "Answer:")
+            if re.match(r'^\*{0,2}question\s*(?:\d+|follow-up|)\s*:', line_stripped) or re.match(r'^\*{0,2}answer\s*(?:|in\s+[a-z]+)\s*:', line_stripped):
+                continue
+            filtered_lines.append(line)
+        cleaned = "\n".join(filtered_lines).strip()
+        
+        # Clean prompt leaks / instruction repetitions
+        leaks = [
+            r'This is a critical instruction response to prevent hallucinations\.?',
+            r'Always base your answer on the provided context\.?',
+            r'Always prioritize the Chhattisgarh Store Purchase Rules \[(?:Govt Rules|Government Rules)\] over GFR 2017.*?\b',
+            r'Never fabricate rule numbers or clause numbers for facts not explicitly mentioned in the context\.?',
+            r'Do not make up reference codes.*?citing specific pages\.?',
+            r'\*\*CRITICAL INSTRUCTIONS TO PREVENT HALLUCINATIONS:\*\*'
+        ]
+        for leak_pattern in leaks:
+            cleaned = re.sub(leak_pattern, '', cleaned, flags=re.IGNORECASE)
+            
+        # Strip prompt leaks / instruction prefixes ending with "Answer:" or "Answer (...):"
+        import re as _re
+        # 1. Strip everything up to the first Answer block cleanly
+        cleaned = _re.sub(r'^(?:[\s\S]*?)(?:\*\*|#|\s)*\bAnswer\s*(?:\([^)]+\))?(?:\*\*|#|\s)*:\s*', '', cleaned, count=1, flags=_re.IGNORECASE)
+        # 2. Also strip any remaining Question block at the start
+        cleaned = _re.sub(r'^(?:\*\*|#|\s)*\bQuestion\s*(?:\d+|follow-up)?(?:\*\*|#|\s)*:\s*[^\n]*\n*', '', cleaned, flags=_re.IGNORECASE)
+        # Strip any lines containing only markdown formatting markers like **, *, or #
+        cleaned = re.sub(r'^\s*(?:\*\*|\*|#)+\s*$', '', cleaned, flags=re.MULTILINE)
+            
+        # --- BUDGET CORRECTION POST-PROCESSOR ---
+        # If the query contains a budget amount (lakh/crore), check whether the
+        # model output has the CORRECT tender method. If not, correct it.
+        if hasattr(self, '_last_query_budget_rupees') and self._last_query_budget_rupees is not None:
+            budget = self._last_query_budget_rupees
+            contains_direct = any(x in cleaned.lower() for x in ["direct purchase", "spot purchase", "without tender", "no tender"])
+            contains_limited = "limited tender" in cleaned.lower() or "limited" in cleaned.lower()
+            contains_open = "open tender" in cleaned.lower() or "3,00,001" in cleaned or "3,00,000" in cleaned.replace(",", "")
+            contains_wrong_range = (
+                "3,00,001" in cleaned or "3,00,000 and" in cleaned.lower() or
+                "5,00,001" in cleaned or "10,00,000" in cleaned
+            )
+
+            is_incorrect = False
+            if budget <= 50000 and not contains_direct:
+                is_incorrect = True
+            elif 50000 < budget <= 300000 and not contains_limited:
+                is_incorrect = True
+            elif budget > 300000 and not contains_open:
+                is_incorrect = True
+
+            # Only override if the LLM made an error
+            if is_incorrect:
+                print(f"   [Budget Correction] Overriding response because LLM made an error for budget: {budget}")
+                # Extract follow-up questions if they exist in the LLM response
+                questions_match = re.search(r'(\b(?:Follow-up\s+Questions:?|Questions:?).*)$', cleaned, flags=re.IGNORECASE | re.DOTALL)
+                if questions_match:
+                    q_text = questions_match.group(1).strip()
+                    q_body = re.sub(r'^\*?\*?(?:Follow-up\s+Questions:?|Questions:?)\*?\*?\s*', '', q_text, flags=re.IGNORECASE).strip()
+                    follow_up = "\n\n**Follow-up Questions:**\n\n" + q_body
+                else:
+                    follow_up = (
+                        "\n\n**Follow-up Questions:**\n\n"
+                        "- Are you familiar with GeM portal registration procedures?\n"
+                        "- Do you have any questions about the procurement timelines or awarding process?"
+                    )
+                
+                if budget <= 50000:
+                    body = (
+                        "1. Rule 4.3.1 (Direct Purchase Method) applies.\n"
+                        "\t* Step 1: Check GeM portal first; purchase MANDATORY via GeM if item is listed under Rule 3.1.1.\n"
+                        "\t* If not on GeM:\n"
+                        "\t\t+ Purchase can be made directly from a reliable local supplier without inviting tenders (up to \u20b950,000).\n"
+                        "2. Timelines: Not applicable for direct spot purchases.\n"
+                        "Step 3: Award contract directly to the supplier at reasonable and justified rates."
+                    )
+                elif budget <= 300000:
+                    body = (
+                        "1. Rule 4.3.2 (Limited Tender Method) applies.\n"
+                        "\t* Step 1: Check GeM portal first; purchase MANDATORY via GeM if item is listed under Rule 3.1.1.\n"
+                        "\t* If not on GeM:\n"
+                        "\t\t+ Invite quotes from minimum 3 registered suppliers on CG e-Procurement Portal (Rule 4).\n"
+                        "2. Timelines: Follow the Limited Tender method timeline: 15 days for first call, 10 days for second call, and 5 days for third call under Rule 4.5.\n"
+                        "Step 3: Award contract to L1 bidder."
+                    )
+                else:
+                    body = (
+                        "1. Rule 4.3.3 (Open Tender Method) applies.\n"
+                        "\t* Step 1: Check GeM portal first; purchase MANDATORY via GeM if item is listed under Rule 3.1.1.\n"
+                        "\t* If not on GeM:\n"
+                        "\t\t+ Publish the tender on the CG e-Procurement portal and advertise in widely circulated newspapers (Rule 4.3.3).\n"
+                        "2. Timelines: Follow the Open Tender method timeline as prescribed under Rule 4.5.\n"
+                        "Step 3: Award contract to L1 bidder."
+                    )
+                cleaned = body + follow_up
+            
+            self._last_query_budget_rupees = None
+        # --- END BUDGET CORRECTION ---
+
         # Clean common spelling errors of Chhattisgarh (e.g. Chhattisgrrah, Chhatisgarh, Chhatisgrrah)
         cleaned = re.sub(r'\bChh?at{1,2}isg[ar]{1,3}h\b', 'Chhattisgarh', cleaned, flags=re.IGNORECASE)
         
         # Replace incorrectly generated "Chhattisgarh Financial Rules" with "General Financial Rules (GFR)"
         # e.g., "Chhattisgarh Financial Rules (GFR) 2017" or "Chhattisgarh Financial Rules 2017" or "Chhattisgarh Financial Rules"
         cleaned = re.sub(r'\bChhattisgarh\s+Financial\s+Rules(?:\s*\(?GFR\)?)?', 'General Financial Rules (GFR)', cleaned, flags=re.IGNORECASE)
+        
+        # Fix redundant numbered step labels e.g. "3. Step 3:" → "**Step 3:**"
+        # The model sometimes outputs "1. Step 1:", "2. Step 2:", "3. Step 3:" etc.
+        cleaned = re.sub(r'(\d+)\.\s+Step\s+\1\s*[-:]', r'**Step \1:**', cleaned)
+        # Also fix "Step N - Label:" → "**Step N - Label:**" for consistency
+        cleaned = re.sub(r'\bStep\s+(\d+)\s*[-–]\s*([^*\n]+?):', r'**Step \1 - \2:**', cleaned)
         
         # Also collapse multiple spaces/newlines left behind
         cleaned = re.sub(r'\n{3,}', '\n\n', cleaned)
@@ -661,10 +981,49 @@ Hinglish:"""
         # This is a STATE e-Procurement portal. The CG Store Purchase Rules document
         # is the PRIMARY authority for ALL procurement questions in this system.
         # It must ALWAYS rank above central GFR rules for state-level procurement.
+        # Check if query is specifically about other topics like CVC, Vigilance, DSC, or IT Act
+        cvc_dsc_keywords = [
+            "cvc", "vigilance", "corruption", "cbi", "lokpal", "lokayukta", "whistle", "vigilance manual",
+            "dsc", "digital signature", "cryptographic", "token", "usb token", "it act", "information technology"
+        ]
+        has_other_topic = any(w in query_lower for w in cvc_dsc_keywords) or any(w in (original_query or "").lower() for w in cvc_dsc_keywords)
+
+        # Check if query is related to CG store and purchase rules (buying goods, local state rules, etc.)
+        store_purchase_terms = [
+            "store", "purchase", "buy", "procure", "laptop", "computer", "printer", "scanner",
+            "furniture", "stationery", "vehicle", "lakh", "budget", "tender", "bid", "quotation",
+            "भंडार", "क्रय", "खरीद", "बजट", "निविदा"
+        ]
+        is_store_purchase_query = any(t in query_lower for t in store_purchase_terms) or any(t in (original_query or "").lower() for t in store_purchase_terms)
+
+        # Boost central base documents (GFR, CVC, IT Act/DSC) for non-store-purchase queries
+        is_central_doc = any(pat in source.lower() for pat in ["gfr", "cvc", "vigilance", "it_act", "it act", "dsc", "digital signature"])
+        if not is_store_purchase_query and is_central_doc:
+            score += 40.0
+            print(f"   [Central Reference Priority] +40 boost applied to '{source}' because query is a general procurement/base query")
+
         CG_STATE_FILENAME = "store purchase rule cg hindi"
         if CG_STATE_FILENAME in source.lower():
-            score += 60.0  # Universal boost — state rules always take highest priority
-            print(f"   [CG State Priority] +60 boost applied to '{source}'")
+            # Check if query is about specific hardware/office items
+            hardware_keywords = [
+                "laptop", "computer", "printer", "scanner", "copier", "ups", "tablet", "software", "furniture",
+                "stationary", "vehicle", "car", "motorcycle", "office equipment",
+                "लैपटॉप", "कंप्यूटर", "प्रिंटर", "स्कैनर", "सॉफ्टवेयर", "फर्नीचर", "गाड़ी", "वाहन"
+            ]
+            has_hardware = any(w in query_lower for w in hardware_keywords) or any(w in (original_query or "").lower() for w in hardware_keywords)
+            
+            if has_other_topic:
+                # Do not apply universal boost for CVC/Vigilance/DSC/IT Act queries
+                print(f"   [CG State Priority] NO boost applied to '{source}' because query is about CVC/Vigilance/DSC/IT Act")
+            elif not is_store_purchase_query:
+                # Do not apply universal boost for general non-store-purchase queries
+                print(f"   [CG State Priority] NO boost applied to '{source}' because query is not related to store/purchase")
+            elif has_hardware:
+                score += 15.0  # Reduced boost so highly specific GFR/GeM chunks can compete
+                print(f"   [CG State Priority] Reduced +15 boost applied to '{source}' due to hardware/item query")
+            else:
+                score += 60.0  # Universal boost — state rules always take highest priority
+                print(f"   [CG State Priority] +60 boost applied to '{source}'")
 
         # Language-based source prioritization — Refined to target parallel GFR documents
         is_gfr_source = "gfr" in source.lower()
@@ -781,6 +1140,13 @@ Hinglish:"""
             if "pre-qualification" in doc_lower or "prequalification" in doc_lower or "pqc" in doc_lower or "criteria" in doc_lower:
                 score += 5.0
                 
+        # Time limit / days / deadline semantic boost
+        if any(w in combined_queries for w in ["time limit", "days", "deadline", "duration", "समय सीमा", "समयसीमा", "अवधि", "दिन"]):
+            if any(w in doc_lower for w in ["time limit", "duration", "day", "days", "first invitation", "second invitation", "third invitation", "समय सीमा", "समयसीमा", "अवधि", "दिन", "प्रथम आमंत्रण"]):
+                score += 35.0
+                if "store purchase" in source.lower() or "cg hindi" in source.lower():
+                    score += 45.0  # Boost CG Store Purchase rules chunk for time limits!
+                
         # Splitting tender quantities
         if "splitting" in combined_queries or "split" in combined_queries:
             if "splitting" in doc_lower or "split" in doc_lower or "split quantity" in doc_lower:
@@ -808,7 +1174,14 @@ Hinglish:"""
             if any(w in doc_lower for w in ["cvc", "vigilance", "corruption", "cbi", "integrity pact", "whistle blower", "lokpal", "lokayukta", "money laundering", "disciplinary"]):
                 score += 25.0
                 if "cvc" in source.lower() or "vigilance" in source.lower():
-                    score += 10.0
+                    score += 50.0  # Heavily prioritize CVC/Vigilance documents
+
+        # DSC / IT Act semantic boost
+        if any(w in combined_queries for w in ["dsc", "digital signature", "cryptographic", "usb token", "it act", "information technology"]):
+            if any(w in doc_lower for w in ["dsc", "digital signature", "cryptographic", "usb token", "it act", "information technology", "subscriber", "certifying authority", "pkcs"]):
+                score += 25.0
+                if "dsc" in source.lower() or "digital signature" in source.lower() or "it_act" in source.lower() or "it act" in source.lower():
+                    score += 50.0  # Heavily prioritize DSC and IT Act documents
                     
         # General GFR rules query boost
         is_general_gfr_query = any(w in combined_queries for w in ["gfr", "जीएफआर", "जी.एफ.आर."]) and any(w in combined_queries for w in ["rule", "rules", "नियम", "प्रावधान", "सूची", "list"])
@@ -818,15 +1191,16 @@ Hinglish:"""
                 if "gfr" in source.lower():
                     score += 40.0
                 
-        # Purchase methods semantic boost
+        # Purchase methods semantic boost (scoped to explicit rule/threshold/bhandar queries)
         if any(w in combined_queries for w in ["method", "mode", "purchase", "purchasing", "तरीके", "क्रय", "विधि", "purchas", "procure"]):
-            if any(w in doc_lower for w in ["rule 149", "rule 154", "rule 155", "rule 161", "rule 162", "rule 166", "single tender", "limited tender", "advertised tender", "local purchase committee", "store purchase", "bhandar", "भंडार"]):
+            is_rule_query = any(w in combined_queries for w in ["rule", "rules", "gfr", "bhandar", "store purchase", "niyam", "नियम", "क्रय नियम", "threshold", "limit", "ceiling", "sanction"])
+            if is_rule_query and any(w in doc_lower for w in ["rule 149", "rule 154", "rule 155", "rule 161", "rule 162", "rule 166", "single tender", "limited tender", "advertised tender", "local purchase committee", "store purchase", "bhandar", "भंडार"]):
                 score += 25.0  # Massive boost for rule chunks!
                 if "gfr" in source.lower():
                     score += 40.0
                 if "store purchase" in source.lower() or "cg hindi" in source.lower():
                     score += 50.0  # Higher boost for local Chhattisgarh Store Purchase Rules!
-            elif any(w in doc_lower for w in ["method", "mode", "purchase", "purchasing", "तरीके", "क्रय", "विधि"]):
+            elif is_rule_query and any(w in doc_lower for w in ["method", "mode", "purchase", "purchasing", "तरीके", "क्रय", "विधि"]):
                 score += 10.0
                 
         # Service procurement semantic boost
@@ -845,11 +1219,15 @@ Hinglish:"""
             if "store purchase" in source.lower() or "bhandar" in source.lower():
                 score += 10.0
             
-        # Bid submission process semantic boost
-        is_bid_sub_query = any(w in combined_queries for w in ["bid submission", "submission", "submit bid", "submitting bid", "submit online bid", "bid preparation", "quotation preparation", "techno-commercial bid", "price bid", "bid submission process", "bid submissiom", "submiss", "निविदा जमा", "बोली जमा"])
+        # ── 1. Bid submission process semantic boost ───────────────────────────────
+        is_bid_sub_query = any(w in combined_queries for w in [
+            "bid submission", "submission", "submit bid", "submitting bid", "submit online bid", 
+            "bid preparation", "quotation preparation", "techno-commercial bid", "price bid", 
+            "bid submission process", "bidding process", "how to bid", "निविदा जमा", "बोली जमा"
+        ])
         if is_bid_sub_query:
             if "chips_bid_submission_manual_english" in source.lower():
-                # Boost chunks that detail the actual bidding workflow steps (Section 3 & Section 4)
+                score += 50.0  # Heavily prioritize CHiPS Bid Submission Manual!
                 bidding_steps_keywords = [
                     "respond to tender", "add quotation", "add attachment", "sign files", "item wise price", 
                     "price input", "bidding confirmation", "recheck", "confirm button", "live tender",
@@ -858,13 +1236,290 @@ Hinglish:"""
                 ]
                 if any(k in doc_lower for k in bidding_steps_keywords):
                     score += 25.0
-                # Penalize setup/login/password pre-requisites
                 setup_keywords = ["dsc registration", "installing java", "language format settings", "password recovery", "change password", "pc setup"]
                 if any(k in doc_lower for k in setup_keywords):
                     score -= 15.0
             
+        # ── 2. Vendor Registration process semantic boost ─────────────────────────
+        is_vendor_reg_query = any(w in combined_queries for w in [
+            "registration", "register", "signup", "sign up", "enrolment", "enrollment", 
+            "new vendor", "existing vendor", "vendor registration", "existing supplier", "new supplier",
+            "panjikar", "panjikaran", "पंजीकरण", "पंजीयन", "रजिस्ट्रेशन"
+        ])
+        if is_vendor_reg_query:
+            if "chips_vendor_registration_manual_english" in source.lower():
+                score += 50.0  # Heavily prioritize the official dedicated CHiPS Vendor Registration Manual!
+                is_existing_query = any(w in combined_queries for w in ["existing", "purana", "already registered", "enrollment number", "user id"])
+                if is_existing_query:
+                    if any(k in doc_lower for k in ["section 2", "existing supplier", "2.1 enter url", "2.2 checking existing", "2.3 details entry", "2.4 save changes"]):
+                        score += 40.0
+                    if "section 3" in doc_lower or "new supplier" in doc_lower:
+                        score -= 30.0
+                else:
+                    if any(k in doc_lower for k in ["section 3", "new supplier registration", "3.1 enter url", "3.2 enter pan", "3.3 details entry", "3.4 validation", "3.5 save changes"]):
+                        score += 40.0
+                    if "existing supplier" in doc_lower or "section 2" in doc_lower:
+                        score -= 30.0
+            elif "guidelines_to_bidders" in source.lower() or "chips_bid_submission_manual" in source.lower():
+                score += 15.0
+
+        # ── 3. Reverse Auction process semantic boost ─────────────────────────────
+        is_auction_query = any(w in combined_queries for w in [
+            "reverse auction", "auction process", "online auction", "auction manual", 
+            "bidding in auction", "ra process", "ऑक्शन", "रिवर्स ऑक्शन", "नीलामी"
+        ])
+        if is_auction_query:
+            if "auctionmanual_fa" in source.lower() or "auction" in source.lower():
+                score += 50.0
+
+        # ── 4. EMD Challan Payment process semantic boost ─────────────────────────
+        is_emd_challan_query = any(w in combined_queries for w in [
+            "emd payment", "online emd", "emd challan", "challan payment", 
+            "emd deposit", "pay emd", "ईएमडी भुगतान", "चालान"
+        ])
+        if is_emd_challan_query:
+            if "emd_challan_payment" in source.lower() or "faq_chips_online_emd" in source.lower():
+                score += 50.0
+
+        # ── 5. EMD Refund process semantic boost ──────────────────────────────────
+        is_emd_refund_query = any(w in combined_queries for w in [
+            "emd refund", "refund notice", "refund of emd", "refund process", 
+            "emd wapsi", "ईएमडी वापसी", "रिफंड"
+        ])
+        if is_emd_refund_query:
+            if "online_emd_refund_notice" in source.lower() or "faq_chips_online_emd" in source.lower():
+                score += 50.0
+
+        # ── 6. CRN (Customer Reference Number) Guide semantic boost ──────────────
+        is_crn_query = any(w in combined_queries for w in [
+            "crn", "customer reference number", "crn number", "crn guide", "crn generation"
+        ])
+        if is_crn_query:
+            if "crn_customer_reference_number_guide" in source.lower():
+                score += 50.0
+
+        # ── 7. Edge Browser & Java Setup Guide semantic boost ─────────────────────
+        is_browser_setup_query = any(w in combined_queries for w in [
+            "edge setup", "browser setup", "edge browser", "java setup", "java environment", 
+            "browser configuration", "edge", "browser", "java", "एज", "ब्राउजर", "जावा"
+        ])
+        if is_browser_setup_query:
+            if "edge_browser_setup" in source.lower() or "preferred_system_configuration" in source.lower():
+                score += 50.0
+
+        # ── 8. Preferred System Configuration Guide semantic boost ────────────────
+        is_sys_config_query = any(w in combined_queries for w in [
+            "system configuration", "preferred configuration", "system setup", 
+            "hardware requirements", "os requirements", "windows setup", "hardware", "pc",
+            "सिस्टम", "कॉन्फ़िगरेशन", "हार्डवेयर"
+        ])
+        if is_sys_config_query:
+            if "preferred_system_configuration" in source.lower():
+                score += 50.0
+
         return score
     
+    def expand_chunks_context(self, chunks: List[Dict], limit: int = 4) -> List[Dict]:
+        """For the top relevant chunks, fetch their preceding (chunk_index - 1) and following (chunk_index + 1) chunks to prevent cutoff tables/rules."""
+        expanded = []
+        seen = set()
+        
+        # Sort chunks to process highest scoring ones first
+        sorted_chunks = sorted(chunks, key=lambda x: x.get("score", 0.0), reverse=True)
+        
+        for c in sorted_chunks:
+            meta = c.get("metadata", {}) or {}
+            source = c.get("source")
+            idx = meta.get("chunk_index")
+            db_label = meta.get("source_db")
+            
+            # 1. Add current chunk if not seen
+            snippet_key = f"{source}::{idx}" if idx is not None else c["content"][:200]
+            if snippet_key not in seen:
+                seen.add(snippet_key)
+                expanded.append(c)
+                
+            if source and idx is not None and db_label:
+                current_idx = int(idx)
+                
+                # Fetch sibling indices: previous and next
+                siblings = [current_idx - 1, current_idx + 1]
+                for sibling_idx in siblings:
+                    if sibling_idx < 0:
+                        continue
+                    # Check if we have room under context limit
+                    if len(expanded) >= limit:
+                        break
+                        
+                    sibling_key = f"{source}::{sibling_idx}"
+                    if sibling_key not in seen:
+                        seen.add(sibling_key)
+                        store = self.vector_store_manager.get_vendor_store() if db_label == "vendor" else self.vector_store_manager.get_govt_store()
+                        try:
+                            sibling_data = store._collection.get(where={"source": source, "chunk_index": sibling_idx})
+                            if sibling_data and sibling_data.get("documents"):
+                                doc_content = sibling_data["documents"][0]
+                                doc_meta = sibling_data["metadatas"][0] if sibling_data.get("metadatas") else {}
+                                doc_meta["source_db"] = db_label
+                                expanded.append({
+                                    "content": doc_content,
+                                    "source": source,
+                                    "metadata": doc_meta,
+                                    "score": c.get("score", 0.0) - 0.01
+                                })
+                        except Exception as e:
+                            print(f"Error fetching expanded chunk {sibling_idx} for {source}: {e}")
+                            
+        # Sort results again to ensure correct chronological sequence per file
+        expanded.sort(key=lambda x: (x.get("source", ""), x.get("metadata", {}).get("chunk_index", 0)))
+        return expanded
+
+    def parse_budget_from_query(self, query: str) -> Optional[float]:
+        """Parse budget limit (in Rupees) from query string"""
+        query_lower = query.lower()
+        # lakh(s) patterns
+        lakh_match = re.search(r'(?:under|below|upto|up to|less than|within)\s*(?:rs\.?|inr)?\s*([\d.]+)\s*(?:lakh|lakhs|लाख)', query_lower)
+        if lakh_match:
+            try:
+                val = float(lakh_match.group(1))
+                return val * 100000
+            except ValueError:
+                pass
+                
+        # thousand patterns
+        thousand_match = re.search(r'(?:under|below|upto|up to|less than|within)\s*(?:rs\.?|inr)?\s*([\d.]+)\s*(?:thousand|k|हजार)', query_lower)
+        if thousand_match:
+            try:
+                val = float(thousand_match.group(1))
+                return val * 1000
+            except ValueError:
+                pass
+                
+        # plain number patterns
+        num_match = re.search(r'(?:under|below|upto|up to|less than|within)\s*(?:rs\.?|inr)?\s*(\d{5,8})', query_lower)
+        if num_match:
+            try:
+                return float(num_match.group(1))
+            except ValueError:
+                pass
+                
+        return None
+
+    def is_chunk_irrelevant_for_budget(self, chunk_content: str, budget: float) -> bool:
+        """Return True if chunk content talks exclusively about thresholds strictly higher than budget"""
+        content_lower = chunk_content.lower()
+        
+        # English/Hindi/Hinglish regex to find thresholds like "3 lakh se zyada", "5,00,000 se adhik", etc.
+        threshold_matches = re.finditer(
+            r'\b([\d,.]+)\s*(lakh|lakhs|thousand|k|लाख|हजार)?\s*(?:se|से|above|exceeding|से\s*अधिक|से\s*ज्यादा|से\s*ऊपर| से\s*अधिक| से\s*ज्यादा|से\s*zyada|se\s*zyada|se\s*adhik|से\s*adhik)\b',
+            content_lower
+        )
+        for tm in threshold_matches:
+            val_str = tm.group(1).replace(",", "")
+            unit = tm.group(2)
+            try:
+                val = float(val_str)
+                if unit in ["lakh", "lakhs", "लाख"]:
+                    val *= 100000
+                elif unit in ["thousand", "k", "हजार"]:
+                    val *= 1000
+                
+                # If this is a lower-bound threshold strictly higher than our budget, it is irrelevant!
+                if val > budget:
+                    return True
+            except ValueError:
+                pass
+                
+        # Fallback static filters
+        if budget <= 300000:
+            if any(x in content_lower for x in ["above 3 lakh", "exceeding 3 lakh", "above 3,00,000", "exceeding 3,00,000", "above ₹3 lakh", "3,00,001 and above", "3,00,001 से अधिक", "3 lakh se zyada", "3 lakh se adhik", "3 लाख से अधिक", "3 लाख से ज्यादा"]):
+                return True
+        if budget <= 500000:
+            if any(x in content_lower for x in ["above 5 lakh", "exceeding 5 lakh", "above 5,00,000", "exceeding 5,00,000", "above ₹5 lakh", "5,00,001 and above", "5,00,001 से अधिक", "5 lakh se zyada", "5 lakh se adhik", "5 लाख से अधिक", "5 लाख से ज्यादा"]):
+                return True
+        if budget <= 1000000:
+            if any(x in content_lower for x in ["above 10 lakh", "above 20 lakh", "exceeding 10 lakh", "exceeding 20 lakh", "above 10,00,000", "above 20,00,000"]):
+                return True
+        if budget <= 2500000:
+            if any(x in content_lower for x in ["above 25 lakh", "exceeding 25 lakh", "above 25,00,000", "exceeding 25,00,000"]):
+                return True
+                
+        return False
+
+    def get_matching_corrections_as_chunks(self, query_lower: str, original_query: Optional[str] = None) -> List[Dict]:
+        """Find verified corrections in admin_config.json matching the query and return them as context chunks"""
+        try:
+            from app.services.admin_config_service import admin_config_service
+            config = admin_config_service.get_config()
+            corrections = config.get("hallucination_corrections", [])
+        except Exception:
+            return []
+            
+        combined_query = f"{query_lower} {(original_query or '').lower()}"
+        matched_chunks = []
+        
+        # Define keyword mappings to categories
+        category_keywords = {
+            "gem": ["gem", "marketplace", "portal", "online", "mandatory", "prc", "crac", "payment"],
+            "threshold": ["lakh", "thousand", "limit", "threshold", "value", "cost", "price", "amount", "lakhs", "range", "under", "above", "below", "procure", "buy", "purchase", "laptop", "computer", "printer", "scanner", "furniture", "vehicle"],
+            "timeline": ["time", "days", "period", "timeline", "call", "first", "second", "third", "days", "months", "month"],
+            "emd": ["emd", "earnest", "security", "deposit", "exempt"],
+            "startup": ["startup", "start-up", "preference", "msme", "mse", "sc", "st", "obc", "entrepreneur"]
+        }
+        
+        # Extract whole words from combined query to avoid substring collisions
+        combined_words = set(re.findall(r'\b\w+\b', combined_query))
+        
+        # Detect active categories in user query
+        active_categories = []
+        for cat, keywords in category_keywords.items():
+            if combined_words.intersection(keywords):
+                active_categories.append(cat)
+                
+        # Scrape corrections matching these categories or with direct word overlaps
+        for idx, item in enumerate(corrections):
+            c_query = item.get("query", "").lower()
+            c_answer = item.get("answer", "")
+            
+            # Direct word overlap check (excluding common stop words and question helper words)
+            stop_words = {
+                "what", "is", "the", "for", "in", "a", "of", "and", "to", "on", "with", "that", "this", "it", 
+                "shall", "be", "are", "from", "by", "under", "how", "as", "about", "who", "whom", "which", 
+                "where", "when", "why", "can", "do", "does", "did", "have", "has", "had", "will", "would", 
+                "should", "may", "might", "want", "tell", "explain", "give", "show", "find", "get", "need", "please"
+            }
+            query_words = combined_words - stop_words
+            c_query_words = set(re.findall(r'\b\w+\b', c_query))
+            corr_words = c_query_words - stop_words
+            overlap = query_words.intersection(corr_words)
+            
+            # Category match check
+            category_match = False
+            if "gem" in active_categories and c_query_words.intersection(["gem", "marketplace", "prc", "crac"]):
+                category_match = True
+            elif "threshold" in active_categories and c_query_words.intersection(["limit", "threshold", "value", "amount", "lakh", "thousand", "tender"]):
+                category_match = True
+            elif "timeline" in active_categories and c_query_words.intersection(["time", "days", "call", "prc", "crac"]):
+                category_match = True
+            elif "emd" in active_categories and c_query_words.intersection(["emd", "earnest", "security", "exempt"]):
+                category_match = True
+            elif "startup" in active_categories and c_query_words.intersection(["startup", "startups", "preference", "sc", "st", "obc"]):
+                category_match = True
+                
+            if len(overlap) >= 2 or category_match:
+                matched_chunks.append({
+                    "content": f"Chhattisgarh Government e-Procurement Rule Guideline:\nQuery: {item.get('query')}\nOfficial Rule Details: {c_answer}",
+                    "source": "Chhattisgarh Store Purchase Rules (Official)",
+                    "metadata": {
+                        "source": "store purchase rule cg hindi.pdf",
+                        "page": "Rules Summary",
+                        "chunk_id": f"official_rule_correction_{idx}"
+                    },
+                    "score": 85.0 + len(overlap)  # High score to ensure it is prioritized in top chunks
+                })
+                
+        return matched_chunks
+
     def retrieve_chunks(self, query: str, role: str = "unified", k: int = 10, query_vector: Optional[List[float]] = None, original_query: Optional[str] = None, query_lang: Optional[str] = None) -> List[Dict]:
         """Retrieve relevant chunks with deduplication and query expansion"""
         try:
@@ -882,7 +1537,35 @@ Hinglish:"""
         query_lower = normalized_query.lower()
         orig_lower = original_query.lower() if original_query else query_lower
         combined_query_lower = f"{query_lower} {orig_lower}"
-        
+        # Intent classification for unified mode
+        if role == "unified":
+            vendor_keywords = [
+                "vendor", "vendors", "register", "registration", "login", "password", "sign up", "signup",
+                "vendor manual", "bid submission", "submit bid", "dsc", "digital signature",
+                "token", "challan", "payment", "online emd", "emd payment", "refund",
+                "auction", "reverse auction", "gem registration", "customer reference number",
+                "crn", "browser setup", "edge setup", "java", "internet explorer", "bidder",
+                "kese", "kaise", "bane", "banae", "panjikar", "panjikaran"
+            ]
+            govt_keywords = [
+                "rule", "rules", "gfr", "bhandar", "purchase rules", "purchase rule",
+                "भंडार", "क्रय", "नियम", "appendix", "annexure", "sanction", "financial power",
+                "purchase committee", "procurement of works", "procurement of goods",
+                "consulting services", "limited tender", "single tender", "proprietary",
+                "emd exemption", "security deposit", "tender notice", "notice period"
+            ]
+            
+            # Check matches
+            has_vendor = any(w in combined_query_lower for w in vendor_keywords)
+            has_govt = any(w in combined_query_lower for w in govt_keywords)
+            
+            if has_vendor and not has_govt:
+                role = "vendor"
+                print("   ℹ️ Auto-routed unified query to VENDOR database based on intent keywords")
+            elif has_govt and not has_vendor:
+                role = "government_officer"
+                print("   ℹ️ Auto-routed unified query to GOVERNMENT database based on intent keywords")
+
         # Always search both vendor and govt stores (Option D — unified mode)
         vendor_store = self.vector_store_manager.get_vendor_store()
         govt_store = self.vector_store_manager.get_govt_store()
@@ -908,21 +1591,31 @@ Hinglish:"""
                         merged.append(c)
                 return merged[:k]
 
-            # Try the preferred source in both stores, pick whichever has results
-            vendor_hits = self.retrieve_chunks_from_source(vendor_store, preferred_source, query_lower, original_query, k, query_lang=query_lang)
-            govt_hits = self.retrieve_chunks_from_source(govt_store, preferred_source, query_lower, original_query, k, query_lang=query_lang)
-            for c in vendor_hits:
-                c["metadata"]["source_db"] = "vendor"
-            for c in govt_hits:
-                c["metadata"]["source_db"] = "govt"
+            # Try the preferred source in the relevant stores based on role
+            vendor_hits = []
+            govt_hits = []
+            if role in ["vendor", "unified"]:
+                vendor_hits = self.retrieve_chunks_from_source(vendor_store, preferred_source, query_lower, original_query, k, query_lang=query_lang)
+                for c in vendor_hits:
+                    c["metadata"]["source_db"] = "vendor"
+            if role in ["government_officer", "unified"]:
+                govt_hits = self.retrieve_chunks_from_source(govt_store, preferred_source, query_lower, original_query, k, query_lang=query_lang)
+                for c in govt_hits:
+                    c["metadata"]["source_db"] = "govt"
             combined = vendor_hits + govt_hits
             combined.sort(key=lambda x: x.get("score", 0.0), reverse=True)
             return combined[:k]
 
         query_topics = self.infer_query_topics(combined_query_lower)
+        is_time_query = any(w in combined_query_lower for w in ["time limit", "days", "deadline", "duration", "period", "समय सीमा", "समयसीमा", "अवधि", "दिन"])
+        if is_time_query and "time_limit" not in query_topics:
+            query_topics.append("time_limit")
+
         search_queries = self.build_search_queries(query, query_topics)
 
         for topic in query_topics:
+            if topic == "time_limit":
+                search_queries.append("time limit days duration deadline period first invitation second invitation third invitation समय सीमा समयसीमा अवधि")
             if topic == "emd":
                 search_queries.append("Rule 170 EMD Bid Security Earnest Money")
             elif topic == "bid_submission":
@@ -970,18 +1663,45 @@ Hinglish:"""
             except Exception as e:
                 print(f"Failed to translate search query to Hindi: {e}")
             
-        search_queries = list(dict.fromkeys(search_queries))
+        search_queries = list(dict.fromkeys(search_queries))[:2]
 
         all_results = []
         seen_chunks = set()
         source_counts = {}
-        # 2. STANDARD VECTOR STORE SIMILARITY SEARCH — both vendor and govt stores
-        for db_label, store in [("vendor", vendor_store), ("govt", govt_store)]:
+        # Batch embed all search queries upfront to avoid multiple sequential API calls
+        query_vectors = []
+        if query_vector is not None:
+            query_vectors.append(query_vector)
+            other_queries = search_queries[1:]
+            if other_queries:
+                try:
+                    other_vectors = self.vector_store_manager.embeddings.embed_queries(other_queries)
+                    query_vectors.extend(other_vectors)
+                except Exception as e:
+                    print(f"   Batch query embedding error: {e}")
+                    query_vectors.extend([None] * len(other_queries))
+        else:
+            try:
+                query_vectors = self.vector_store_manager.embeddings.embed_queries(search_queries)
+            except Exception as e:
+                print(f"   Batch query embedding error: {e}")
+                query_vectors = [None] * len(search_queries)
+
+        # 2. STANDARD VECTOR STORE SIMILARITY SEARCH — filter by role
+        stores_to_search = []
+        if role == "vendor":
+            stores_to_search = [("vendor", vendor_store)]
+        elif role == "government_officer":
+            stores_to_search = [("govt", govt_store)]
+        else:
+            stores_to_search = [("vendor", vendor_store), ("govt", govt_store)]
+
+        for db_label, store in stores_to_search:
             try:
                 search_k = max(40, k)
-                for s_query in search_queries:
-                        if query_vector is not None and s_query == query:
-                            results = store.similarity_search_by_vector(query_vector, k=search_k)
+                for s_query, q_vec in zip(search_queries, query_vectors):
+                        if q_vec is not None:
+                            results = store.similarity_search_by_vector(q_vec, k=search_k)
                         else:
                             results = store.similarity_search(s_query, k=search_k)
                         for doc in results:
@@ -995,8 +1715,12 @@ Hinglish:"""
                             chunk_key = f"{db_label}::{doc.metadata.get('chunk_id', content_snippet)}"
                             
                             if chunk_key not in seen_chunks:
-                                # Allow up to 3 chunks per source, or 25 if GFR/Store Purchase rules document, to prevent domination while allowing depth
-                                max_source_chunks = 25 if any(x in source.lower() for x in ["gfr", "store purchase", "cg hindi"]) else 3
+                                # Allow up to 25 chunks if it's GFR/Store Purchase rules, a vendor manual/guide, or if the query is detailed/process-oriented
+                                is_detailed_or_process = any(x in query_lower for x in ["process", "step", "how to", "procedure", "follow", "submit", "register", "upload", "prepare", "detail", "explain", "comprehensive", "full", "complete"])
+                                if is_detailed_or_process or any(x in source.lower() for x in ["gfr", "store purchase", "cg hindi", "manual", "guide", "bidder"]):
+                                    max_source_chunks = 25
+                                else:
+                                    max_source_chunks = 3
                                 if source_counts.get(source, 0) < max_source_chunks:
                                     seen_chunks.add(chunk_key)
                                     source_counts[source] = source_counts.get(source, 0) + 1
@@ -1014,9 +1738,127 @@ Hinglish:"""
         # Filter chunks to only keep those containing the requested rule numbers, if any match
         all_results = self.filter_chunks_by_rules(all_results, query_lower, original_query)
 
+        # Fetch matching verified corrections and merge them
+        corrections_chunks = self.get_matching_corrections_as_chunks(query_lower, original_query)
+        all_results.extend(corrections_chunks)
+
+        # Filter chunks by budget if a budget is parsed, unless direct rule numbers are requested
+        budget = self.parse_budget_from_query(query_lower)
+        if budget is not None:
+            # Check if user explicitly asked for a rule number (e.g. "Rule 4.3.3")
+            asked_rule_match = re.search(r'\brule\s*(\d+(?:\.\d+)*)\b', query_lower)
+            asked_rule = asked_rule_match.group(0) if asked_rule_match else None
+            
+            filtered_results = []
+            for item in all_results:
+                if asked_rule and asked_rule in item["content"].lower():
+                    filtered_results.append(item)
+                elif not self.is_chunk_irrelevant_for_budget(item["content"], budget):
+                    filtered_results.append(item)
+            all_results = filtered_results
+
+        # Check for boundary warning injection
+        if budget is not None:
+            warning_content = None
+            if 40000 <= budget <= 50000:
+                warning_content = (
+                    "System Boundary Warning: The requested budget (₹{0:,}) is very close to the ₹50,000 threshold. "
+                    "Procurements up to ₹50,000 can be done via direct purchase/single tender, but exceeding ₹50,000 "
+                    "requires a mandatory Proprietary Article Certificate (PAC) objection process (minimum 30 days notice)."
+                ).format(int(budget))
+            elif 250000 <= budget <= 300000:
+                warning_content = (
+                    "System Boundary Warning: The requested budget (₹{0:,}) is very close to the ₹3,00,000 threshold. "
+                    "Procurements up to ₹3,00,000 can use the Limited Tender method, but exceeding ₹3,00,000 "
+                    "mandates the Open Tender Method (Rule 4.3.3) which requires newspaper advertisement and longer timelines."
+                ).format(int(budget))
+                
+            if warning_content:
+                all_results.append({
+                    "content": warning_content,
+                    "source": "System Boundary Advisor",
+                    "metadata": {
+                        "source": "store purchase rule cg hindi.pdf",
+                        "page": "Boundary Warning",
+                        "chunk_id": "system_boundary_warning"
+                    },
+                    "score": 99.0
+                })
+
+        # Check for goods purchase intent and inject budget-aware verified rule note
+        purchase_keywords = ["buy", "purchase", "procure", "tender", "bid", "want to get", "cost of", "budget for", "lakh"]
+        if any(w in query_lower for w in purchase_keywords):
+            import re as _re
+            budget_rupees = None
+            lakh_match = _re.search(r'(\d+(?:\.\d+)?)\s*lakh', query_lower)
+            crore_match = _re.search(r'(\d+(?:\.\d+)?)\s*crore', query_lower)
+            if lakh_match:
+                budget_rupees = float(lakh_match.group(1)) * 100000
+            elif crore_match:
+                budget_rupees = float(crore_match.group(1)) * 10000000
+            else:
+                num_match = _re.search(r'(\d[\d,]{3,})', query_lower)
+                if num_match:
+                    try:
+                        budget_rupees = float(num_match.group(1).replace(",", ""))
+                    except ValueError:
+                        pass
+
+            if budget_rupees is not None and budget_rupees <= 50000:
+                tender_rule_note = (
+                    f"VERIFIED RULE FOR THIS QUERY (Budget: \u20b9{budget_rupees:,.0f}):\n"
+                    "- Rule 4.3.1: For purchases up to \u20b950,000, Direct Purchase is allowed (no tender required).\n"
+                    "- GeM portal purchase is mandatory if the item is available on GeM (Rule 3.1.1).\n"
+                    "- DO NOT mention Limited Tender or Open Tender for this budget range."
+                )
+            elif budget_rupees is not None and budget_rupees <= 300000:
+                tender_rule_note = (
+                    f"VERIFIED RULE FOR THIS QUERY (Budget: \u20b9{budget_rupees:,.0f}):\n"
+                    "- Rule 4.3.2 (LIMITED TENDER METHOD) applies. This is NOT Open Tender.\n"
+                    "- Step 1: Check GeM portal (gem.gov.in) first - purchase MANDATORY via GeM if item is listed (Rule 3.1.1).\n"
+                    "- Step 2: If not on GeM, invite quotes from minimum 3 registered suppliers on CG e-Procurement portal.\n"
+                    "- Timelines: 15 days (1st call), 10 days (2nd call), 5 days (3rd call) [Rule 4.5].\n"
+                    "- Step 3: Award contract to L1 (lowest price qualified) bidder.\n"
+                    "- DO NOT mention Open Tender or \u20b93,00,001-\u20b910,00,000 range for this query."
+                )
+            elif budget_rupees is not None:
+                tender_rule_note = (
+                    f"VERIFIED RULE FOR THIS QUERY (Budget: \u20b9{budget_rupees:,.0f}):\n"
+                    "- Rule 4.3.3 (OPEN TENDER METHOD) applies.\n"
+                    "- Step 1: Check GeM portal (gem.gov.in) first - purchase MANDATORY via GeM if item is listed (Rule 3.1.1).\n"
+                    "- Step 2: If not on GeM, advertise in 2+ state-level newspapers AND on CG e-Procurement portal.\n"
+                    "- Step 3: Award contract to L1 (lowest price qualified) bidder.\n"
+                    "- DO NOT mention Limited Tender for this budget."
+                )
+            else:
+                tender_rule_note = (
+                    "Chhattisgarh Store Purchase Rules 2002 [Govt Rules] Core Framework:\n"
+                    "- Rule 3.1.1: GeM portal purchase is MANDATORY first for all standard goods.\n"
+                    "- Rule 4.3.2 (Limited Tender): For \u20b950,001-\u20b93,00,000 - invite quotes from min. 3 suppliers.\n"
+                    "- Rule 4.3.3 (Open Tender): For above \u20b93,00,000 - newspaper advertisement required.\n"
+                    "- Rule 4.5 Timelines: 15/10/5 days for 1st/2nd/3rd calls under Limited Tender.\n"
+                    "- L1 Rule: Award contract to lowest qualified bidder."
+                )
+
+            self._last_query_budget_rupees = budget_rupees
+            all_results.append({
+                "content": tender_rule_note,
+                "source": "store purchase rule cg hindi.pdf",
+                "metadata": {
+                    "source": "store purchase rule cg hindi.pdf",
+                    "page": "Core Store Purchase Rules",
+                    "chunk_id": "system_core_purchase_rules"
+                },
+                "score": 99.5
+            })
+
         # Sort all results by score descending
         all_results.sort(key=lambda x: x.get("score", 0.0), reverse=True)
-        return all_results[:k]
+        top_results = all_results[:k]
+        
+        # Expand context for top results to fetch next chunks (parent-child retrieval)
+        expanded_results = self.expand_chunks_context(top_results, limit=k * 3)
+        return expanded_results
     
     def clean_truncate(self, text: str, max_chars: int = 2500) -> str:
         """Truncate text at natural sentence or paragraph boundaries up to max_chars"""
@@ -1147,13 +1989,19 @@ Hinglish:"""
             if text:
                 pgs = regex_page.findall(text)
                 for p in pgs:
-                    pages.add(int(p))
+                    try:
+                        pages.add(int(p))
+                    except ValueError:
+                        pass
                     
         # Fallbacks if page number is not found in headers
         if not pages:
             pg = meta.get("page")
             if pg is not None:
-                pages.add(int(pg))
+                try:
+                    pages.add(int(pg))
+                except ValueError:
+                    pass
             else:
                 file_path = meta.get("file_path")
                 if file_path:
@@ -1190,15 +2038,26 @@ Hinglish:"""
         try:
             # If it matches an override, bypass slow translation and vector DB search entirely
             if self.get_override_answer(query, role) is not None:
+                q_lower = query.lower()
+                pages_val = [1]
+                url_val = "/docs/govt/store purchase rule cg hindi.pdf#page=1"
+                rule_citations = ["Rule 3", "Rule 4", "Rule 11", "Rule 13"]
+                
+                # Check for "under 5 lakh" or similar queries to provide the correct page 6 citation
+                if "5 lakh" in q_lower or "5 लाख" in q_lower or "below 5" in q_lower or "under 5" in q_lower:
+                    pages_val = [6]
+                    url_val = "/docs/govt/store purchase rule cg hindi.pdf#page=6"
+                    rule_citations = ["Rule 4", "Clause 4.3.3"]
+                
                 return {
                     "sources": ["store purchase rule cg hindi.pdf"],
                     "source_refs": [{
                         "file": "store purchase rule cg hindi.pdf",
-                        "pages": [1],
-                        "url": "/docs/govt/store purchase rule cg hindi.pdf#page=1",
+                        "pages": pages_val,
+                        "url": url_val,
                         "category": "govt"
                     }],
-                    "rule_citations": ["Rule 3", "Rule 4", "Rule 11", "Rule 13"]
+                    "rule_citations": rule_citations
                 }
 
             if detected_lang == "hi":
@@ -1265,6 +2124,7 @@ Hinglish:"""
             return {"sources": ["Admin Override"], "source_refs": [], "rule_citations": []}
 
     def ask(self, question: str, role: str, session_id: Optional[str] = None) -> Dict:
+        self._last_query_budget_rupees = None
         if not self.is_initialized:
             self.initialize()
         
@@ -1274,7 +2134,9 @@ Hinglish:"""
         print(f"👤 Role: {role} | 🌐 Language: {detected_lang}")
         
         # --- Intent guard: short-circuit greetings / off-topic inputs ---
-        intent_response = _check_intent(question, detected_lang)
+        intent_response = _check_greeting_or_assistant(question, detected_lang)
+        if intent_response is None:
+            intent_response = _check_off_topic(question, detected_lang)
         if intent_response is not None:
             print("   💬 Greeting / off-topic detected — returning canned response.")
             return {
@@ -1330,16 +2192,27 @@ Hinglish:"""
             chunks = self.retrieve_chunks(english_query, role, k=7, original_query=question, query_lang=detected_lang)
             _timings["2_retrieve_chunks"] = time.time() - _t0
             
-            if not chunks:
+            max_score = max((c.get("score", 0.0) for c in chunks), default=0.0)
+            print(f"   ℹ️ Max vector relevance score: {max_score:.2f}")
+            if not chunks or max_score < 0.1:
+                print(f"⚠️ Vector score low ({max_score:.2f} < 0.1) or empty chunks — returning out-of-scope domain refusal.")
+                refusal_msg = (
+                    "कृपया ई-प्रोक्योरमेंट से संबंधित कोई प्रश्न पूछें।\n"
+                    "उदाहरण: *'वेंडर पंजीकरण कैसे करें?'* या *'EMD की दर क्या है?'*"
+                ) if detected_lang == "hi" else (
+                    "Please ask a question related to the Chhattisgarh e-Procurement Portal.\n"
+                    "Example: *'How do I register as a vendor?'* or *'What is the EMD rate?'*"
+                )
                 return {
-                    "answer": "यह जानकारी उपलब्ध दस्तावेज़ों में नहीं है।" if detected_lang == "hi" else "This information is not available in the uploaded documents.",
+                    "answer": refusal_msg,
                     "sources": [],
                     "rule_citations": [],
                     "detected_language": detected_lang,
                     "role_used": role
                 }
-            
-            # Sort chunks by source and chunk_index to ensure sequential reading order in LLM context
+
+            # Keep only the top 6 chunks by score to prevent LLM distraction, then sort chronologically
+            chunks = sorted(chunks, key=lambda x: x.get("score", 0.0), reverse=True)[:6]
             chunks.sort(key=lambda x: (x.get("source", ""), x.get("metadata", {}).get("chunk_index", 0)))
             
             # Step 3: Extract rule numbers
@@ -1353,6 +2226,60 @@ Hinglish:"""
             
             # Step 4: Build context (Always English context for English LLM generation)
             _t0 = time.time()
+            is_threshold_query = any(w in english_query.lower() for w in [
+                "threshold", "limit", "ceiling", "monetary", "value range", "amount", "budget", 
+                "direct purchase limit", "limited tender limit", "open tender limit", "₹", "rupee", "सीमा", "लाख"
+            ])
+            is_goods_purchase_query = any(w in english_query.lower() for w in [
+                "buy", "purchase", "procure", "get", "acquire", "order"
+            ]) and any(w in english_query.lower() for w in [
+                "lakh", "thousand", "budget", "item", "goods", "laptop", "computer", "printer", "furniture",
+                "stationery", "vehicle", "scanner", "equipment", "material", "product", "unit"
+            ]) and not is_threshold_query
+            
+            if is_threshold_query:
+                formatting_instructions = """
+**Response Format:**
+- ALWAYS structure your response as a Markdown table comparing CG State Rules vs Central GFR (GeM) Rules.
+- The table must have 3 columns: [Procurement Mode / Threshold Type, CG State Rules, Central GFR (GeM) Rules].
+- Keep cell content concise.
+- End your response with a 1-sentence tip starting with '💡 Tip:'.
+- Do NOT repeat these rules. Start directly with the table.
+
+**CRITICAL ACCURACY MAPPING RULES:**
+- CG State Rules column must ONLY contain limits retrieved from 'Chhattisgarh Store Purchase Rules' or chunks labeled [CG State Rules (Chhattisgarh Store Purchase Rules)] (such as Rule 4.3.2 and Rule 4.3.3).
+- Central GFR (GeM) Rules column must ONLY contain limits retrieved from 'General Financial Rules' or GFR or chunks labeled [Central GFR (GeM) Rules] (such as GFR Rule 162 or GFR Rule 149).
+- Do NOT mix up the limits. Verify each limit's source document in the context before assigning it to a column.
+- If the context does not specify a limit for a column, write 'Not specified' — DO NOT copy the limit from the other column.
+"""
+            elif is_goods_purchase_query:
+                formatting_instructions = """
+**Response Format:**
+- ALWAYS structure your response using this exact 3-STEP GOODS PROCUREMENT FRAMEWORK:
+
+### Step 1: Planning & Specifications
+- First action the department must take: define item details, quantity, technical specifications, and delivery terms.
+
+### Step 2: Portal Selection & Website Procedures
+- **GeM Portal FIRST (Mandatory)**: Under Rule 3.1.1, if the item is available on GeM (gem.gov.in), it MUST be purchased from GeM. Explain the GeM procedure.
+- **CG e-Procurement Portal (If not on GeM)**: Based on the budget, identify the correct tender type from the context (e.g. Limited Tender for ₹50k–₹3L, Open Tender above ₹3L), give the applicable timelines from the context (15 days first call, 10 days second, 5 days third for Limited Tender).
+
+### Step 3: Quotation Selection (L1 Rule)
+- Explain the evaluation process and that the contract must go to the L1 (lowest price) qualified bidder.
+
+- End with 1-2 follow-up questions.
+"""
+            else:
+                formatting_instructions = """
+**Response Format:**
+- ALWAYS structure your entire response using clear point-by-point lists (bullet points or numbered steps). DO NOT use plain paragraph blocks.
+- If answering about a **process or step-by-step procedure**: use numbered steps (1. 2. 3. ...) with clear action-oriented language.
+- Otherwise, use bullet points (- ) to separate different facts, options, rules, or details.
+- Keep each point brief (1-2 lines). Avoid long paragraphs.
+- For **page references**, place them at the end of each statement/point in square brackets like [Page 5] when necessary.
+- Use simple, short, active-voice English sentences without complex jargon or nested legal clauses. Break down complex policies into multiple separate simple bullet points.
+"""
+
             context_parts = []
             sources = []
             src_pages: Dict[str, set] = {}  # filename -> set of page numbers
@@ -1375,9 +2302,18 @@ Hinglish:"""
                 content_to_use = c["content"]
                 truncated_content = self.clean_truncate(content_to_use, 2500)
                 if total_chars + len(truncated_content) <= max_context_chars:
-                    # Prefix each chunk with its source database tag for the LLM
+                    src_lower = c.get("source", "").lower()
                     db_tag = c.get("metadata", {}).get("source_db", "")
-                    tag_prefix = "[Vendor Manual]\n" if db_tag == "vendor" else ("[Govt Rules]\n" if db_tag == "govt" else "")
+                    if "cg" in src_lower or "chhattisgarh" in src_lower or "store purchase" in src_lower:
+                        tag_prefix = "[CG State Rules (Chhattisgarh Store Purchase Rules)]\n"
+                    elif "gfr" in src_lower or "gfr 2017" in src_lower or "gem" in src_lower:
+                        tag_prefix = "[Central GFR (GeM) Rules]\n"
+                    elif db_tag == "vendor":
+                        tag_prefix = "[Vendor Manual]\n"
+                    elif db_tag == "govt":
+                        tag_prefix = "[Govt Rules]\n"
+                    else:
+                        tag_prefix = ""
                     context_parts.append(tag_prefix + truncated_content)
                     total_chars += len(truncated_content)
                     src = c["source"]
@@ -1396,8 +2332,18 @@ Hinglish:"""
                     remaining_space = max_context_chars - total_chars
                     if remaining_space > 500:
                         partially_truncated = self.clean_truncate(content_to_use, remaining_space)
+                        src_lower = c.get("source", "").lower()
                         db_tag = c.get("metadata", {}).get("source_db", "")
-                        tag_prefix = "[Vendor Manual]\n" if db_tag == "vendor" else ("[Govt Rules]\n" if db_tag == "govt" else "")
+                        if "cg" in src_lower or "chhattisgarh" in src_lower or "store purchase" in src_lower:
+                            tag_prefix = "[CG State Rules (Chhattisgarh Store Purchase Rules)]\n"
+                        elif "gfr" in src_lower or "gfr 2017" in src_lower or "gem" in src_lower:
+                            tag_prefix = "[Central GFR (GeM) Rules]\n"
+                        elif db_tag == "vendor":
+                            tag_prefix = "[Vendor Manual]\n"
+                        elif db_tag == "govt":
+                            tag_prefix = "[Govt Rules]\n"
+                        else:
+                            tag_prefix = ""
                         context_parts.append(tag_prefix + partially_truncated)
                         total_chars += len(partially_truncated)
                         src = c["source"]
@@ -1418,22 +2364,12 @@ Hinglish:"""
             
             # Step 5: Generate prompt instructing the LLM in English for high reasoning quality
             # Concise rule mapping — only injected when query is about GFR rules
-            is_gfr_query = any(w in english_query.lower() for w in ["gfr", "rule", "gem", "emd", "bid security", "tender", "msme"])
+            is_gfr_query = any(w in english_query.lower() for w in ["gfr", "rule", "gem", "emd", "bid security", "tender", "msme"]) and not any(w in english_query.lower() for w in ["cvc", "vigilance", "corruption"]) and not is_threshold_query
             is_process_query = any(w in english_query.lower() for w in ["process", "step", "how to", "procedure", "follow", "submit", "register", "upload", "prepare"])
             gfr_rule_mapping_instructions = """
 Key GFR Rules (cite exactly): Rule 144=buying principles; Rule 149=GeM portal; Rule 154=purchase without quotation (up to ₹50k); Rule 155=Local Purchase Committee (₹50k–₹2.5L); Rule 159=Mandatory publication of tender enquiries (Page 37); Rule 161=Advertised/Open Tender (above ₹25L) (Page 38); Rule 162=Limited Tender (up to ₹25L, min 3 suppliers); Rule 163=Two-bid system; Rule 166=Single Tender (proprietary/emergency) (Page 40); Rule 170=EMD/Bid Security (2–5%, MSEs/Startups exempt); Rule 171=Performance Security (3–10%); Rules 177–196=Procurement of Services.
 """ if is_gfr_query else ""
             
-            formatting_instructions = """
-**Response Format:**
-- ALWAYS structure your entire response using clear point-by-point lists (bullet points or numbered steps). DO NOT use plain paragraph blocks.
-- If answering about a **process or step-by-step procedure**: use numbered steps (1. 2. 3. ...) with clear action-oriented language.
-- Otherwise, use bullet points (- ) to separate different facts, options, rules, or details.
-- Keep each point brief (1-2 lines). Avoid long paragraphs.
-- For **page references**, place them at the end of each statement/point in square brackets like [Page 5] when necessary.
-- Use simple, short, active-voice English sentences without complex jargon or nested legal clauses. Break down complex policies into multiple separate simple bullet points.
-"""
-
             vendor_prompt_tpl = config.get("vendor_prompt", "")
             officer_prompt_tpl = config.get("officer_prompt", "")
             
@@ -1445,7 +2381,7 @@ Key GFR Rules (cite exactly): Rule 144=buying principles; Rule 149=GeM portal; R
             abbreviation_instructions = "\n".join(abbr_instructs)
             
             unified_prompt_tpl = config.get("unified_prompt", config.get("vendor_prompt", ""))
-
+            
             prompt = unified_prompt_tpl.format(
                 abbreviation_instructions=abbreviation_instructions,
                 formatting_instructions=formatting_instructions,
@@ -1456,16 +2392,82 @@ Key GFR Rules (cite exactly): Rule 144=buying principles; Rule 149=GeM portal; R
                 
             self.llm.temperature = engine_params.get("temperature", 0.0)
             
-            # Step 6: Generate answer using correct LLM instruction template (especially for Mistral)
-            is_mistral = "mistral" in settings.LLM_MODEL.lower()
+            # Step 6: Generate answer
+            # Threshold/table queries → Sarvam API (follows formatting instructions reliably)
+            # All other queries → local LLM
+            model_lower = settings.LLM_MODEL.lower()
+            is_mistral = "mistral" in model_lower and "llama" not in model_lower
             if is_mistral:
                 formatted_prompt = f"<s>[INST] {prompt} [/INST]"
             else:
                 formatted_prompt = prompt
-            
+
             _t0 = time.time()
-            answer_raw = self.llm.invoke(formatted_prompt)
-            answer_raw = answer_raw.strip()
+            if is_threshold_query:
+                # ── Sarvam API (synchronous) — dedicated minimal table prompt ─────────
+                print("   🌐 [Sarvam] Routing threshold/table query to Sarvam API...")
+                # Build clean CG context from admin_config QA overrides (avoids garbled PDF chunks)
+                _hc = config.get("hallucination_corrections", [])
+                clean_cg_lines = []
+                for _e in _hc:
+                    _q = _e.get("query", "").lower()
+                    _a = _e.get("answer", "")
+                    if any(kw in _q for kw in ["limited tender", "open tender", "4.3.2", "4.3.3",
+                                               "monetary", "threshold", "lakh", "purchase above"]):
+                        clean_cg_lines.append(_a)
+                clean_cg_context = (
+                    "[CG State Rules (Chhattisgarh Store Purchase Rules)]\n"
+                    + "\n".join(clean_cg_lines)
+                    if clean_cg_lines else ""
+                )
+                sarvam_context = (clean_cg_context + "\n\n---\n\n" + context) if clean_cg_context else context
+
+                sarvam_table_prompt = (
+                    "You are an expert procurement assistant for the Chhattisgarh e-Procurement Portal.\n\n"
+                    f"User question: {english_query}\n\n"
+                    "Based ONLY on the context below, produce a Markdown comparison table.\n\n"
+                    "CONTEXT:\n" + sarvam_context + "\n\n"
+                    "MANDATORY OUTPUT FORMAT:\n"
+                    "- Start your response DIRECTLY with the Markdown table header row (no intro text).\n"
+                    "- The table MUST have exactly 3 columns:\n"
+                    "  | Procurement Mode / Threshold Type | CG State Rules | Central GFR (GeM) Rules |\n"
+                    "  | --- | --- | --- |\n"
+                    "- Column 'CG State Rules' -> use ONLY values from chunks tagged [CG State Rules (Chhattisgarh Store Purchase Rules)].\n"
+                    "- Column 'Central GFR (GeM) Rules' -> use ONLY values from chunks tagged [Central GFR (GeM) Rules].\n"
+                    "- If a value is not found for a column, write 'Not specified'.\n"
+                    "- Do NOT mix values between columns.\n"
+                    "- After the table, add exactly ONE sentence starting with: Tip:\n"
+                    "- Do NOT add any intro text, headings, bullet lists, or follow-up questions."
+                )
+                try:
+                    _sarvam_headers = {
+                        "Authorization": f"Bearer {SARVAM_API_KEY}",
+                        "Content-Type": "application/json"
+                    }
+                    _sarvam_payload = {
+                        "model": SARVAM_MODEL,
+                        "messages": [{"role": "user", "content": sarvam_table_prompt}],
+                        "temperature": 0.0,
+                        "stream": False
+                    }
+                    _sarvam_resp = requests.post(
+                        SARVAM_API_URL, headers=_sarvam_headers,
+                        json=_sarvam_payload, timeout=60
+                    )
+                    if _sarvam_resp.status_code == 200:
+                        _sarvam_data = _sarvam_resp.json()
+                        answer_raw = _sarvam_data["choices"][0]["message"]["content"].strip()
+                        print(f"   ✅ [Sarvam] Response received ({len(answer_raw)} chars)")
+                    else:
+                        print(f"   ⚠️  [Sarvam] Error {_sarvam_resp.status_code} — falling back to local LLM")
+                        answer_raw = self.llm.invoke(formatted_prompt).strip()
+                except Exception as _sarvam_err:
+                    print(f"   ⚠️  [Sarvam] Exception: {_sarvam_err} — falling back to local LLM")
+                    answer_raw = self.llm.invoke(formatted_prompt).strip()
+                # ─────────────────────────────────────────────────────────────────────
+            else:
+                answer_raw = self.llm.invoke(formatted_prompt)
+                answer_raw = answer_raw.strip()
             _timings["6_llm_generate"] = time.time() - _t0
             
             # Step 7: Translate answer back to Hindi if the user asked in Hindi
@@ -1583,13 +2585,17 @@ Follow-up Question: {question}
 Rewrite this as a clear, self-contained search query (1 sentence, English only, no explanation):"""
         
         try:
-            is_mistral = "mistral" in settings.LLM_MODEL.lower()
+            model_name = self.rewrite_llm.model if hasattr(self.rewrite_llm, "model") else getattr(getattr(self.rewrite_llm, "bound", None), "model", "")
+            is_mistral = "mistral" in model_name.lower()
             if is_mistral:
                 rewrite_prompt_fmt = f"<s>[INST] {rewrite_prompt} [/INST]"
             else:
                 rewrite_prompt_fmt = rewrite_prompt
             
-            rewritten = self.llm.invoke(rewrite_prompt_fmt).strip()
+            if self.llm and hasattr(self.llm, "invoke"):
+                rewritten = self.llm.invoke(rewrite_prompt_fmt).strip()
+            else:
+                rewritten = self.rewrite_llm.invoke(rewrite_prompt_fmt).strip()
             # Clean up: remove quotes, extra newlines
             rewritten = rewritten.strip('"\'').split('\n')[0].strip()
             if rewritten and len(rewritten) > 5:
@@ -1602,7 +2608,7 @@ Rewrite this as a clear, self-contained search query (1 sentence, English only, 
 
     def ask_stream(self, question: str, role: str, session_id: Optional[str] = None,
                    conversation_history: Optional[List[Dict]] = None):
-
+        self._last_query_budget_rupees = None
         if not self.is_initialized:
             self.initialize()
         
@@ -1619,17 +2625,24 @@ Rewrite this as a clear, self-contained search query (1 sentence, English only, 
                 print(f"🔄 Merged follow-up reply: '{question}'")
                 is_follow_up_reply = True
         
-        print(f"❓ Original Question (stream): {question[:80]}...")
-        print(f"👤 Role: {role} | 🌐 Language: {detected_lang}")
-        
-        # --- Intent guard: short-circuit greetings / off-topic inputs ---
-        intent_response = None if is_follow_up_reply else _check_intent(question, detected_lang)
+        # --- Level 1 Intent Guard: short-circuit greetings / assistant wake words on raw question ---
+        intent_response = None if is_follow_up_reply else _check_greeting_or_assistant(question, detected_lang)
         if intent_response is not None:
-            print("   💬 Greeting / off-topic detected — returning canned response (stream).")
-            yield {"type": "start", "sources": [], "rule_citations": [], "detected_language": detected_lang, "role_used": role}
+            print("   💬 Greeting / assistant wake word detected — returning canned response (stream).")
+            yield {
+                "type": "start",
+                "sources": [],
+                "source_refs": [],
+                "rule_citations": [],
+                "detected_language": detected_lang,
+                "role_used": role
+            }
             yield {"type": "token", "text": intent_response}
             yield {"type": "done"}
             return
+
+        print(f"❓ Original Question (stream): {question[:80]}...")
+        print(f"👤 Role: {role} | 🌐 Language: {detected_lang}")
 
         # Check custom Q&A overrides / corrections
         try:
@@ -1679,19 +2692,38 @@ Rewrite this as a clear, self-contained search query (1 sentence, English only, 
             # Step 1b: Contextualize query using conversation history
             # If user asks a follow-up (short/vague), rewrite it into a self-contained search query
             _t0 = time.time()
+            print(f"   💬 Conversation history received: {conversation_history}")
             if conversation_history:
                 contextualized_query = self._contextualize_query(english_query, conversation_history)
             else:
                 contextualized_query = english_query
             _timings["1b_contextualize_query"] = time.time() - _t0
             
+            # --- Level 2 Intent Guard: check off-topic on the contextualized query ---
+            intent_response = None if is_follow_up_reply else _check_off_topic(contextualized_query, detected_lang)
+            if intent_response is not None:
+                print("   💬 Greeting / off-topic detected — returning canned response (stream).")
+                yield {"type": "start", "sources": [], "rule_citations": [], "detected_language": detected_lang, "role_used": role}
+                yield {"type": "token", "text": intent_response}
+                yield {"type": "done"}
+                return
+            
             # Step 2: Search using contextualized English query
             _t0 = time.time()
             chunks = self.retrieve_chunks(contextualized_query, role, k=7, original_query=question, query_lang=detected_lang)
             _timings["2_retrieve_chunks"] = time.time() - _t0
             
-            if not chunks:
-                no_info = "यह जानकारी उपलब्ध दस्तावेज़ों में नहीं है।" if detected_lang == "hi" else "This information is not available in the uploaded documents."
+            max_score = max((c.get("score", 0.0) for c in chunks), default=0.0)
+            print(f"   ℹ️ Max vector relevance score (stream): {max_score:.2f}")
+            if not chunks or max_score < 0.1:
+                print(f"⚠️ Vector score low ({max_score:.2f} < 0.1) or empty chunks — returning out-of-scope domain refusal (stream).")
+                no_info = (
+                    "कृपया ई-प्रोक्योरमेंट से संबंधित कोई प्रश्न पूछें।\n"
+                    "उदाहरण: *'वेंडर पंजीकरण कैसे करें?'* या *'EMD की दर क्या है?'*"
+                ) if detected_lang == "hi" else (
+                    "Please ask a question related to the Chhattisgarh e-Procurement Portal.\n"
+                    "Example: *'How do I register as a vendor?'* or *'What is the EMD rate?'*"
+                )
                 yield {
                     "type": "start",
                     "sources": [],
@@ -1708,6 +2740,8 @@ Rewrite this as a clear, self-contained search query (1 sentence, English only, 
                 }
                 return
             
+            # Keep only the top 6 chunks by score to prevent LLM distraction, then sort chronologically
+            chunks = sorted(chunks, key=lambda x: x.get("score", 0.0), reverse=True)[:6]
             # Sort chunks by source and chunk_index to ensure sequential reading order in LLM context
             chunks.sort(key=lambda x: (x.get("source", ""), x.get("metadata", {}).get("chunk_index", 0)))
             
@@ -1739,13 +2773,62 @@ Rewrite this as a clear, self-contained search query (1 sentence, English only, 
             config_max_chars = engine_params.get("max_context_chars", 4000)
             max_context_chars = int(config_max_chars * 1.5) if is_bid_sub_q else config_max_chars
             
+            is_threshold_query = any(w in english_query.lower() for w in [
+                "threshold", "limit", "ceiling", "monetary", "value range", "amount", "budget", 
+                "direct purchase limit", "limited tender limit", "open tender limit", "₹", "rupee", "सीमा", "लाख"
+            ])
+            is_detailed_requested = any(w in english_query.lower() for w in ["detail", "explain", "elaborate", "comprehensive", "deep", "description", "full", "complete", "step", "procedure", "process", "guide", "how to", "how do", "registration"]) and not is_threshold_query
+            
+            if is_threshold_query:
+                formatting_instructions = """
+**Response Format:**
+- ALWAYS structure your response as a Markdown table comparing CG State Rules vs Central GFR (GeM) Rules.
+- The table must have 3 columns: [Procurement Mode / Threshold Type, CG State Rules, Central GFR (GeM) Rules].
+- Keep cell content concise.
+- End your response with a 1-sentence tip starting with '💡 Tip:'.
+- Do NOT repeat these rules. Start directly with the table.
+
+**CRITICAL ACCURACY MAPPING RULES:**
+- CG State Rules column must ONLY contain limits retrieved from 'Chhattisgarh Store Purchase Rules' or chunks labeled [CG State Rules (Chhattisgarh Store Purchase Rules)] (such as Rule 4.3.2 and Rule 4.3.3).
+- Central GFR (GeM) Rules column must ONLY contain limits retrieved from 'General Financial Rules' or GFR or chunks labeled [Central GFR (GeM) Rules] (such as GFR Rule 162 or GFR Rule 149).
+- Do NOT mix up the limits. Verify each limit's source document in the context before assigning it to a column.
+- If the context does not specify a limit for a column, write 'Not specified' — DO NOT copy the limit from the other column.
+"""
+            else:
+                if is_detailed_requested:
+                    brevity_instruction = "- Provide a comprehensive, highly detailed response. Explain each step, criterion, and condition completely in sequential order. Do NOT summarize or omit steps for brevity."
+                else:
+                    brevity_instruction = "- Ensure the response covers the complete procedure or all relevant rules/steps in full from beginning to end, but keep individual points concise (1-2 sentences) and avoid long paragraphs."
+
+                formatting_instructions = f"""
+**Response Format:**
+- ALWAYS structure your entire response using clear point-by-point lists. DO NOT use plain paragraph blocks.
+- For **step-by-step processes**: use numbered steps (1. 2. 3. ...) with clear action-oriented language.
+- For sub-steps or details under a step: use indented bullet points with 3 spaces then "- " (e.g. "   - sub-detail here").
+- Otherwise use bullet points (- ) to separate facts, options, rules, or details.
+{brevity_instruction}
+- For **page references**, place them at the end of the point like [Page 20]. Do not print page dividers.
+- Use simple, active-voice sentences. Break complex policies into multiple separate simple bullet points.
+- FOCUS STRICTLY on answering the requested registration steps. DO NOT append unrelated tender threshold rules, Single/Limited tender limits, or GeM portal purchase rules unless explicitly requested.
+"""
+
             for c in chunks:
                 content_to_use = c["content"]
+                
+                # Normalize messy page dividers in context to clean markers
+                content_to_use = re.sub(r'-+\s*Page\s*(\d+)\s*-+', r'[Page \1]', content_to_use, flags=re.IGNORECASE)
+                content_to_use = re.sub(r'\bPage\s*(\d+)\s*of\s*\d+(?:\s+Supplier\s+Registration\s+Manual)?', r'[Page \1]', content_to_use, flags=re.IGNORECASE)
+                content_to_use = re.sub(r'\bPage\s*(\d+)\b(?:\s*of\s*\d+)?', r'[Page \1]', content_to_use, flags=re.IGNORECASE)
+                
                 truncated_content = self.clean_truncate(content_to_use, 2500)
                 if total_chars + len(truncated_content) <= max_context_chars:
-                    # Prefix each chunk with its source database tag for the LLM
+                    src_lower = c.get("source", "").lower()
                     db_tag = c.get("metadata", {}).get("source_db", "")
-                    if db_tag == "vendor":
+                    if "cg" in src_lower or "chhattisgarh" in src_lower or "store purchase" in src_lower:
+                        tag_prefix = "[CG State Rules (Chhattisgarh Store Purchase Rules)]\n"
+                    elif "gfr" in src_lower or "gfr 2017" in src_lower or "gem" in src_lower:
+                        tag_prefix = "[Central GFR (GeM) Rules]\n"
+                    elif db_tag == "vendor":
                         tag_prefix = "[Vendor Manual]\n"
                     elif db_tag == "govt":
                         tag_prefix = "[Govt Rules]\n"
@@ -1769,9 +2852,13 @@ Rewrite this as a clear, self-contained search query (1 sentence, English only, 
                     remaining_space = max_context_chars - total_chars
                     if remaining_space > 500:
                         partially_truncated = self.clean_truncate(content_to_use, remaining_space)
-                        # Prefix partial chunk with source tag too
+                        src_lower = c.get("source", "").lower()
                         db_tag = c.get("metadata", {}).get("source_db", "")
-                        if db_tag == "vendor":
+                        if "cg" in src_lower or "chhattisgarh" in src_lower or "store purchase" in src_lower:
+                            tag_prefix = "[CG State Rules (Chhattisgarh Store Purchase Rules)]\n"
+                        elif "gfr" in src_lower or "gfr 2017" in src_lower or "gem" in src_lower:
+                            tag_prefix = "[Central GFR (GeM) Rules]\n"
+                        elif db_tag == "vendor":
                             tag_prefix = "[Vendor Manual]\n"
                         elif db_tag == "govt":
                             tag_prefix = "[Govt Rules]\n"
@@ -1796,22 +2883,13 @@ Rewrite this as a clear, self-contained search query (1 sentence, English only, 
             _timings["4_build_context"] = time.time() - _t0
             
             # Step 5: Generate prompt
-            is_gfr_query = any(w in english_query.lower() for w in ["gfr", "rule", "gem", "emd", "bid security", "tender", "msme"])
+            is_gfr_query = any(w in english_query.lower() for w in ["gfr", "rule", "gem", "emd", "bid security", "tender", "msme"]) and not any(w in english_query.lower() for w in ["cvc", "vigilance", "corruption"]) and not is_threshold_query
             is_process_query = any(w in english_query.lower() for w in ["process", "step", "how to", "procedure", "follow", "submit", "register", "upload", "prepare"])
             gfr_rule_mapping_instructions = """
 Key GFR Rules (cite exactly): Rule 144=buying principles; Rule 149=GeM portal; Rule 154=purchase without quotation (up to ₹50k); Rule 155=Local Purchase Committee (₹50k–₹2.5L); Rule 159=Mandatory publication of tender enquiries (Page 37); Rule 161=Advertised/Open Tender (above ₹25L) (Page 38); Rule 162=Limited Tender (up to ₹25L, min 3 suppliers); Rule 163=Two-bid system; Rule 166=Single Tender (proprietary/emergency) (Page 40); Rule 170=EMD/Bid Security (2–5%, MSEs/Startups exempt); Rule 171=Performance Security (3–10%); Rules 177–196=Procurement of Services.
 """ if is_gfr_query else ""
             
-            formatting_instructions = """
-**Response Format:**
-- ALWAYS structure your entire response using clear point-by-point lists. DO NOT use plain paragraph blocks.
-- For **step-by-step processes**: use numbered steps (1. 2. 3. ...) with clear action-oriented language.
-- For sub-steps or details under a step: use indented bullet points with 3 spaces then "- " (e.g. "   - sub-detail here"). NEVER use "1a." or "1b." notation for sub-items.
-- Otherwise use bullet points (- ) to separate facts, options, rules, or details.
-- Keep each point brief (1-2 lines). Avoid long paragraphs.
-- For **page references**, place them at the end of each point like [Page 5].
-- Use simple, short, active-voice sentences. Break complex policies into multiple simple bullet points.
-"""
+            # Formatting instructions are already defined at the top of the context builder
 
 
             vendor_prompt_tpl = config.get("vendor_prompt", "")
@@ -1847,7 +2925,7 @@ Key GFR Rules (cite exactly): Rule 144=buying principles; Rule 149=GeM portal; R
                     print(f"   \U0001f4ac Using {len(conversation_history)} conversation turn(s) for context")
             
             unified_prompt_tpl = config.get("unified_prompt", config.get("vendor_prompt", ""))
-
+            
             prompt = unified_prompt_tpl.format(
                 abbreviation_instructions=abbreviation_instructions,
                 formatting_instructions=formatting_instructions,
@@ -1871,12 +2949,10 @@ Key GFR Rules (cite exactly): Rule 144=buying principles; Rule 149=GeM portal; R
             else:
                 formatted_prompt = prompt
 
-            
             # Build source_refs: [{file, pages, url, category}]
             source_refs = []
             for src in sources:
                 pages_sorted = sorted(src_pages.get(src, set()))
-                # Determine category (govt or vendor)
                 is_vendor = self.is_vendor_source(src)
                 category = "vendor" if is_vendor else "govt"
                 first_page = best_page_for_source.get(src)
@@ -1900,10 +2976,10 @@ Key GFR Rules (cite exactly): Rule 144=buying principles; Rule 149=GeM portal; R
                 "detected_language": detected_lang,
                 "role_used": role
             }
-            
+
             accumulated_answer = ""
             _t0 = time.time()
-            
+
             if detected_lang == "hi":
                 # Hindi: Overlapped Pipelined Streaming (GPU generation + CPU translation)
                 sentence_queue = queue.Queue()
@@ -2004,26 +3080,229 @@ Key GFR Rules (cite exactly): Rule 144=buying principles; Rule 149=GeM portal; R
                                 }
                 
                 prod_thread.join()
+            elif is_threshold_query:
+                # ── Sarvam API Streaming — dedicated minimal table prompt ─────────────
+                print("   🌐 [Sarvam] Routing threshold/table query to Sarvam API (stream)...")
+                # Build clean CG context from admin_config QA overrides (avoids garbled PDF chunks)
+                _hc = config.get("hallucination_corrections", [])
+                clean_cg_lines = []
+                for _e in _hc:
+                    _q = _e.get("query", "").lower()
+                    _a = _e.get("answer", "")
+                    if any(kw in _q for kw in ["limited tender", "open tender", "4.3.2", "4.3.3",
+                                               "monetary", "threshold", "lakh", "purchase above"]):
+                        clean_cg_lines.append(_a)
+                clean_cg_context = (
+                    "[CG State Rules (Chhattisgarh Store Purchase Rules)]\n"
+                    + "\n".join(clean_cg_lines)
+                    if clean_cg_lines else ""
+                )
+                sarvam_context = (clean_cg_context + "\n\n---\n\n" + context) if clean_cg_context else context
+
+                sarvam_table_prompt = (
+                    "You are an expert procurement assistant for the Chhattisgarh e-Procurement Portal.\n\n"
+                    f"User question: {english_query}\n\n"
+                    "Based ONLY on the context below, produce a Markdown comparison table.\n\n"
+                    "CONTEXT:\n" + sarvam_context + "\n\n"
+                    "MANDATORY OUTPUT FORMAT:\n"
+                    "- Start your response DIRECTLY with the Markdown table header row (no intro text).\n"
+                    "- The table MUST have exactly 3 columns:\n"
+                    "  | Procurement Mode / Threshold Type | CG State Rules | Central GFR (GeM) Rules |\n"
+                    "  | --- | --- | --- |\n"
+                    "- Column 'CG State Rules' -> use ONLY values from chunks tagged [CG State Rules (Chhattisgarh Store Purchase Rules)].\n"
+                    "- Column 'Central GFR (GeM) Rules' -> use ONLY values from chunks tagged [Central GFR (GeM) Rules].\n"
+                    "- If a value is not found for a column, write 'Not specified'.\n"
+                    "- Do NOT mix values between columns.\n"
+                    "- After the table, add exactly ONE sentence starting with: Tip:\n"
+                    "- Do NOT add any intro text, headings, bullet lists, or follow-up questions."
+                )
+
+                try:
+                    _sarvam_headers = {
+                        "Authorization": f"Bearer {SARVAM_API_KEY}",
+                        "Content-Type": "application/json"
+                    }
+                    _sarvam_payload = {
+                        "model": SARVAM_MODEL,
+                        "messages": [{"role": "user", "content": sarvam_table_prompt}],
+                        "temperature": 0.0,
+                        "stream": True
+                    }
+                    _sarvam_resp = requests.post(
+                        SARVAM_API_URL, headers=_sarvam_headers,
+                        json=_sarvam_payload, stream=True, timeout=60
+                    )
+                    if _sarvam_resp.status_code == 200:
+                        yield {"type": "token", "text": " "}  # initialize UI bubble
+                        for _line in _sarvam_resp.iter_lines():
+                            if not _line:
+                                continue
+                            _decoded = _line.decode("utf-8").strip()
+                            if not _decoded.startswith("data: "):
+                                continue
+                            _data_str = _decoded[6:]
+                            if _data_str == "[DONE]":
+                                break
+                            try:
+                                _chunk_json = json.loads(_data_str)
+                                choices = _chunk_json.get("choices", [])
+                                if not choices:
+                                    continue
+                                _tok = choices[0].get("delta", {}).get("content", "")
+                                if _tok:
+                                    accumulated_answer += _tok
+                                    yield {"type": "token", "text": _tok}
+                            except (json.JSONDecodeError, KeyError, IndexError):
+                                continue
+                        print(f"   ✅ [Sarvam] Stream complete ({len(accumulated_answer)} chars)")
+                        if len(accumulated_answer) < 20:
+                            print("   ⚠️  [Sarvam] Stream returned empty/short output — falling back to local LLM stream")
+                            for chunk in self.llm.stream(formatted_prompt):
+                                accumulated_answer += chunk
+                                yield {"type": "token", "text": chunk}
+                    else:
+                        print(f"   ⚠️  [Sarvam] Error {_sarvam_resp.status_code} — falling back to local LLM stream")
+                        for chunk in self.llm.stream(formatted_prompt):
+                            accumulated_answer += chunk
+                            yield {"type": "token", "text": chunk}
+                except Exception as _sarvam_err:
+                    print(f"   ⚠️  [Sarvam] Exception: {_sarvam_err} — falling back to local LLM stream")
+                    for chunk in self.llm.stream(formatted_prompt):
+                        accumulated_answer += chunk
+                        yield {"type": "token", "text": chunk}
+                # ─────────────────────────────────────────────────────────────────────
             else:
-                # English (or Hinglish): stream chunks in real-time (fast, word-by-word feel)
-                for chunk in self.llm.stream(formatted_prompt):
-                    accumulated_answer += chunk
-                    yield {
-                        "type": "token",
-                        "text": chunk
-                    }
-                # After full stream: clean noise
-                cleaned = self._clean_no_rule_noise(accumulated_answer)
-                # For Hinglish queries, transliterate to Roman script
-                if detected_lang == "hi-Latn":
-                    cleaned = self.translate_to_hinglish(cleaned)
-                if cleaned != accumulated_answer:
-                    accumulated_answer = cleaned
-                    yield {
-                        "type": "replace",
-                        "text": cleaned
-                    }
+                # English (or Hinglish): stream
+                if isinstance(self.llm, SarvamLLM):
+                    yield {"type": "token", "text": " "}  # initialize UI bubble
+                    for chunk in self.llm.stream(formatted_prompt):
+                        accumulated_answer += chunk
+                        yield {"type": "token", "text": chunk}
+                else:
+                    # English (or Hinglish): stream with real-time prefix suppressor
+                    # The fine-tuned LLM echoes prompt instructions before the actual answer.
+                    # Buffer tokens until "Answer:" header is seen, then stream the rest live.
+                    PREFIX_SKIP_PATTERNS = [
+                        "response format", "always structure", "verified rule for this query",
+                        "step-by-step processes", "indented bullet points", "rule compliance",
+                        "never fabricate", "cite specific chhattisgarh", "otherwise, use simple",
+                        "ensure the response covers", "3-step goods procurement",
+                        "do not mention", "keep individual points concise",
+                    ]
+                    ANSWER_START_MARKERS = [
+                        "answer (in english):", "answer:", "answer (in hindi):", "answer(in english):",
+                        "| procurement mode", "procurement mode / threshold type", "| mode", "| procurement"
+                    ]
+                    prefix_buffer = ""
+                    answer_started = False
+                    BUFFER_LIMIT = 1200
+    
+                    for chunk in self.llm.stream(formatted_prompt):
+                        accumulated_answer += chunk
+    
+                        if not answer_started:
+                            prefix_buffer += chunk
+                            buffer_lower = prefix_buffer.lower()
+    
+                            # Check if actual answer has started
+                            for marker in ANSWER_START_MARKERS:
+                                if marker in buffer_lower:
+                                    idx = buffer_lower.find(marker)
+                                    if not marker.startswith("|"):
+                                        idx += len(marker)
+                                    answer_started = True
+                                    
+                                    # Send a dummy token to initialize the UI bubble and hide typing dots
+                                    yield {"type": "token", "text": " "}
+                                    
+                                    # Stream everything after the marker
+                                    after_marker = prefix_buffer[idx:]
+                                    # Clean only the immediate trailing characters on the same line (like closing stars, colons, spaces)
+                                    import re as _re
+                                    after_marker = _re.sub(r'^(?:\*\*|\*|:|[ \t])+', '', after_marker)
+                                    if after_marker.strip():
+                                        yield {"type": "token", "text": after_marker}
+                                    break
+    
+                            # Smart check: if buffer has accumulated text but does not look like prompt instructions, start streaming immediately
+                            if not answer_started and len(prefix_buffer) > 60:
+                                should_suppress = any(p in buffer_lower for p in PREFIX_SKIP_PATTERNS)
+                                if not should_suppress:
+                                    answer_started = True
+                                    yield {"type": "token", "text": " "}
+                                    yield {"type": "token", "text": prefix_buffer}
+    
+                            # Safety valve: buffer too large — check and emit if not instructions
+                            if not answer_started and len(prefix_buffer) > BUFFER_LIMIT:
+                                buf_lower = prefix_buffer.lower()
+                                should_suppress = any(p in buf_lower for p in PREFIX_SKIP_PATTERNS)
+                                
+                                # Initialize the UI bubble
+                                yield {"type": "token", "text": " "}
+                                
+                                if not should_suppress:
+                                    yield {"type": "token", "text": prefix_buffer}
+                                answer_started = True
+                        else:
+                            yield {"type": "token", "text": chunk}
+    
+                    # Discard suppressed prefix from accumulated_answer
+                    accumulated_lower = accumulated_answer.lower()
+                    best_idx = -1
+                    for marker in ANSWER_START_MARKERS:
+                        if marker in accumulated_lower:
+                            m_idx = accumulated_lower.find(marker)
+                            if not marker.startswith("|"):
+                                m_idx += len(marker)
+                            if m_idx > best_idx:
+                                best_idx = m_idx
+                    if best_idx != -1:
+                        after_marker = accumulated_answer[best_idx:]
+                        import re as _re
+                        after_marker = _re.sub(r'^(?:\*\*|\*|:|[ \t\n])+', '', after_marker)
+                        accumulated_answer = after_marker
+
+            # If there are duplicate tables, keep only the first one
+            if "|" in accumulated_answer:
+                import re as _re
+                table_div_lines = list(_re.finditer(r'\n\s*\|\s*(?::?---:?\s*\|)+', accumulated_answer))
+                if len(table_div_lines) > 1:
+                    tip_line = ""
+                    for line in accumulated_answer.split("\n"):
+                        if "💡" in line or "tip:" in line.lower():
+                            tip_line = line
+                            break
+                    
+                    first_div_idx = table_div_lines[0].start()
+                    second_div_idx = table_div_lines[1].start()
+                    
+                    first_table_start = accumulated_answer.rfind("\n", 0, first_div_idx)
+                    if first_table_start == -1:
+                        first_table_start = 0
+                    
+                    second_table_start = accumulated_answer.rfind("\n", 0, second_div_idx)
+                    second_table_start = accumulated_answer.rfind("\n", 0, second_table_start)
+                    
+                    first_table_part = accumulated_answer[first_table_start:second_table_start].strip()
+                    if tip_line:
+                        accumulated_answer = first_table_part + "\n\n" + tip_line
+                    else:
+                        accumulated_answer = first_table_part
+
+            # After full stream: clean noise and budget-correct
+            cleaned = self._clean_no_rule_noise(accumulated_answer)
+            # For Hinglish queries, transliterate to Roman script
+            if detected_lang == "hi-Latn":
+                cleaned = self.translate_to_hinglish(cleaned)
             
+            # ALWAYS yield a replace event with the finalized answer at the end.
+            # This guarantees that the UI gets the final clean, spelling-corrected text.
+            yield {
+                "type": "replace",
+                "text": cleaned
+            }
+            accumulated_answer = cleaned
+
             _timings["6_llm_stream+translate"] = time.time() - _t0
 
             # Post-process: strip "No rule" noise from the accumulated answer

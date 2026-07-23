@@ -1,0 +1,402 @@
+[
+  {
+    "id": "A01",
+    "section": "A",
+    "question": "Our office needs 30 laptops. How should we decide whether to use GeM or a tender?",
+    "sarvam_answer": "**Decision: GeM vs. Tender for 30 Laptops**\n\nThe choice between GeM and a tender depends on the total cost of 30 laptops.\n\n*   **GeM Portal:**\n    *   **L1 Comparison (minimum 3 vendors):** For purchases between **₹25,001 to ₹5,00,000**.\n    *   **Bidding/Reverse Auction:** Mandatory for purchases **above ₹5,00,000**.\n\n*   **Chhattisgarh Store Purchase Rules (CG SPR):**\n    *   **Limited Tender:** For purchases between **₹50,001 to ₹3,00,000**.\n    *   **Open Tender:** Mandatory for purchases **above ₹3,00,000**.\n\n**Recommendation:**\n1.  Calculate the total cost of 30 laptops.\n2.  If the total cost is **up to ₹5,00,000**, you can use GeM's L1 Comparison.\n3.  If the total cost is **above ₹5,00,000**, you must use GeM's Bidding/Reverse Auction.\n4.  Alternatively, you can follow CG SPR, where a Limited Tender is possible up to ₹3,00,000, and an Open Tender is mandatory above that.",
+    "latency_ms": 44325,
+    "tokens": 1755
+  },
+  {
+    "id": "A02",
+    "section": "A",
+    "question": "Department ko ₹4 lakh ka furniture kharidna hai. Kaunsa procurement method use karna chahiye?",
+    "sarvam_answer": "**Procurement Method:** Open Tender System\n\n**Rule:** CG SPR 2002, Rule 4.3.3\n\n**Details:**\n- ₹4 lakh falls in ₹3,00,001 to ₹5,00,000 range\n- Open Tender mandatory hai (above ₹3 lakh)\n- Advertisement: 1 local newspaper\n- Timeline: 21 days submission period\n\n**Note:** Single/Limited tender not allowed above ₹3 lakh.",
+    "latency_ms": 10245,
+    "tokens": 381
+  },
+  {
+    "id": "A03",
+    "section": "A",
+    "question": "Can we buy an item directly if only one quotation is available on GeM?",
+    "sarvam_answer": "**GeM Purchase on Single Quotation**\n\n*   **Yes,** if the item's value is **up to ₹25,000**, you can proceed with a single quotation. This is the \"Direct Purchase\" option on GeM.\n    *   *Rule:* GeM PORTAL THRESHOLDS (CG Departments follow these for GeM purchases): Direct Purchase: Up to ₹25,000.\n\n*   **No,** if the item's value is **above ₹25,000**, you cannot use Direct Purchase. You must use the \"L1 Comparison\" method, which requires a minimum of **3 vendors**.\n    *   *Rule:* GeM PORTAL THRESHOLDS (CG Departments follow these for GeM purchases): L1 Comparison (minimum 3 vendors): ₹25,001 to ₹5,00,000.\n\n*   Therefore, if only one quotation is available for an item costing more than ₹25,000, the purchase cannot be completed through GeM's standard L1 Comparison process. You would need to find additional vendors or use a different procurement method.",
+    "latency_ms": 5615,
+    "tokens": 1499
+  },
+  {
+    "id": "A04",
+    "section": "A",
+    "question": "Agar item GeM par available nahi hai, department ko next kya karna chahiye?",
+    "sarvam_answer": "Agar item GeM par available nahi hai, toh department ko alternative procurement method use karna chahiye.\n\n**Direct Answer:**\nDepartment ko GeM ke alawa traditional procurement process follow karna chahiye, jisme Single Tender, Limited Tender, ya Open Tender system use ho sakta hai.\n\n**Relevant Rules:**\n- **CG SPR Rule 4.3.1:** Single Tender up to ₹50,000 (PAC required)\n- **CG SPR Rule 4.3.2:** Limited Tender ₹50,001 to ₹3,00,000 (minimum 3 suppliers)\n- **CG SPR Rule 4.3.3:** Open Tender above ₹3,00,000 (mandatory)\n\n**Next Steps:**\n1. Item ki requirement aur budget confirm karein\n2. Appropriate procurement method select karein\n3. Required notices publish karein (if applicable)\n4. Tenders invite karein aur process follow karein\n\nGeM preferred method hai, lekin emergency ya specialized items ke liye traditional procurement allowed hai.",
+    "latency_ms": 12027,
+    "tokens": 513
+  },
+  {
+    "id": "A05",
+    "section": "A",
+    "question": "Can a department invite quotations from three local suppliers instead of issuing an open tender?",
+    "sarvam_answer": "**Limited Tender System for Three Suppliers**\n\nYes, a department can invite quotations from three local suppliers. This is permitted under **Rule 4.3.2 of the Chhattisgarh Store Purchase Rules (CG SPR) 2002**.\n\nA Limited Tender System is applicable for procurements between **₹50,001 and ₹3,00,000**, provided a minimum of three manufacturers or registered suppliers are invited.",
+    "latency_ms": 3445,
+    "tokens": 900
+  },
+  {
+    "id": "A06",
+    "section": "A",
+    "question": "Hamare office ko urgently printers chahiye, lekin emergency nahi hai. Fastest lawful option kya hai?",
+    "sarvam_answer": "**Fastest Lawful Printer Procurement Options:**\n\n**Single Tender System** (if ≤ ₹50,000):\n- Fastest option - no public notice required\n- Direct purchase from single vendor\n- No tender process needed\n\n**Limited Tender System** (if ₹50,001 - ₹3,00,000):\n- Requires inviting minimum 3 manufacturers/suppliers\n- 15-day tender timeline\n- Still relatively quick for urgent needs\n\n**Recommendation:**\n- If budget ≤ ₹50,000: Use Single Tender System\n- If budget ₹50,001-₹3,00,000: Use Limited Tender System\n\n**Note:** Above ₹3,00,000 requires Open Tender (30-45 days), which is slower.\n\nKya aapka approximate budget kitna hai? Isse exact fastest option suggest kar sakta hoon.",
+    "latency_ms": 2149,
+    "tokens": 515
+  },
+  {
+    "id": "A07",
+    "section": "A",
+    "question": "What factors should be checked before choosing Limited Tender?",
+    "sarvam_answer": "**Factors for Limited Tender Selection**\n\nBefore choosing the Limited Tender system, verify the following as per CG SPR Rule 4.3.2:\n\n*   **Value Threshold:** The procurement value must be between ₹50,001 and ₹3,00,000.\n*   **Supplier Availability:** Ensure there are at least three qualified and registered manufacturers or suppliers available in the market for the required item.\n*   **Nature of Item:** Confirm the item is of a type that can be sourced from a limited number of vendors.",
+    "latency_ms": 20785,
+    "tokens": 912
+  },
+  {
+    "id": "A08",
+    "section": "A",
+    "question": "When should an Open Tender be preferred over Limited Tender?",
+    "sarvam_answer": "**Open Tender vs. Limited Tender in CG SPR**\n\nOpen Tender should be preferred over Limited Tender when the procurement value exceeds **₹3,00,000**.\n\nThis is mandated by **CG SPR Rule 4.3.3**, which makes Open Tender compulsory for any purchase above this amount. Limited Tender is applicable for purchases between **₹50,001 to ₹3,00,000** (CG SPR Rule 4.3.2).",
+    "latency_ms": 16977,
+    "tokens": 997
+  },
+  {
+    "id": "A09",
+    "section": "A",
+    "question": "Can Single Tender be used because the earlier supplier already knows our system?",
+    "sarvam_answer": "**Single Tender System Eligibility**\n\nNo, the reason of an existing relationship with the supplier is not sufficient to use the Single Tender System. According to **Chhattisgarh Store Purchase Rules (CG SPR) 2002 (Rule 4.3.1)**, Single Tender is only permitted for procurements **up to ₹50,000**.\n\nThe rules are based on the monetary value, not on prior knowledge of the supplier. If the procurement value is above ₹50,000, you must use the Limited Tender System, which requires inviting at least three manufacturers or registered suppliers.",
+    "latency_ms": 17434,
+    "tokens": 1232
+  },
+  {
+    "id": "A10",
+    "section": "A",
+    "question": "Ek proprietary software sirf ek company provide karti hai. Kya Single Tender allowed hoga?",
+    "sarvam_answer": "**Haan, Single Tender allowed hai, lekin sirf ₹50,000 tak ke liye.**\n\nYeh **CG SPR Rule 4.3.1** ke under aata hai. Agar procurement amount ₹50,000 se zyada hai, toh PAC (Proprietary Article Certificate) aur 30-day public notice mandatory hai.",
+    "latency_ms": 16379,
+    "tokens": 1199
+  },
+  {
+    "id": "A11",
+    "section": "A",
+    "question": "Can the department purchase spare parts only from the original equipment manufacturer?",
+    "sarvam_answer": "**Spare Parts Procurement from OEM**\n\nNo, departments cannot purchase all spare parts exclusively from the original equipment manufacturer (OEM). The rules depend on the value of the item.\n\nThis is governed by the **Chhattisgarh Store Purchase Rules (CG SPR) 2002**.\n\n*   **Up to ₹50,000:** A single tender system is permitted, but not mandatory.\n*   **₹50,001 to ₹3,00,000:** A Limited Tender System is mandatory, requiring bids from at least 3 manufacturers or registered suppliers.\n*   **Above ₹3,00,000:** An Open Tender System is mandatory.\n\nFor higher-value items, a Proprietary Article Certificate (PAC) is required. If objections are raised against the PAC, the department must consider other vendors. GeM also allows direct purchase up to ₹25,000, but for higher values, competitive bidding is required.",
+    "latency_ms": 6166,
+    "tokens": 1635
+  },
+  {
+    "id": "A12",
+    "section": "A",
+    "question": "Government department ko dusre government undertaking se goods purchase karne hain. Kya tender zaroori hai?",
+    "sarvam_answer": "**Tender zaroori hai** agar ₹50,000 se upar ka procurement karna hai.\n\n**CG SPR 2002 ke according:**\n- **Single Tender**: ₹50,000 tak (PAC aur 30-day public notice zaroori)\n- **Limited Tender**: ₹50,001 se ₹3,00,000 (minimum 3 manufacturers ko invite karna padta hai)\n- **Open Tender**: ₹3,00,001 se upar (mandatory hai)\n\n**GeM ke liye:**\n- Direct purchase: ₹25,000 tak\n- L1 comparison: ₹25,001 se ₹5,00,000\n- Bidding: ₹5,00,000 se upar\n\nInter-government department procurement mein bhi yehi rules apply hote hain. Agar value ₹50,000 se zyada hai to tender zaroori hai.",
+    "latency_ms": 7043,
+    "tokens": 583
+  },
+  {
+    "id": "A13",
+    "section": "A",
+    "question": "Can we split a ₹10 lakh requirement into five smaller purchase orders?",
+    "sarvam_answer": "**No, splitting is not permitted.**\n\nNo, you cannot split a ₹10 lakh requirement into five smaller purchase orders. This is governed by the Chhattisgarh Store Purchase Rules (CG SPR) 2002.\n\n**Rule & Threshold:** Rule 4.3.3 (Open Tender System) is mandatory for any procurement above ₹3,00,000. Since a ₹10 lakh requirement falls under this, a single Open Tender process is required. Splitting the requirement to avoid this mandatory process would be non-compliant.",
+    "latency_ms": 4749,
+    "tokens": 1288
+  },
+  {
+    "id": "A14",
+    "section": "A",
+    "question": "Same item alag-alag months mein chahiye. Kya har month direct purchase kar sakte hain?",
+    "sarvam_answer": "**Direct Purchase Rules:**\n\nHaan, same item alag-alag months mein direct purchase kar sakte hain, lekin sirf ₹25,000 tak ki value ke liye.\n\n**CG SPR Rules:**\n- **Direct Purchase:** ₹25,000 tak (eproc.cgstate.gov.in)\n- **L1 Comparison:** ₹25,001 to ₹5,00,000\n- **Bidding/Reverse Auction:** ₹5,00,000 se upar\n\n**Agar item ₹25,000 se zyada hai:**\n- Har month L1 comparison karna padega\n- Same item ke liye different vendors se quotes lena hoga\n- Direct purchase nahi kar sakte\n\n**Process:**\n1. Har month new tender issue karna hoga\n2. L1 comparison mandatory hai\n3. GeM portal pe bhi same item ke liye separate purchase karna hoga\n\nKya aapka item kitne ka hai? Is basis par exact process bata sakta hun.",
+    "latency_ms": 2037,
+    "tokens": 510
+  },
+  {
+    "id": "A15",
+    "section": "A",
+    "question": "How should the department estimate the total procurement value before selecting the method?",
+    "sarvam_answer": "**Estimating Procurement Value for Method Selection**\n\nBefore selecting a procurement method, the department must calculate the total estimated value by summing the cost of all required items and services, including quantity and unit price. This total value is then compared against the thresholds in the Chhattisgarh Store Purchase Rules (CG SPR) 2002 to determine the appropriate tender method:\n\n*   **Single Tender System:** For procurements up to **₹50,000**.\n*   **Limited Tender System:** For procurements between **₹50,001 to ₹3,00,000**.\n*   **Open Tender System:** Mandatory for any procurement **above ₹3,00,000**.\n\nThis estimation must be done before issuing any tender notices or registering on GeM.",
+    "latency_ms": 5095,
+    "tokens": 1259
+  },
+  {
+    "id": "B01",
+    "section": "B",
+    "question": "Purchase start karne se pehle administrative approval aur financial sanction mein kya difference hai?",
+    "sarvam_answer": "**Administrative Approval vs Financial Sanction**\n\n**Administrative Approval** is the procedural clearance to initiate procurement process. It involves verifying compliance with procurement rules, checking eligibility of vendors, and ensuring proper documentation. This is typically done by departmental officers and is mandatory before any financial commitment.\n\n**Financial Sanction** is the actual budget approval for the procurement. It involves allocating funds from the department's budget and ensuring availability of funds. This is done by the financial authority and is required before final award of contract.\n\n**Key Differences:**\n- Administrative approval focuses on process compliance and vendor eligibility\n- Financial sanction focuses on budget availability and fund allocation\n- Both are required but serve different purposes in the procurement lifecycle\n- Administrative approval can be obtained first, followed by financial sanction\n\nCG SPR 2002 emphasizes that administrative approval must precede financial sanction in all procurement processes.",
+    "latency_ms": 2021,
+    "tokens": 375
+  },
+  {
+    "id": "B02",
+    "section": "B",
+    "question": "Who should confirm budget availability before a tender is published?",
+    "sarvam_answer": "**Budget Confirmation for Tender Publication**\n\nThe Head of the Department (HoD) or the Finance Department must confirm budget availability before a tender is published.\n\nThis is a mandatory financial procedure. The CG SPR 2002 (Bhandar Kray Niyam) defines the tender system based on value (e.g., Open Tender for > ₹3 Lakhs). Therefore, for any tender above this threshold, a financial sanction from the HoD or Finance Department is required to ensure funds are available.",
+    "latency_ms": 17016,
+    "tokens": 1832
+  },
+  {
+    "id": "B03",
+    "section": "B",
+    "question": "Can a tender be initiated before the budget is formally available?",
+    "sarvam_answer": "**Tender Initiation and Budget Availability**\n\nNo, a tender should not be initiated before the budget is formally available and sanctioned.\n\nWhile the CG SPR 2002 and GFR 2017 do not explicitly state this, it is a fundamental principle of public procurement. A sanctioned budget is a prerequisite for any financial commitment. Initiating a tender without budget sanction is considered irregular and can lead to the tender process being halted or cancelled.",
+    "latency_ms": 5529,
+    "tokens": 1164
+  },
+  {
+    "id": "B04",
+    "section": "B",
+    "question": "Department ke paas budget hai, lekin financial sanction pending hai. Kya GeM order place kar sakte hain?",
+    "sarvam_answer": "**GeM Order aur Financial Sanction**\n\nNahi, GeM order place nahi kar sakte.\n\nFinancial sanction ek mandatory prerequisite hai kisi bhi procurement ke liye, chahe wo GeM ke through ho ya direct. Pending sanction ke bina order place karna rules ke against hai. Yeh procedure standard financial rules (jaise GFR 2017 aur CG SPR) ke under aata hai, jahan expenditure karne ki authority pehle honi chahiye.",
+    "latency_ms": 3490,
+    "tokens": 926
+  },
+  {
+    "id": "B05",
+    "section": "B",
+    "question": "What records should be kept to prove that the selected procurement method was justified?",
+    "sarvam_answer": "**Key Records for Procurement Justification**\n\nTo prove the selected procurement method was justified, you must maintain a clear audit trail of decisions and actions. The primary records are:\n\n*   **For Single Tender System (CG SPR Rule 4.3.1):** Keep the Proprietary Article Certificate (PAC) and evidence of market inquiry proving the item is only available from one source.\n*   **For Limited Tender System (CG SPR Rule 4.3.2):** Maintain the tender notice, the list of invited manufacturers/suppliers (minimum 3), and their responses.\n*   **For Open Tender System (CG SPR Rule 4.3.3):** Preserve copies of the published advertisements (as per newspaper rules), the complete list of received bids, and the final evaluation report.\n\nThese records collectively demonstrate compliance with the Chhattisgarh Store Purchase Rules (CG SPR) 2002.",
+    "latency_ms": 5553,
+    "tokens": 1477
+  },
+  {
+    "id": "B06",
+    "section": "B",
+    "question": "Can the competent authority approve a purchase after the order has already been placed?",
+    "sarvam_answer": "**No, the competent authority cannot approve a purchase after the order has been placed.**\n\nThis would violate the core principles of the Chhattisgarh Store Purchase Rules (CG SPR) 2002. The rules mandate that the approval must be obtained before or at the time of order placement. The order placement is the commitment to purchase, and the approval is the necessary authorization. Post-facto approval is not permitted as it bypasses the established tendering and approval process, ensuring transparency and fairness.\n\n**CG SPR 2002** explicitly requires that the authority approving the purchase must do so prior to the order being finalized. The process is designed to ensure that the commitment and authorization are concurrent, not sequential in a reversed manner. Any approval given after the order is placed is considered irregular and not in accordance with the rules.",
+    "latency_ms": 4999,
+    "tokens": 1351
+  },
+  {
+    "id": "B07",
+    "section": "B",
+    "question": "What is delegated financial power, and how does it affect procurement method selection?",
+    "sarvam_answer": "**Delegated Financial Power & Procurement Method**\n\nIn the CG e-Procurement system, delegated financial power is the authority granted to a department or official to spend up to a specific monetary limit without requiring higher-level approval. This power directly determines the procurement method you can use.\n\n**CG SPR 2002 Thresholds:**\n\n*   **Single Tender:** Up to ₹50,000. This is the lowest level of delegated power.\n*   **Limited Tender:** ₹50,001 to ₹3,00,000. Requires more power and a transparent process.\n*   **Open Tender:** Mandatory for any procurement above ₹3,00,000. This requires the highest level of delegated financial power.\n\nTherefore, the procurement method is not a choice but a requirement based on the financial power delegated to your department. You must select the method that matches or is within your delegated limit.",
+    "latency_ms": 5797,
+    "tokens": 1479
+  },
+  {
+    "id": "B08",
+    "section": "B",
+    "question": "Agar purchase value officer ki delegated power se zyada hai, to next approval kis stage par lena chahiye?",
+    "sarvam_answer": "**Next Approval Stage**\n\nJab purchase value kisi officer ki delegated power se zyada ho jaati hai, to next approval administrative hierarchy mein agle higher authority se leni chahiye.\n\n*   **Rule Citation:** Ye process **Chhattisgarh Store Purchase Rules (CG SPR) 2002** ke tehat financial powers ki delegation se govern hota hai.\n*   **Key Detail:** CG SPR 2002 mukhtalif posts ke liye financial limits specify karta hai. Agar koi purchase kisi officer ki limit se exceed karti hai, to approval us officer se leni hogi jise higher powers delegate ki gayi hon, jo aam taur par Head of Department ya koi designated senior official hota hai.",
+    "latency_ms": 5800,
+    "tokens": 1522
+  },
+  {
+    "id": "B09",
+    "section": "B",
+    "question": "Can the department use last year's approved rate without conducting a fresh procurement?",
+    "sarvam_answer": "**Fresh Procurement Required**\n\nNo, a department cannot use last year's approved rate without conducting a fresh procurement.\n\nAs per the **Chhattisgarh Store Purchase Rules (CG SPR) 2002**, each procurement requires a new tender process. The rules for Single (CG SPR 4.3.1), Limited (CG SPR 4.3.2), and Open Tenders (CG SPR 4.3.3) do not provide an exception for using previous year's rates. A new tender must be conducted to ensure fair competition and value for money.",
+    "latency_ms": 5876,
+    "tokens": 1348
+  },
+  {
+    "id": "B10",
+    "section": "B",
+    "question": "How should price reasonableness be established when only one valid bid is received?",
+    "sarvam_answer": "**Establishing Price Reasonableness for a Single Bid**\n\nPrice reasonableness for a single bid is established through a specific process under the CG SPR 2002.\n\n*   **CG SPR Rule 4.3.1 (Single Tender System)** applies. The bid must be accompanied by a **Proprietary Article Certificate (PAC)**, which justifies the need for a single source.\n*   A **30-day public notice** must be published on the e-procurement portal and in newspapers. This allows for claims or objections regarding the reasonableness of the price.",
+    "latency_ms": 5545,
+    "tokens": 1265
+  },
+  {
+    "id": "B11",
+    "section": "B",
+    "question": "Kya lowest quotation milne ka matlab price reasonable hai?",
+    "sarvam_answer": "**नहीं, lowest quotation का मतलब automatically reasonable price नहीं होता।**\n\n**CG SPR 2002 के अनुसार:**\n- **Single Tender System** में lowest quotation consider किया जाता है, लेकिन ₹50,000 से ऊपर PAC और 30-day public notice ज़रूरी है।\n- **Open Tender System** में focus fair competition पर होता है, सिर्फ lowest price पर नहीं।\n- **Reasonable price** का decision procurement authority द्वारा market rates, quality, और technical specifications के basis पर किया जाता है।\n\n**Key point:** Lowest quotation technically valid हो सकता है, लेकिन अगर quality या technical requirements match नहीं करते, तो वो reasonable नहीं माना जाएगा।",
+    "latency_ms": 1650,
+    "tokens": 392
+  },
+  {
+    "id": "B12",
+    "section": "B",
+    "question": "What should the department do if all received bids are much higher than the estimated cost?",
+    "sarvam_answer": "**Handling High Bids in Procurement**\n\nIf all received bids are much higher than the estimated cost, the department should consider re-tendering the item to ensure value for money. This is guided by the principles of the Chhattisgarh Store Purchase Rules (CG SPR) 2002, which prioritize economical procurement.\n\n*   **Re-tender:** The primary action is to cancel the current tender and re-tender the requirement. For Open Tenders (mandatory for purchases above ₹3,00,000 as per CG SPR Rule 4.3.3), this is the standard procedure to get a more competitive price.\n*   **Re-estimate Cost:** The department should first verify if the initial cost estimate was flawed. A fresh market survey or re-estimation of the requirement may be necessary.\n*   **Seek Approval:** Any decision to re-tender or deviate from the original plan requires approval from the competent authority (e.g., the Head of Department).",
+    "latency_ms": 5778,
+    "tokens": 1523
+  },
+  {
+    "id": "B13",
+    "section": "B",
+    "question": "Can negotiations be conducted with the L1 bidder after opening financial bids?",
+    "sarvam_answer": "**Negotiations After Bid Opening**\n\nNo, negotiations with the L1 bidder after opening financial bids are not permitted. This is strictly governed by the **Chhattisgarh Store Purchase Rules (CG SPR) 2002**.\n\nOnce the financial bids are opened and the L1 bidder is selected, their bid is considered final and binding. The tender process is deemed complete at this stage, and the terms of the accepted bid cannot be altered through negotiation. Any changes must be made before the bid opening process.",
+    "latency_ms": 4896,
+    "tokens": 1192
+  },
+  {
+    "id": "B14",
+    "section": "B",
+    "question": "Tender cancel karne ke liye kya reasons record karne chahiye?",
+    "sarvam_answer": "**Tender Cancellation ke Valid Reasons (CG SPR 2002)**\n\nTender cancel karne ke liye justifiable reasons record karne zaroori hain, jo CG SPR 2002 ke principles ke saath align karein. Reasons clearly document hone chahiye aur proper approval ke saath record hone chahiye.\n\n**Key Reasons:**\n*   **Rule Violation:** Agar tender process CG SPR ke rules ke khilaaf ho (jaise galat advertisement ya L1 vendor na milna).\n*   **Fraud/Collusion:** Bidding process mein fraud, pre-rigging, ya collusion ka evidence.\n*   **Technical/Financial Unsuitability:** Agar L1 bidder technically ya financially capable na ho.\n*   **Change in Scope:** Agar original requirement mein itna bada change ho jaaye ki original tender documents invalid ho jaayein.\n\n**Note:** Reasons clearly document hone chahiye aur proper approval ke saath record hone chahiye.",
+    "latency_ms": 5661,
+    "tokens": 1563
+  },
+  {
+    "id": "B15",
+    "section": "B",
+    "question": "Can the department reject all bids without giving any reason?",
+    "sarvam_answer": "**Bid Rejection in Procurement**\n\nNo, a department cannot arbitrarily reject all bids without providing any reason.\n\n*   The decision to reject bids must be based on valid, recorded grounds.\n*   This is a fundamental principle of fair and transparent procurement, embedded in the CG SPR 2002 and GFR 2017.\n*   While the CG SPR 2002 focuses on the method of procurement, the entire process is governed by the need for a rational basis.\n*   Arbitrarily rejecting all bids would violate the principles of natural justice and fair play.",
+    "latency_ms": 5372,
+    "tokens": 1472
+  },
+  {
+    "id": "C01",
+    "section": "C",
+    "question": "Can we mention a preferred brand and write \"or equivalent\" in the technical specifications?",
+    "sarvam_answer": "Yes, mentioning a preferred brand and including \"or equivalent\" in the technical specifications is an acceptable and standard practice.\n\nThis is supported by the principles of the CG Store Purchase Rules (CG SPR) 2002, which require technical specifications to be clear and objective. While not explicitly detailed, this practice aligns with the spirit of the rules. The General Financial Rules (GFR) 2017, Rule 154(vi), also supports considering equivalent items to ensure fair competition. This approach ensures quality and availability while allowing other vendors to bid if their products meet the specified criteria.\n\n*   **CG SPR 2002:** Technical specifications must be clear and objective, allowing for \"or equivalent\" items to ensure fair competition.\n*   **GFR 2017:** Rule 154(vi) explicitly states that equivalent items should be considered in technical specifications.\n*   **GeM Guidelines:** The platform also permits specifying a preferred brand while allowing for equivalent alternatives.",
+    "latency_ms": 8758,
+    "tokens": 1379
+  },
+  {
+    "id": "C02",
+    "section": "C",
+    "question": "Laptop specification banate waqt processor brand mention karna allowed hai kya?",
+    "sarvam_answer": "Haan, processor brand mention kar sakte hain laptop specifications mein. Ye technical requirement hai.\n\n**CG SPR 2002 ke according:**\n- Processor brand mention karna allowed hai\n- Ye technical specification ka part hai\n- Procurement process value ke basis par follow hoga\n\n**Agar laptop procurement ₹3 lakh se upar hai:**\n- Open tender system follow karna hoga\n- Rule 4.3.3 ke according advertisement dena hoga\n\n**Agar ₹5 lakh se upar hai:**\n- Bidding/reverse auction mandatory hai\n- 2 state + 2 national newspapers mein advertisement dena hoga\n\nProcessor brand specification technical requirement hai, procurement rules se alag.",
+    "latency_ms": 2183,
+    "tokens": 427
+  },
+  {
+    "id": "C03",
+    "section": "C",
+    "question": "How can specifications be written so that they do not favour one vendor?",
+    "sarvam_answer": "**Writing Fair and Non-Discriminatory Specifications**\n\nTo ensure specifications do not favour one vendor, they must be written based on objective, measurable, and performance-based criteria, not on brand, model, or proprietary technology.\n\n*   **Focus on Performance:** Define what the item must do, not how it must be made. For example, specify \"cooling capacity of 5 tons\" instead of \"Brand X 5-ton AC.\"\n*   **Use Measurable Criteria:** Include quantifiable parameters like \"minimum 10-hour battery life,\" \"energy efficiency rating of 3-star,\" or \"must meet IS 14540:2016 standard.\"\n*   **Avoid Prescriptive/Proprietary Specs:** Do not mandate a specific brand or model. Instead, state functional requirements. For example, for a computer, specify \"16GB RAM, 512GB SSD, Windows 11 compatible\" rather than \"Must be a Dell Latitude 5420.\"\n\nThis approach aligns with the principles of **CG Store Purchase Rules (CG SPR) 2002** for objective tender evaluation and **General Financial Rules (GFR) 2017** for fair and transparent procurement. This ensures all qualified vendors can compete on an equal footing.",
+    "latency_ms": 7870,
+    "tokens": 1821
+  },
+  {
+    "id": "C04",
+    "section": "C",
+    "question": "Can experience and turnover requirements be higher than the estimated tender value?",
+    "sarvam_answer": "**No**, experience and turnover requirements cannot be higher than the estimated tender value.\n\n**Authority:** CG SPR 2002 (Bhandar Kray Niyam)\n\n**Rule:** The CG SPR 2002 primarily links the procurement method (Single, Limited, Open Tender) to the estimated value of the contract (Rule 4.3.1, 4.3.2, 4.3.3). It does not provide for eligibility criteria like experience or turnover to be set higher than this value. The focus is on the contract value, not on creating eligibility thresholds that exceed it.",
+    "latency_ms": 6235,
+    "tokens": 1562
+  },
+  {
+    "id": "C05",
+    "section": "C",
+    "question": "Tender mein three-year experience mandatory rakhna kab justified hota hai?",
+    "sarvam_answer": "तीन साल का अनुभव तब अनिवार्य होता है जब:\n\n• **जटिल तकनीकी सामान** - जैसे भारी मशीनरी, विशेष उपकरण, या तकनीकी रूप से उन्नत उत्पाद\n• **उच्च जोखिम वाले काम** - सुरक्षा-संवेदनशील या महत्वपूर्ण बुनियादी ढांचा परियोजनाएं\n• **विशेषीकृत सेवाएं** - जैसे परामर्श, रखरखाव, या तकनीकी सहायता सेवाएं\n• **सरकारी मानक** - जब विभाग के अपने अनुभव मानदंड हों\n\n**CG SPR 2002 के अनुसार:**\n- **Rule 4.3.1**: सिंगल टेंडर में ₹50,000 से ऊपर के लिए अनुभव अनिवार्य\n- **Rule 4.3.2**: लिमिटेड टेंडर में ₹50,001-3,00,000 के लिए 3 निर्माताओं से अनुभव मांग सकते हैं\n- **Rule 4.3.3**: ओपन टेंडर में ₹3,00,000 से ऊपर के लिए अनुभव आवश्यक\n\n**GeM के लिए:**\n- **L1 तुलना**: ₹25,001-5,00,000 के लिए अनुभव अनिवार्य\n- **₹5,00,000 से ऊपर**: रिवर्स ऑक्शन अनिवार्य, अनुभव मानदंड जोड़ सकते हैं\n\n**GFR 2017**: Rule 154 के अनुसार ₹25,000 तक अनुभव नहीं, ₹25,000-2,50,000 के लिए स्थानीय खरीद समिति।\n\n**मुख्य बिंदु**: अनुभव की आवश्यकता तकनीकी जटिलता, जोखिम और कार्य की प्रकृति के आधार पर तय की जाती है, न कि मनमाने ढंग से।",
+    "latency_ms": 3811,
+    "tokens": 619
+  },
+  {
+    "id": "C06",
+    "section": "C",
+    "question": "Can a startup be exempted from prior experience and turnover requirements?",
+    "sarvam_answer": "**Startup Exemption in Procurement**\n\nBased on the provided Chhattisgarh Store Purchase Rules (CG SPR) 2002 and General Financial Rules (GFR 2017), there is no specific provision for exempting startups from prior experience and turnover requirements.\n\n*   **CG SPR Rule 4.3.x** outlines the eligibility criteria for Single, Limited, and Open Tenders, but does not mention any special exemption for startups.\n*   **GFR 2017** also does not provide a specific exemption for startups in its general procurement rules.\n\nTherefore, a startup must meet the standard experience and turnover criteria applicable to the specific tender system (Single, Limited, or Open) being used. Any exemption would require a specific state government order or a GeM policy, which is not covered under the given rules.",
+    "latency_ms": 4453,
+    "tokens": 1198
+  },
+  {
+    "id": "C07",
+    "section": "C",
+    "question": "Does MSME registration automatically make a bidder eligible for every tender?",
+    "sarvam_answer": "No, MSME registration does not automatically make a bidder eligible for every tender.\n\nAs per the **Chhattisgarh Store Purchase Rules (CG SPR) 2002**, eligibility is determined by the specific tender's rules and value. MSME status is often a **preference** or a specific criterion, not a universal requirement.\n\nKey points:\n*   **Tender-Specific Criteria:** Eligibility is based on the procurement method (Single, Limited, or Open Tender) and the value of the purchase.\n*   **Open Tenders:** For most Open Tenders, the focus is on technical and financial qualifications, with the L1 (lowest) bidder typically being selected, unless a specific MSME preference is explicitly mentioned in the tender document.\n*   **Preference, Not Guarantee:** An MSME may get preference points or a price advantage, but it does not bypass the mandatory qualification and evaluation process.",
+    "latency_ms": 4544,
+    "tokens": 1242
+  },
+  {
+    "id": "C08",
+    "section": "C",
+    "question": "Can EMD exemption be claimed without uploading the required registration certificate?",
+    "sarvam_answer": "**EMD Exemption and Registration Certificate**\n\nNo, an EMD exemption cannot be claimed without uploading the required registration certificate.\n\nThe **Chhattisgarh Store Purchase Rules (CG SPR) 2002** mandates the submission of the registration certificate as proof of the supplier's credentials. This certificate is the basis for verifying eligibility for any exemption, including EMD waiver. Therefore, it is a mandatory document for the exemption claim.",
+    "latency_ms": 6056,
+    "tokens": 1173
+  },
+  {
+    "id": "C09",
+    "section": "C",
+    "question": "What should happen if a bidder meets the technical specification but misses one mandatory document?",
+    "sarvam_answer": "**Bid Evaluation for Incomplete Bids**\n\nThe bid should be rejected.\n\nA mandatory document is a condition for bid consideration. If a bidder meets the technical specifications but fails to submit a required document, their bid is considered incomplete and will be rejected.\n\nThis action is based on the principles of the Chhattisgarh Store Purchase Rules (CG SPR), which require all mandatory conditions to be fulfilled for a bid to be valid.",
+    "latency_ms": 5410,
+    "tokens": 1240
+  },
+  {
+    "id": "C10",
+    "section": "C",
+    "question": "A bidder uploaded an expired certificate. Should the bid be rejected or can clarification be requested?",
+    "sarvam_answer": "**Bid Evaluation for Expired Certificate**\n\nThe bid should not be rejected immediately. Instead, it should be kept in abeyance and clarification should be requested from the bidder.\n\n*   **Recommended Action:** The bidder must be asked to provide a valid, non-expired certificate within a specified timeframe.\n*   **Consequence:** If the bidder fails to provide a valid certificate, the bid can be rejected. This ensures fairness and adherence to procurement principles.",
+    "latency_ms": 5506,
+    "tokens": 1383
+  },
+  {
+    "id": "D01",
+    "section": "D",
+    "question": "Technical evaluation ke baad financial bids kin bidders ki open honi chahiye?",
+    "sarvam_answer": "**Financial Bid Opening Procedure**\n\nFinancial bids ko sirf tabhi open karna chahiye jab technical bids open ho chuki hon aur unhein satisfactory paaya gaya ho.\n\n*   Yeh process Chhattisgarh Store Purchase Rules (CG SPR) 2002 ke under mandatory hai.\n*   Technical evaluation un bidders ko filter kar deta hai jo non-compliant ya unqualified hain.\n*   Sirf technical evaluation clear hone ke baad hi financial bids ko compare kiya jaata hai taaki lowest ya most advantageous offer ko select kiya ja sake.",
+    "latency_ms": 4367,
+    "tokens": 1047
+  },
+  {
+    "id": "D02",
+    "section": "D",
+    "question": "Can a technically non-responsive bidder be selected because its price is the lowest?",
+    "sarvam_answer": "**No, a technically non-responsive bidder cannot be selected, even if its price is the lowest.**\n\nThis is a fundamental principle under the **Chhattisgarh Store Purchase Rules (CG SPR) 2002**. The CG SPR mandates that technical compliance is a mandatory prerequisite for financial evaluation. A bidder who fails to meet the technical specifications is considered non-responsive and is disqualified. The price of a disqualified, technically non-responsive bidder is not considered in the selection process. Only technically compliant bids are eligible for price comparison.",
+    "latency_ms": 4566,
+    "tokens": 1088
+  },
+  {
+    "id": "D03",
+    "section": "D",
+    "question": "L1 bidder ki rate estimate se 25% zyada hai. Department ko kya karna chahiye?",
+    "sarvam_answer": "**L1 Bidder Rate 25% Higher Than Estimate**\n\nDepartment ko L1 bidder ki rate bina justification ke accept nahi karni chahiye. Department ko yeh steps follow karne chahiye:\n\n*   **Justification Maangna:** L1 bidder se 25% price increase ka detailed reason maangna, jaise ki market price change ya specific technical requirements.\n*   **Evaluation:** Reason ki jaanch karni ki kya yeh valid hai. Agar reason acceptable hai, to proper documentation ke saath rate accept kar sakte hain.\n*   **Decision:** Agar justification valid nahi hai, to department ko re-tender process ya L2 bidder consider karna chahiye taaki better value mil sake.\n\nYeh action CG SPR ke principle ke according hai ki public money ka sahi use ho.",
+    "latency_ms": 6044,
+    "tokens": 1508
+  },
+  {
+    "id": "D04",
+    "section": "D",
+    "question": "How should the evaluation committee record reasons for rejecting a bidder?",
+    "sarvam_answer": "**Recording Reasons for Rejection**\n\nThe evaluation committee must record specific, objective, and justifiable reasons for rejecting a bidder to ensure transparency and fairness. This documentation is crucial for audit and legal compliance.\n\n*   **Document Specific Reasons:** The reasons must be based on the pre-defined evaluation criteria. Examples include non-compliance with technical specifications, failure to meet financial terms, or lack of mandatory certifications (e.g., PAC for single tenders).\n*   **Maintain Official Records:** The reasons must be formally recorded in the tender evaluation report and the minutes of the committee meeting.\n*   **Ensure Justification:** The recorded reasons should be clear, concise, and directly linked to the bidder's failure to meet the stipulated requirements of the tender.",
+    "latency_ms": 5879,
+    "tokens": 1441
+  },
+  {
+    "id": "D05",
+    "section": "D",
+    "question": "Can tender conditions be changed after bids have already been opened?",
+    "sarvam_answer": "**Tender Condition Changes After Bid Opening**\n\nNo, tender conditions cannot be changed after bids have been opened. This is a strict principle under the Chhattisgarh Store Purchase Rules (CG SPR) 2002 to ensure a fair and transparent process.\n\n*   **Finality of Terms:** Once the bid opening process begins, the original tender conditions, including eligibility criteria, technical specifications, and financial requirements, are final and binding.\n*   **Permitted Action:** The only action permitted is to seek *clarifications* from all bidders to ensure they have understood the original conditions correctly.\n*   **Prohibition:** Any substantive change to the tender terms after bid opening is strictly prohibited. This rule is part of the general principles of CG SPR 2002, which govern the entire tender process to maintain a level playing field.",
+    "latency_ms": 8236,
+    "tokens": 1529
+  },
+  {
+    "id": "D06",
+    "section": "D",
+    "question": "Purchase Order issue hone ke baad vendor delivery delay kare to department kya action le sakta hai?",
+    "sarvam_answer": "**Vendor Delay ke baad Department ke Action:**\n\n1. **Immediate Action:** Department PO ke terms aur conditions ke according penalty impose kar sakta hai. CG SPR ke under, delay ke liye 10% per month tak ka penalty charge kiya ja sakta hai.\n\n2. **Legal Recourse:** Agar vendor 30 days ke andar delivery nahi karta, to department:\n   - CG SPR Rule 4.3.3 ke under cancellation notice issue kar sakta hai\n   - Alternative vendor se procurement kar sakta hai\n   - Department head se approval lekar new PO issue kar sakta hai\n\n3. **Financial Action:** Department:\n   - Security deposit (agar hai) seize kar sakta hai\n   - Delay ke liye cost recovery claim kar sakta hai\n   - Department head se additional charges approve karwa sakta hai\n\n**Key Points:**\n- Action PO terms aur conditions ke according hona chahiye\n- Department head se approval mandatory hai\n- GeM mein bhi similar action liya ja sakta hai - cancellation aur re-procurement\n\n**Reference:** CG SPR Rule 4.3.3 (Open Tender) aur GeM guidelines.",
+    "latency_ms": 2679,
+    "tokens": 463
+  },
+  {
+    "id": "D07",
+    "section": "D",
+    "question": "Goods receive ho gaye, but specification match nahi kar rahi. Payment release karna chahiye kya?",
+    "sarvam_answer": "**Payment Release for Mismatched Specifications**\n\nNahi, payment release nahi karna chahiye.\n\n**CG SPR 2002** ke according, payment sirf satisfactory quality check aur formal acceptance ke baad hi release hota hai. Agar specifications match nahi kar rahe, toh goods ko reject kar dena chahiye aur supplier ko formal notice issue karna chahiye.",
+    "latency_ms": 7578,
+    "tokens": 1349
+  },
+  {
+    "id": "D08",
+    "section": "D",
+    "question": "What documents should be completed before processing payment to the supplier?",
+    "sarvam_answer": "**Payment Processing Documents**\n\nBefore processing payment, the following documents must be verified:\n\n*   **Tender Award Letter/Order:** The primary document, signed by the authorized officer, confirming the supplier's selection.\n*   **PAC (Proprietary Article Certificate):** Required for Single Tender above ₹50,000 (CG SPR Rule 4.3.1).\n*   **L1 Certificate / Price Comparison:** Mandatory for Open Tender and L1 Comparison (CG SPR Rule 4.3.3).\n*   **Vendor's Registration Certificate:** Proof of the supplier's valid registration on the e-procurement portal.\n*   **Valid Tax Invoice & Proof of Supply:** The supplier's invoice and delivery challan must match the purchase order details.",
+    "latency_ms": 6932,
+    "tokens": 1512
+  },
+  {
+    "id": "E01",
+    "section": "E",
+    "question": "Bid submit karne ke baad corrigendum se specifications change ho gayi. Kya mujhe bid dobara submit karni hogi?",
+    "sarvam_answer": "**Bid Submission After Corrigendum**\n\nYes, aapko likely apni bid resubmit karni hogi. Specifications change karne wala corrigendum tender document mein ek material amendment maana jaata hai.\n\n**CG SPR** ke according, jab aise changes issue kiye jaate hain, toh tender process ko aamtaur par extend ya reopen kiya jaata hai. Isse yeh ensure hota hai ki sabhi bidders ko naye aur modified requirements respond karne ka fair opportunity mile. Aapki original bid, jo old specifications par based hai, revised tender ke liye valid nahi maani ja sakti.",
+    "latency_ms": 13591,
+    "tokens": 1540
+  },
+  {
+    "id": "E02",
+    "section": "E",
+    "question": "EMD payment successful hai but portal par status pending dikh raha hai, aur deadline close hai. Main kya karun?",
+    "sarvam_answer": "**EMD Payment ke baad Portal Status Pending - Immediate Action:**\n\n1. **Payment Status Check karo:**\n   - EMD successful hai toh \"Payment Details\" section mein verify karo\n   - Bank transaction reference number check karo\n   - Payment gateway screenshot save karo\n\n2. **Portal Support se Contact karo:**\n   - eproc.cgstate.gov.in par \"Help Desk\" section use karo\n   - Screenshot ke saath ticket raise karo\n   - Reference number mention karo: EMD payment successful\n\n3. **Procurement Department se Direct Contact:**\n   - Department ke procurement officer ko call karo\n   - EMD receipt number provide karo\n   - Deadline extension request karo with valid reason\n\n4. **Portal Refresh & Cache Clear:**\n   - Browser cache clear karke refresh karo\n   - Different browser/incognito mode mein try karo\n\n**Agar 24 hours mein resolution nahi mile toh:**\n- District e-Procurement cell se contact karo\n- Written complaint submit karo with EMD proof\n\n**Important:** EMD successful hone ke baad deadline extension common hai, but timely follow-up zaroori hai.",
+    "latency_ms": 1721,
+    "tokens": 426
+  }
+]

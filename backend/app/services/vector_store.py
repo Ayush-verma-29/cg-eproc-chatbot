@@ -109,45 +109,112 @@ class BatchOllamaEmbeddings(Embeddings):
                 
         return embeddings_all
         
+    def embed_queries(self, texts: List[str]) -> List[List[float]]:
+        """Embed a list of queries in a single batch call with caching, using the search_query: prefix."""
+        if not texts:
+            return []
+            
+        cache_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "scratch", "query_embedding_cache.json")
+        cache = {}
+        if os.path.exists(cache_path):
+            try:
+                with open(cache_path, "r", encoding="utf-8") as f:
+                    cache = json.load(f)
+            except Exception as e:
+                print(f"Error loading query embedding cache: {e}")
+
+        embeddings_all = [None] * len(texts)
+        missing_indices = []
+        missing_texts = []
+        
+        for idx, text in enumerate(texts):
+            if text in cache:
+                embeddings_all[idx] = cache[text]
+            else:
+                missing_indices.append(idx)
+                missing_texts.append(text)
+                
+        if missing_texts:
+            print(f"   [Query Embedding Cache] Cache hit: {len(texts) - len(missing_texts)}/{len(texts)}. Generating {len(missing_texts)} new query embeddings...")
+            
+            # Embed missing queries in batches of 15
+            batch_size = 15
+            new_embeddings = []
+            
+            for i in range(0, len(missing_texts), batch_size):
+                batch = missing_texts[i:i+batch_size]
+                prefixed_batch = [f"search_query: {t}" for t in batch]
+                url = f"{self.base_url}/api/embed"
+                payload = {
+                    "model": self.model,
+                    "input": prefixed_batch
+                }
+                try:
+                    data = json.dumps(payload).encode('utf-8')
+                    req = urllib.request.Request(
+                        url,
+                        data=data,
+                        headers={'Content-Type': 'application/json'},
+                        method='POST'
+                    )
+                    with urllib.request.urlopen(req, timeout=60) as response:
+                        res = json.loads(response.read().decode('utf-8'))
+                        embeddings = res.get("embeddings", [])
+                        new_embeddings.extend(embeddings)
+                except Exception as e:
+                    print(f"      Batch query embedding failed: {e}. Falling back to sequential.")
+                    for text in batch:
+                        url = f"{self.base_url}/api/embed"
+                        payload = {
+                            "model": self.model,
+                            "input": [f"search_query: {text}"]
+                        }
+                        try:
+                            data = json.dumps(payload).encode('utf-8')
+                            req = urllib.request.Request(
+                                url,
+                                data=data,
+                                headers={'Content-Type': 'application/json'},
+                                method='POST'
+                            )
+                            with urllib.request.urlopen(req, timeout=30) as response:
+                                res = json.loads(response.read().decode('utf-8'))
+                                new_embeddings.append(res.get("embeddings", [])[0])
+                        except Exception:
+                            dim = 1024 if "bge-m3" in self.model.lower() else 768
+                            new_embeddings.append([0.0] * dim)
+
+            # Assign new embeddings back to correct indices
+            for idx, emb in zip(missing_indices, new_embeddings):
+                embeddings_all[idx] = emb
+                cache[texts[idx]] = emb
+                
+            try:
+                os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+                with open(cache_path, "w", encoding="utf-8") as f:
+                    json.dump(cache, f)
+            except Exception as e:
+                print(f"Error saving query embedding cache: {e}")
+                
+        return embeddings_all
+
     def embed_query(self, text: str) -> List[float]:
-        """Embed a single query using Ollama's newer embed API to align with embed_documents."""
-        url = f"{self.base_url}/api/embed"
-        payload = {
-            "model": self.model,
-            "input": [f"search_query: {text}"]
-        }
-        try:
-            data = json.dumps(payload).encode('utf-8')
-            req = urllib.request.Request(
-                url,
-                data=data,
-                headers={'Content-Type': 'application/json'},
-                method='POST'
-            )
-            with urllib.request.urlopen(req, timeout=30) as response:
-                res = json.loads(response.read().decode('utf-8'))
-                embeddings = res.get("embeddings", [])
-                if embeddings:
-                    return embeddings[0]
-                dim = 1024 if "bge-m3" in self.model.lower() else 768
-                return [0.0] * dim
-        except Exception as e:
-            print(f"      Embedding query failed: {e}")
-            dim = 1024 if "bge-m3" in self.model.lower() else 768
-            return [0.0] * dim
+        """Embed a single query using cached, batched API."""
+        res = self.embed_queries([text])
+        if res:
+            return res[0]
+        dim = 1024 if "bge-m3" in self.model.lower() else 768
+        return [0.0] * dim
 
 class MockCollection:
     def __init__(self, store: 'QdrantVectorStore'):
         self.store = store
 
     def count(self) -> int:
-        client = QdrantClient(path=self.store.path)
         try:
-            return client.count(collection_name=self.store.collection_name).count
+            return self.store.client.count(collection_name=self.store.collection_name).count
         except Exception:
             return 0
-        finally:
-            client.close()
 
     def get(self, where: Optional[Dict] = None, limit: Optional[int] = None, include: Optional[List[str]] = None) -> Dict:
         filter_obj = None
@@ -167,9 +234,8 @@ class MockCollection:
             if conditions:
                 filter_obj = models.Filter(must=conditions)
                 
-        client = QdrantClient(path=self.store.path)
         try:
-            scroll_res, _ = client.scroll(
+            scroll_res, _ = self.store.client.scroll(
                 collection_name=self.store.collection_name,
                 scroll_filter=filter_obj,
                 limit=limit or 10000,
@@ -178,8 +244,6 @@ class MockCollection:
             )
         except Exception:
             scroll_res = []
-        finally:
-            client.close()
         
         formatted = {"ids": [], "metadatas": [], "documents": []}
         for point in scroll_res:
@@ -203,6 +267,7 @@ class QdrantVectorStore:
         self.path = path
         self.collection_name = collection_name
         self.embedding_function = embedding_function
+        self.client = QdrantClient(path=self.path)
         self._init_collection()
         self._collection = MockCollection(self)
 
@@ -210,12 +275,11 @@ class QdrantVectorStore:
         dummy_vector = self.embedding_function.embed_query("test")
         vector_dim = len(dummy_vector)
         
-        client = QdrantClient(path=self.path)
         try:
-            collections = client.get_collections().collections
+            collections = self.client.get_collections().collections
             exists = any(c.name == self.collection_name for c in collections)
             if not exists:
-                client.create_collection(
+                self.client.create_collection(
                     collection_name=self.collection_name,
                     vectors_config=models.VectorParams(
                         size=vector_dim,
@@ -224,8 +288,6 @@ class QdrantVectorStore:
                 )
         except Exception:
             pass
-        finally:
-            client.close()
 
     def add_documents(self, documents: List[Document]):
         if not documents:
@@ -248,50 +310,70 @@ class QdrantVectorStore:
                 }
             ))
             
-        client = QdrantClient(path=self.path)
         try:
-            client.upsert(
+            self.client.upsert(
                 collection_name=self.collection_name,
                 points=points
             )
-        finally:
-            client.close()
+        except Exception as e:
+            print(f"Upsert failed: {e}")
 
-    def similarity_search_by_vector(self, query_vector: List[float], k: int = 4) -> List[Document]:
-        client = QdrantClient(path=self.path)
+    def similarity_search_by_vector(self, query_vector: List[float], query: Optional[str] = None, k: int = 4) -> List[Document]:
         try:
-            search_result = client.query_points(
+            search_result = self.client.query_points(
                 collection_name=self.collection_name,
                 query=query_vector,
                 limit=k
             )
             hits = search_result.points
-        except Exception:
+        except Exception as e:
+            print(f"Similarity search error: {e}")
             hits = []
-        finally:
-            client.close()
         
-        docs = []
+        scored_docs = []
         for hit in hits:
             payload = hit.payload or {}
-            docs.append(Document(
-                page_content=payload.get("page_content", ""),
-                metadata=payload.get("metadata", {})
-            ))
-        return docs
+            content = payload.get("page_content", "")
+            metadata = payload.get("metadata", {})
+            score = hit.score or 0.0
+            
+            # Apply keyword boost if query is provided
+            if query:
+                query_lower = query.lower()
+                content_lower = content.lower()
+                
+                # Rule number boosting (e.g., rule 149, rule 144)
+                import re as _re
+                numbers = _re.findall(r'\b\d+(?:\.\d+)*\b', query_lower)
+                for num in numbers:
+                    if f"rule {num}" in content_lower or f"rule-{num}" in content_lower or f"नियम {num}" in content_lower:
+                        score += 0.5  # Heavy boost for exact rule number match
+                        
+                # Acronym and critical term boosting
+                keywords = ["gem", "emd", "dsc", "cvc", "pbg", "msme", "startup", "splitting", "negotiation", "inspections"]
+                for kw in keywords:
+                    if kw in query_lower and kw in content_lower:
+                        score += 0.15  # Medium boost for exact matching domain keyword
+            
+            scored_docs.append((score, Document(
+                page_content=content,
+                metadata=metadata
+            )))
+            
+        scored_docs.sort(key=lambda x: x[0], reverse=True)
+        return [doc for _, doc in scored_docs]
 
     def similarity_search(self, query: str, k: int = 4) -> List[Document]:
         query_vector = self.embedding_function.embed_query(query)
-        return self.similarity_search_by_vector(query_vector, k)
+        # Retrieve more candidates (e.g. 15) to perform re-ranking
+        candidates = self.similarity_search_by_vector(query_vector, query=query, k=max(15, k * 3))
+        return candidates[:k]
 
     def delete_collection(self):
-        client = QdrantClient(path=self.path)
         try:
-            client.delete_collection(self.collection_name)
+            self.client.delete_collection(self.collection_name)
         except Exception:
             pass
-        finally:
-            client.close()
 
     def persist(self):
         pass

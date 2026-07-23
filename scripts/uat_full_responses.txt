@@ -1,0 +1,876 @@
+UAT Evaluation: Full Chatbot Responses for All 60 Queries
+
+Query 1: What is the mandatory procurement threshold on the GeM portal for CG state departments under Rule 3.1.1?
+Role: government_officer | Grade: Pass
+Response:
+**Rule 3.1.1 (GeM Portal Purchase) Guidelines**
+- GeM portal purchase is MANDATORY first for all standard goods.
+- Written consent from Finance Department required before procurement through different method.
+
+Question: Under what value range must a procurement be advertised in at least two state-level widely circulated newspapers?
+================================================================================
+
+Query 2: What are the GFR 2017 tiered limits for direct laptop purchase from GeM without a traditional tender?
+Role: government_officer | Grade: Pass
+Response:
+**Direct GeM Purchase without Tender (Rule 149)**
+
+Yes, government departments in India can procure laptops directly through the Government e-Marketplace (GeM) without a traditional tender using these GFR 149 tiered limits:
+- **Direct Purchase (Up to ₹50,000):** Direct purchase from any available seller on GeM without comparing quotes.
+- **L1 Comparison (₹50,000 to ₹10,00,000):** Direct purchase through L1 comparison of at least three different manufacturers/brands on the portal.
+- **Proprietary Article Certificate (PAC):** Single-brand laptop procurement is allowed on GeM only by uploading a PAC (Proprietary Article Certificate) signed by the competent authority.
+================================================================================
+
+Query 3: How can a department purchase goods from other government-approved agencies under Rule 145?
+Role: government_officer | Grade: Pass
+Response:
+**Rule 145 Inter-Departmental Procurement Guidelines**
+
+- A government department can directly procure goods from another government department, cooperative society, prison industry, handloom board, or government-approved manufacturing agency without inviting tenders.
+- The price charged must be fair and reasonable, and a certificate of reasonability must be signed by the competent authority.
+
+**Follow-up Questions:**
+1. What are the specific conditions for direct procurement under Rule 145?
+2. Are there any exceptions to this rule?
+================================================================================
+
+Query 4: What is the emergency purchase procedure for materials under GFR Rule 162/166?
+Role: government_officer | Grade: Pass
+Response:
+**Emergency Procurement Guidelines (Rule 162/166)**
+
+- **Simplified Procedure:** During emergency situations (like natural disasters, accidents, or urgent administrative needs), direct procurement of materials is permitted without traditional tenders.
+- **Rule 166 GFR 2017:** Under the single tender or emergency procurement rules, the department can purchase goods directly from a single source with simplified procedures to minimize delay.
+- **Certificate:** A certificate explaining the emergency and justification for direct purchase must be recorded and signed by the head of the department.
+================================================================================
+
+Query 5: What are the service procurement rules and thresholds for computer AMCs?
+Role: government_officer | Grade: Pass
+Response:
+**Rule 4.3.2 (Limited Tender) Guidelines**
+
+Computer AMC services fall under 'Services' category. For ₹50,001-₹3,00,000, invite quotes from min. 3 suppliers as per Rule 4.3.2.
+
+For above ₹3,00,000, follow Open Tender process with newspaper advertisement as per Rule 4.3.3.
+
+**Rule 4.5 Timelines**
+
+Follow standard timelines for Limited Tender: 15/10/5 days for 1st/2nd/3rd calls respectively.
+
+**L1 Rule**
+
+Award contract to lowest qualified bidder as per L1 rule.
+
+What are the key differences between consulting and non-consulting services in procurement?
+================================================================================
+
+Query 6: Is it permissible under CVC and GFR guidelines to split a single bulk purchase order into multiple smaller orders?
+Role: government_officer | Grade: Pass
+Response:
+**Prohibition on Splitting Purchases (Rule 157)**
+
+- **Strict Prohibition:** Splitting of purchases to bypass the financial limits of higher authorities or to avoid inviting tenders is strictly prohibited.
+- **Annual Aggregate Demand:** The department must estimate the total aggregate annual demand for an item and select the procurement method accordingly. Splitting a single requirement into multiple small orders is a violation of GFR 2017 and CVC guidelines.
+================================================================================
+
+Query 7: What approvals are required before procuring standard desktop computers for an office?
+Role: government_officer | Grade: Pass
+Response:
+**GeM Procurement Guidelines for Standard Office Desktop Computers**
+
+- **Mandatory Portal:** Under Rule 3.1.1 of the Chhattisgarh Store Purchase Rules, it is mandatory to purchase goods through the Government e-Marketplace (GeM) if they are available there.
+- **Direct Purchase Threshold:** If the total value of the desktop computers is up to ₹50,000, they can be purchased directly from any available supplier on GeM.
+- **L1 Comparison:** For values between ₹50,000 and ₹10,00,000, desktop computers must be procured by comparing at least 3 different manufacturers and selecting the L1 (lowest price) offer.
+- **Bidding/RA:** For values exceeding ₹10,00,000, procurement must be done through online bidding or reverse auction on the GeM portal.
+
+**Follow-up Questions:**
+
+- What are the specific guidelines for procuring proprietary items that exceed the single tender limit in Chhattisgarh?
+================================================================================
+
+Query 8: What is the difference between Limited Tender and Open Tender under CG Store Purchase Rules?
+Role: government_officer | Grade: Pass
+Response:
+**Rule 162 (Limited Tender Enquiry) Guidelines**
+
+- Limited Tender Enquiry may be adopted when the estimated value of goods to be procured is up to Rupees Fifty Lakhs.
+- Copies of bidding documents should be sent directly by speed post/registered post/courier/e-mail to firms on the list of registered suppliers for the goods in question.
+- The number of supplier firms in Limited Tender Enquiry should be more than three.
+- Efforts should be made to identify a higher number of approved suppliers to obtain more responsive bids on competitive basis.
+
+**Rule 162 (Limited Tender Enquiry) Additional Guidelines**
+
+- Purchase through Limited Tender Enquiry may also be adopted even where the estimated value is more than Rupees Fifty Lakhs, if the competent authority certifies that the demand is urgent and any additional expenditure involved by not procuring through advertised tender enquiry is justified in view of urgency.
+- The Ministry or Department should put on record the nature of the urgency and reasons why the procurement could not be anticipated.
+
+**Follow-up Questions**
+
+1. What are the key differences between Limited Tender Enquiry and Open Tender under CG Store Purchase Rules?
+2. Under what circumstances can a purchase value exceeding Rupees Fifty Lakhs still be procured through Limited Tender Enquiry?
+================================================================================
+
+Query 9: When is a department allowed to use the Single Tender method of procurement?
+Role: government_officer | Grade: Pass
+Response:
+**Rule 166 Single Tender Enquiry Guidelines**
+
+• Procurement from a single source may be resorted to in three circumstances:
+ • Only a particular firm manufactures the required goods.
+ • In an emergency, the required goods must be purchased from a specific source, and the reason for this decision must be recorded with approval from competent authority.
+ • For standardization of machinery or spare parts compatible with existing equipment (advised by a technical expert and approved by competent authority), purchase only from a selected firm.
+
+• Before procuring goods from a single source under sub-Rule 166(i) or 166(iii), provide the Proprietary Article Certificate in the following format:
+ • The indented goods are manufactured by M/s. [Name].
+ • No other make or model is acceptable for the following reasons: [Reasons].
+
+**Follow-up questions**
+
+1. Under what circumstances can a department use the Single Tender method of procurement?
+2. What documentation must be provided before procuring goods from a single source under this rule?
+================================================================================
+
+Query 10: How does a Department Operator initiate the 7-step tender creation process on the portal?
+Role: government_officer | Grade: Pass
+Response:
+**Tender Creation Workflow for Department Operators**
+
+1. **Login:** Log in to the portal using your Operator credentials and ensure your Class-III DSC is mapped.
+2. **Tender Wizard:** Go to the dashboard and click **"Create Tender"**.
+3. **Tender Metadata:** Input Tender Reference Number, Title, Estimated cost (PAC), Tender Fee, and EMD amount.
+4. **Critical Dates:** Define the bid submission start date, closing deadline, and technical bid opening date.
+5. **Define Envelopes:** Set up the envelope system (e.g., 2-Packet system: Technical Envelope and Price BOQ Envelope).
+6. **Upload Files:** Upload the Notice Inviting Tender (NIT) PDF and BOQ Excel template.
+7. **Workflow Approval:** Select the designated Approver, enter Remarks, and click **"Initiate"** to forward it.
+
+Follow-up questions:
+
+- What are the key steps involved in creating a tender on the CG e-Procurement Portal as a Department Operator?
+- How does a Department Operator initiate the EMD refund process for unsuccessful bidders after Technical/Price evaluation is finalized?
+================================================================================
+
+Query 11: What is the Maker-Checker division of roles for tender publication on the CG portal?
+Role: government_officer | Grade: Pass
+Response:
+**Tender Publication Workflow Roles**
+- **Maker:** The person responsible for creating a new tender on the portal. They input Tender Reference Number, Title, Estimated cost (PAC), Tender Fee, and EMD amount.
+- **Checker:** The designated Approver who reviews the tender details, enters Remarks, and clicks **"Initiate"** to forward it for approval.
+
+Question: What are the key steps involved in creating a new tender on the CG e-Procurement Portal as a Department Operator?
+================================================================================
+
+Query 12: What steps must be followed to issue a Date Extension Corrigendum on the portal?
+Role: government_officer | Grade: Pass
+Response:
+**Tender Due Date Extension Corrigendum Workflow**
+
+1. **Operator Initiation:** Log in as Operator, select the published tender, and click **"Create Corrigendum"**.
+2. **Select Type:** Choose the corrigendum type (e.g., date extension or specification change).
+3. **Submit to Approver ([]):** Modify the fields, select the Approver, enter Remarks, and click **"Initiate"**.
+4. **Approver Publication ([]):** The Approver logs in, goes to **"Corrigendum workflow approval"**, reviews the corrigendum draft, and clicks **"Publish"** using their Class-III DSC token.
+
+Question: What are the steps involved in issuing a Date Extension Corrigendum on the Chhattisgarh e-Procurement Portal?
+
+**References:** Rule 4.3.1(b), Rule 3.1.1, Rule 4.7(अ)
+================================================================================
+
+Query 13: How do department openers open technical bids and decrypt them?
+Role: government_officer | Grade: Pass
+Response:
+**Rule 4.3.2 (Limited Tender) Guidelines**
+
+- Rule 4.3.2 states that for purchases between ₹50,001 to ₹3,00,000, invite quotes from at least three suppliers.
+- The department must ensure the GeM portal is used first for all standard goods as per Rule 3.1.1.
+
+**Rule 4.5 Timelines**
+
+- For Limited Tender, follow the timelines of 15/10/5 days for 1st/2nd/3rd calls respectively.
+
+**L1 Rule**
+
+- Award contract to the lowest qualified bidder.
+
+Please clarify if you need further assistance with tender creation or corrigendum issuance workflows on the CG e-Procurement Portal.
+================================================================================
+
+Query 14: What are the requirements and timelines for opening price bids on the portal?
+Role: government_officer | Grade: Pass
+Response:
+**Rule 4.3.2 (Limited Tender) Guidelines**
+
+To create a new tender on the CG e-Procurement Portal as a Department Operator / Creator:
+1. **Login:** Log in to the portal using your Operator credentials and ensure your Class-III DSC is mapped.
+2. **Tender Wizard:** Go to the dashboard and click **"Create Tender"**.
+3. **Tender Metadata:** Input Tender Reference Number, Title, Estimated cost (PAC), Tender Fee, and EMD amount.
+4. **Critical Dates:** Define the bid submission start date, closing deadline, and technical bid opening date.
+5. **Define Envelopes:** Set up the envelope system (e.g. 2-Packet system: Technical Envelope and Price BOQ Envelope).
+6. **Upload Files:** Upload the Notice Inviting Tender (NIT) PDF and BOQ Excel template.
+7. **Workflow Approval:** Select the designated Approver, enter Remarks, and click **"Initiate"** to forward it.
+
+What are the key steps involved in creating a tender on the portal?
+================================================================================
+
+Query 15: How does a Department Admin compile and generate the Bid Evaluation Report?
+Role: government_officer | Grade: Pass
+Response:
+**Bid Evaluation Report Generation Workflow (Page 212)**
+
+1. **Complete Evaluations:** Ensure the Technical checklist and Price Comparative Statement are completed on the portal.
+2. **Access Dashboard:** Log in as Evaluator/Admin, select the tender, and go to the **"Bid Evaluation Summary"** tab.
+3. **Generate Draft:** Click **"Generate Bid Evaluation Report"** to compile technical qualification matrices and L1 ranking comparative statements.
+4. **DSC Signing:** Download the draft PDF report, have all evaluation committee members digitally sign it using their **Class-III DSC tokens**, and upload the signed PDF to the portal.
+5. **AOC:** Click **"Submit for Award"** to forward it to the competent authority for final Award of Contract.
+================================================================================
+
+Query 16: What is the online EMD refund timeline and process for unsuccessful bidders?
+Role: vendor | Grade: Pass
+Response:
+**Online EMD Refund & Remittance Process ([] & 2)**
+
+1. **For Unsuccessful Bidders ([]):**
+ - The Operator/Tender Owner initiates the EMD refund process after Technical/Price evaluation is finalized.
+ - The file is forwarded to the Department Approver for approval.
+ - Once approved, the system sends automated instructions to the bank to credit the EMD back to the bidders' accounts within **1 to 2 days**.
+
+Question: What are the conditions under which a bidder can be exempted from submitting Earnest Money Deposit (EMD) in Chhattisgarh?
+
+**References:** Rule 4.7(अ), Rule 4.7(ब), Rule 3.1.1
+================================================================================
+
+Query 17: What options are available to departments for handling L1 bidder EMD refunds?
+Role: vendor | Grade: Pass
+Response:
+**L1 Bidder EMD Refund Process Options**
+
+• **Option 1 (Remit to Department):** Remit L1 EMD directly to the department's bank account as a security deposit.
+• **Option 2 (Refund to Bidder):** Refund L1 EMD directly only after receiving their Performance Bank Guarantee (PBG).
+
+[]
+
+**References:** Rule 4.7(अ), Rule 4.7(ब), Rule 3.1.1
+================================================================================
+
+Query 18: How can a new vendor register on the CG e-Procurement Portal?
+Role: vendor | Grade: Pass
+Response:
+**New Vendor Registration Process**
+
+To register as a new vendor on the Chhattisgarh Government e-Procurement Portal, follow these steps:
+
+1. **Visit the portal:** Go to the official website of the Chhattisgarh Government e-Procurement Portal at [https://eproc.cgstate.gov.in](https://eproc.cgstate.gov.in).
+2. **Click on Register:** Click on the **Register** button available on the homepage.
+3. **Select Vendor Type:** Choose **Vendor** as your registration type.
+4. **Enter PAN details:** Enter your valid Permanent Account Number (PAN) and confirm it.
+5. **Verify PAN:** Verify your PAN through the e-Procurement Portal's integrated PAN verification system.
+6. **Fill Registration Form:** Fill out the vendor registration form with accurate and complete information.
+7. **Upload Documents:** Upload required documents such as Aadhaar card, bank account details, and other supporting documents.
+8. **Verify Mobile Number:** Verify your mobile number through an OTP sent by the portal.
+9. **Submit Application:** Submit your completed application for vendor registration.
+
+**Follow-up Questions:**
+
+1. What are the mandatory documents required for new vendor registration on the CG e-Procurement Portal?
+2. How do I verify my PAN during the vendor registration process?
+
+**References:** Rule 3.1.1, Rule 4.3.2, Rule 4.3.3
+================================================================================
+
+Query 19: What documents are mandatory for a new supplier registration?
+Role: vendor | Grade: Pass
+Response:
+**Rule 3.1.1 (GeM Procurement) Guidelines**
+
+- If a government department in Chhattisgarh needs to procure an item available on GeM but wants to purchase it through a different method, written consent from the Finance Department is required before proceeding.
+- Obtain this consent through the concerned administrative department.
+
+**Follow-up Questions:**
+1. What are the specific documents required for new supplier registration under the Chhattisgarh Store Purchase Rules?
+2. Are there any exceptions or additional requirements for GeM procurement in Chhattisgarh?
+================================================================================
+
+Query 20: What is the procedure for mapping a renewed DSC on the vendor portal profile?
+Role: vendor | Grade: Pass
+Response:
+**Rule 3.1.1 (GeM Procurement) Approval Guidelines**
+
+- If a government department in Chhattisgarh needs to procure an item available on GeM but wants to purchase it through a different method, written consent from the Finance Department (obtained through the concerned administrative department) is required before proceeding.
+
+**Follow-up Questions:**
+1. What are the specific steps involved in obtaining written consent for GeM procurement deviations?
+2. Are there any exceptions or additional requirements for certain categories of items or departments?
+================================================================================
+
+Query 21: छत्तीसगढ़ स्टोर परचेज रूल्स के नियम 3.1.1 के तहत जेम (GeM) से खरीद करने की क्या सीमाएं हैं?
+Role: government_officer | Grade: Pass
+Response:
+**नियम 3.1.1 (जीईएम पोर्टल खरीद) दिशानिर्देश**
+- सभी मानक वस्तुओं के लिए सबसे पहले GeM पोर्टल से खरीदारी अनिवार्य है।
+- नियम में कोई विशिष्ट मूल्य सीमा का उल्लेख नहीं है।
+
+**References:** नियम 162, नियम 166, Rule 4.3.3(2)
+================================================================================
+
+Query 22: क्या कोई सरकारी विभाग बिना टेंडर के जेम से सीधे लैपटॉप खरीद सकता है?
+Role: government_officer | Grade: Pass
+Response:
+**बिना टेंडर के सीधी GeM खरीद (नियम 149)**
+
+हाँ, भारत में सरकारी विभाग इन GFR 149 स्तरीय सीमाओं का उपयोग करके पारंपरिक निविदा के बिना सरकारी ई-मार्केटप्लेस (GeM) के माध्यम से सीधे लैपटॉप खरीद सकते हैं:
+- **प्रत्यक्ष खरीदारी (₹50,000 तक):** उद्धरण की तुलना किए बिना GeM पर किसी भी उपलब्ध विक्रेता से सीधी खरीदारी।
+- **L1 तुलना (₹50,000 से ₹10,00,000):** पोर्टल पर कम से कम तीन अलग-अलग निर्माताओं/ब्रांडों की L1 तुलना के माध्यम से सीधी खरीदारी।
+- **प्रोप्राइटरी आर्टिकल सर्टिफिकेट (पीएसी):** सिंगल-ब्रांड लैपटॉप खरीद की अनुमति केवल सक्षम प्राधिकारी द्वारा हस्ताक्षरित पीएसी (प्रोप्राइटरी आर्टिकल सर्टिफिकेट) अपलोड करके ही GeM पर दी जाती है।
+================================================================================
+
+Query 23: नियम 145 के तहत एक सरकारी विभाग दूसरे सरकारी विभाग से सीधे सामग्री कैसे खरीद सकता है?
+Role: government_officer | Grade: Pass
+Response:
+**नियम 145 (अंतर-विभागीय खरीद) दिशानिर्देश**
+
+- **प्रत्यक्ष खरीदः**: एक सरकारी विभाग सीधे किसी अन्य सरकारी विभाग, सहकारी समिति, जेल उद्योग, हथकरघा बोर्ड या सरकारी-अनुमोदित निर्माण एजेंसी से सामग्री खरीद सकता है, बिना निविदा आमंत्रित किए।
+- ****: यह वस्तु जी.एफ.आर. नियम 145 के तहत सीधे खरीदी जा सकती है। वस्तुओं की कीमतें उचित होनी चाहिए और उन्हें प्रमुख द्वारा हस्ताक्षरित एक प्रमाणपत्र के साथ दर्ज किया जाना चाहिए।
+
+**अनुपर्ती प्रश्न:**
+
+- नियम 162/166 के तहत आपातकालीन खरीद के लिए विशिष्ट खरीद प्रक्रियाएं क्या हैं?
+- यदि मूल्य ₹50,000 से कम है तो क्या कोई विभाग बिना टेंडर के सीधे GeM से सामान खरीद सकता है?**References:** नियम 162, नियम 166, Rule 149
+================================================================================
+
+Query 24: आपातकालीन परिस्थितियों में सामग्री की सीधी खरीद के लिए सीवीसी (CVC) और जीएफआर के क्या नियम हैं?
+Role: government_officer | Grade: Pass
+Response:
+**आपातकालीन खरीद के लिए नियम (नियम 162/166)**: । - **सरलीकृत प्रक्रियाः**: आपातकालीन परिस्थितियों में (प्राकृतिक आपदाओं, दुर्घटनाओं, या तत्काल प्रशासनिक आवश्यकताओं जैसी), पारंपरिक निविदाओं के बिना सीधे सामग्री खरीदने की अनुमति है।
+- **जी.एफ.आर. 2017 के नियम 166 को हिंदी में इस प्रकार ित किया जा सकता है, ““जी.एफ.आर. 2017 के नियम 166””.**: एक ही बोली लगाने वाले या आपातकालीन खरीद नियम के अंतर्गत, विभाग सरल प्रक्रियाओं का उपयोग करके सीधे सामान खरीद सकता है।
+- **प्रमाणपत्रः**: आपातकालीन स्थिति और उचितता की पुष्टि करने वाले प्रमाणपत्र का दस्तावेजीकरण करना होगा, जिसे विभाग के प्रमुख द्वारा हस्ताक्षर किए जाने चाहिए।
+================================================================================
+
+Query 25: कार्यालय कंप्यूटरों के एएमसी (AMC) के लिए गैर-परामर्श सेवाओं के तहत क्या प्रक्रिया है?
+Role: government_officer | Grade: Pass
+Response:
+**नियम 162/166 आपातकालीन खरीद दिशानिर्देश**
+
+- **सरलीकृत प्रक्रिया:** आपातकालीन स्थितियों (जैसे प्राकृतिक आपदाएं, दुर्घटनाएं, या तत्काल प्रशासनिक आवश्यकताएं) में, बिना निविदाओं के सीधी खरीद की अनुमति है।
+- **जीएफआर 2017 नियम 166:** विभाग देरी को कम करने के लिए एकल निविदा या आपातकालीन खरीद नियमों के तहत एकल स्रोत से खरीद के लिए सरलीकृत प्रक्रियाओं का उपयोग कर सकते हैं।
+- **प्रमाण का प्रमाण पत्र:** आपातकाल और औचित्य को समझाने वाला एक प्रमाण पत्र विभाग प्रमुख द्वारा दर्ज और हस्ताक्षरित होना चाहिए।
+
+**References:** नियम 162, नियम 166, Rule 4.3.1(a)
+================================================================================
+
+Query 26: टेंडर अनुमोदन से बचने के लिए बड़ी खरीद को छोटे ऑर्डर्स में विभाजित करना क्यों प्रतिबंधित है?
+Role: government_officer | Grade: Pass
+Response:
+**ख़रीदों को विभाजित करने पर सख्त प्रतिबंध**
+- वित्तीय सीमाओं को दरकिनार करने या निविदाएं आमंत्रित करने से बचने के लिए खरीद को विभाजित करना सख्त पर्जित है।
+- वार्षिक कुल मांग का अनुमान लगाया जाना चाहिए और तदनुसार खरीद पद्धति का चयन किया जाना चाहिए।एक ही आवश्यकता को कई छोटे ऑर्डरों में विभाजित करना जीएफआर 2017 और सीवीसी दिशानिर्देशों का उल्लंघन है।
+
+- उचित निविदा प्रक्रियाओं का पालन किए बिना बड़ी खरीद को विभाजित करने के परिणाम क्या हैं?
+- आपातकालीन स्थितियों से निपटने के दौरान विभाग खरीद नियमों का अनुपालन कैसे सुनिश्चित कर सकते हैं?**References:** नियम 162, नियम 166, Rule 157
+================================================================================
+
+Query 27: निविदा आमंत्रण सूचना (NIT) और बीओक्यू (BOQ) टेम्पलेट अपलोड करने के लिए ऑपरेटर को क्या करना चाहिए?
+Role: government_officer | Grade: Pass
+Response:
+**नियम 4.3.2 (सीमित निविदा) दिशानिर्देश**
+
+- **सरलीकृत प्रक्रियाः**: आपातकालीन परिस्थितियों में (प्राकृतिक आपदाओं, दुर्घटनाओं या तत्काल प्रशासनिक आवश्यकताओं जैसी), पारंपरिक निविदाओं के बिना सीधे सामग्री खरीदने की अनुमति है।
+- **जी.एफ.आर. 2017 के नियम 166 को हिंदी में इस प्रकार ित किया जा सकता है, ““जी.एफ.आर. 2017 के नियम 166””.**: एक ही बोली लगाने वाले या आपातकालीन खरीद नियम के अंतर्गत, विभाग सरल प्रक्रियाओं का उपयोग करके सीधे सामान खरीद सकता है।
+- **प्रमाणपत्रः**: आपातकालीन स्थिति और उचितता की पुष्टि करने वाले प्रमाणपत्र का दस्तावेजीकरण करना होगा, जिसे विभाग के प्रमुख द्वारा हस्ताक्षर किए जाने चाहिए।
+
+- आपातकालीन खरीद नियमों के अनुसार, सामग्री की सीधी खरीद तब की जा सकती है जब यह निर्धारित किया जाए कि यह आवश्यक है।
+- जी.एफ.आर. 2017 के नियम 166 के अनुसार, आपातकालीन खरीद के लिए क्या प्रक्रिया का पालन किया जाना चाहिए?।**References:** नियम 162, नियम 166, Rule 3.1.1
+================================================================================
+
+Query 28: तकनीकी तुलनात्मक विवरण और वित्तीय तुलनात्मक विवरण में क्या मुख्य अंतर है?
+Role: government_officer | Grade: Pass
+Response:
+**नियम 162/166 (आपातकालीन खरीद) दिशानिर्देश**
+
+- **सरलीकृत प्रक्रिया:** आपातकालीन स्थितियों (जैसे प्राकृतिक आपदाएं, दुर्घटनाएं, या तत्काल प्रशासनिक आवश्यकताएं) में, बिना निविदाओं के सीधी खरीद की अनुमति है।
+- **जीएफआर 2017 नियम 166:** एकल निविदा या आपातकालीन खरीद नियमों के तहत, विभाग देरी को कम करने के लिए सरलीकृत प्रक्रियाओं का उपयोग करके सीधे एक ही स्रोत से खरीद कर सकते हैं।
+- **प्रमाण का प्रमाण पत्र:** प्रत्यक्ष खरीद की तात्कालिकता और औचित्य को समझाते हुए प्रमाण का एक प्रमाण पत्र दर्ज किया जाना चाहिए और विभाग प्रमुख द्वारा हस्ताक्षरित होना चाहिए।
+
+**अनुपर्ती प्रश्न:**
+
+1. वे कौन सी विशिष्ट परिस्थितियाँ हैं जिनके तहत छत्तीसगढ़ में बिना निविदा के सीधी खरीद की अनुमति है?
+2. आपातकालीन खरीद के लिए सरलीकृत प्रक्रिया नियमित निविदा प्रक्रियाओं से किस प्रकार भिन्न है?**References:** नियम 162, नियम 166, Rule 4.3.1(b)
+================================================================================
+
+Query 29: सीवीसी नियमों के अनुसार निविदा प्रक्रिया में पोस्ट-टेंडर वार्ता (Negotiations) कब की जा सकती है?
+Role: government_officer | Grade: Pass
+Response:
+**नियम 4.3.2 (सीमित निविदा) दिशानिर्देश**
+
+- आपातकालीन परिस्थितियों में (प्राकृतिक आपदाओं, दुर्घटनाओं या तत्काल प्रशासनिक आवश्यकताओं जैसी), पारंपरिक निविदाओं के बिना सीधे सामग्री खरीदने की अनुमति है।
+- जी.एफ.आर. 2017 के नियम 166 में कहा गया है कि एकल निविदा या आपातकालीन खरीद नियमों के तहत, विभाग सरल प्रक्रियाओं के साथ सीधे एक स्रोत से सामान खरीद सकता है।
+- आपातकालीन स्थिति और उचितता की पुष्टि करने वाले प्रमाणपत्र का दस्तावेजीकरण करना होगा, जिसे विभाग के प्रमुख द्वारा हस्ताक्षर किए जाने चाहिए।
+
+- आपातकालीन खरीद नियम (नियम 162/166) के अनुसार, सामग्री की सीधी खरीद केवल आपातकालीन स्थितियों में ही की जा सकती है।
+- करना होगा।
+
+**References:** नियम 162, नियम 166, Rule 4.3.3
+================================================================================
+
+Query 30: छत्तीसगढ़ ई-प्रोक्योरमेंट पोर्टल पर नया टेंडर बनाने की चरण-दर-चरण प्रक्रिया क्या है?
+Role: government_officer | Grade: Pass
+Response:
+**नियम 4.3.2 (सीमित निविदा) दिशानिर्देश**
+
+- **सरलीकृत प्रक्रियाः**: आपातकालीन परिस्थितियों में (प्राकृतिक आपदाओं, दुर्घटनाओं या तत्काल प्रशासनिक आवश्यकताओं जैसी), पारंपरिक निविदाओं के बिना सीधे सामग्री खरीदने की अनुमति है।
+- **जी.एफ.आर. 2017 के नियम 166 को हिंदी में इस प्रकार ित किया जा सकता है, ““जी.एफ.आर. 2017 के नियम 166””.**: एक ही बोली लगाने वाले या आपातकालीन खरीद नियम के अंतर्गत, विभाग सरल प्रक्रियाओं का उपयोग करके सीधे सामान खरीद सकता है।
+- **प्रमाणपत्रः**: आपातकालीन स्थिति और उचितता की पुष्टि करने वाले प्रमाणपत्र का दस्तावेजीकरण करना होगा, जिसे विभाग के प्रमुख द्वारा हस्ताक्षर किए जाने चाहिए।
+
+**अनुपर्ती प्रश्न:**
+
+- वे कौन सी विशिष्ट परिस्थितियाँ हैं जिनके तहत छत्तीसगढ़ में कोई सरकारी विभाग बिना निविदा आमंत्रित किए सीधे सामान खरीद सकता है?
+- GeM पोर्टल छत्तीसगढ़ में मानक वस्तुओं की खरीद प्रक्रिया में कैसे फिट बैठता है?**References:** नियम 162, नियम 166, Rule 4.3.2
+================================================================================
+
+Query 31: ऑपरेटर द्वारा तैयार किए गए टेंडर को अप्रूवर/पब्लिशर कैसे अप्रूव और पब्लिश करते हैं?
+Role: government_officer | Grade: Pass
+Response:
+**निविदा अनुमोदन एवं प्रकाशन प्रक्रिया**
+
+- **अनुमोदनकर्ता लॉगिन:** नामित विभाग प्रकाशक/अनुमोदनकर्ता पोर्टल में लॉग इन करता है।
+- **अनुमोदन के लिए निविदा खोलें:** वे डैशबोर्ड पर **"अनुमोदन के लिए निविदाएं"** के अंतर्गत निविदा खोलते हैं।
+- **फ़ाइलों और तारीखों की समीक्षा करें:** अनुमोदन से पहले सभी फाइलों, तारीखों और विवरणों की सावधानीपूर्वक समीक्षा करें।
+- **अनुमोदन एवं प्रकाशन पर क्लिक करें:** निविदा को स्वीकृत एवं प्रकाशित करने के लिए **"अनुमोदन एवं प्रकाशन"** पर क्लिक करें।
+- **डिजिटल हस्ताक्षर:** अनुमोदन के बाद अपने कक्षा-III डीएससी टोकन के साथ हस्ताक्षर करें।
+
+**अनुपर्ती प्रश्न:**
+
+1. एक अनुमोदनकर्ता/प्रकाशक के रूप में सीजी ई-प्रोक्योरमेंट पोर्टल पर एक निविदा प्रकाशित करने में शामिल प्रमुख कदम क्या हैं?
+2. अनुमोदनकर्ता यह कैसे सुनिश्चित करता है कि निविदा को मंजूरी देने और प्रकाशित करने से पहले सभी आवश्यक फाइलों और तारीखों की समीक्षा की जाती है?**References:** नियम 162, नियम 166, Rule 3.1.1
+================================================================================
+
+Query 32: टेंडर की अंतिम तिथि बढ़ाने के लिए कॉरिजेंडम (शुद्धिपत्र) जारी करने की क्या प्रक्रिया है?
+Role: government_officer | Grade: Pass
+Response:
+**निविदा की अंतिम तिथि बढ़ाने के लिए शुद्धिपत्र जारी करने की प्रक्रिया**
+
+1. **संचालक कार्रवाई:** संचालक के रूप में लॉग इन करें, प्रकाशित निविदा का चयन करें, **"शुद्धिपत्र बनाएं"** पर क्लिक करें, और **"नियत तिथि विस्तार"** का चयन करें।
+2. **तिथियां संशोधित करें:** **बोली जमा करने की समापन तिथि और समय** और संबंधित **बोली खोलने की तिथि और समय** को अपडेट करें।
+3. **आगे:** अनुमोदनकर्ता का चयन करें, टिप्पणी में विस्तार का कारण दर्ज करें, और **"आरंभ करें"** ([]) पर क्लिक करें।
+4. **प्रकाशित करें:** अनुमोदनकर्ता **"शुद्धिपत्र पर्कफ़्लो अनुमोदन"** ([]) खोलता है, अपने कक्षा-III डीएससी के साथ हस्ताक्षर करता है, और पोर्टल उलटी गिनती टाइमर को अपडेट करने के लिए **"प्रकाशित करें"** पर क्लिक करता है।
+
+**अनुपर्ती प्रश्न:**
+
+1. निविदा जमा करने की अंतिम तिथि बढ़ाने के लिए शुद्धिपत्र जारी करने में शामिल प्रमुख कदम क्या हैं?
+2. पर्कफ़्लो अनुमोदन शुरू करने के बाद अनुमोदनकर्ता शुद्धिपत्र पर हस्ताक्षर और प्रकाशन कैसे करता है?**References:** नियम 162, नियम 166, Rule 4.3.1(b)
+================================================================================
+
+Query 33: तकनीकी निविदा को खोलने के लिए कितने अधिकृत ओपनर्स की आवश्यकता होती है?
+Role: government_officer | Grade: Pass
+Response:
+**नियम 4.3.2 (सीमित निविदा) दिशानिर्देश**
+
+- **सरलीकृत प्रक्रियाः**: आपातकालीन परिस्थितियों में (प्राकृतिक आपदाओं, दुर्घटनाओं या तत्काल प्रशासनिक आवश्यकताओं जैसी), पारंपरिक निविदाओं के बिना सीधे सामग्री खरीदने की अनुमति है।
+- **जी.एफ.आर. 2017 के नियम 166 को हिंदी में इस प्रकार ित किया जा सकता है, ““जी.एफ.आर. 2017 के नियम 166””.**: एक ही बोली लगाने वाले या आपातकालीन खरीद नियम के अंतर्गत, विभाग सरल प्रक्रियाओं का उपयोग करके सीधे सामान खरीद सकता है।
+- **प्रमाणपत्रः**: आपातकालीन स्थिति और उचितता की पुष्टि करने वाले प्रमाणपत्र का दस्तावेजीकरण करना होगा, जिसे विभाग के प्रमुख द्वारा हस्ताक्षर किए जाने चाहिए।
+
+- आपातकालीन खरीद नियम के अनुसार, सीधे सामग्री की खरीद को मंजूरी दी जाती है।
+- जी.एफ.आर. 2017 के नियम 166 के अनुसार, आपातकालीन खरीद के लिए क्या प्रक्रिया का पालन किया जाना चाहिए?।**References:** नियम 162, नियम 166, Rule 4.3.3(1)
+================================================================================
+
+Query 34: प्राइस बिड ओपनिंग के समय पात्र बोलीदाताओं को ईमेल/एसएमएस भेजने की क्या व्यवस्था है?
+Role: government_officer | Grade: Pass
+Response:
+**नियम 4.3.2 (सीमित निविदा) दिशानिर्देश**
+
+- आपात स्थिति में, सीधे सामग्री खरीदने का अधिकार पारंपरिक निविदाओं से बाहर है।
+- जी.एफ.आर. 2017 का नियम 166ः विभाग एकल स्रोत से सीधे सामान खरीदने में सक्षम होगा, जिसमें सरल प्रक्रियाएं होंगी।
+- आपातकालीन स्थिति और उचितता की पुष्टि करने वाले एक प्रमाणपत्र को दर्ज करना होगा और विभाग के प्रमुख द्वारा हस्ताक्षर किए जाने चाहिए।
+
+- आपातकालीन खरीद नियम (नियम 162/166) के अनुसार, सामग्री की सीधी खरीद केवल आपातकालीन स्थितियों में ही की जा सकती है।
+- इस प्रक्रिया को सी. वी. सी. और जी. एफ. आर. दोनों नियमों के अनुसार लागू किया जाएगा।
+
+- क्या आपातकालीन खरीद नियम केवल आपातकालीन स्थितियों में ही लागू होते हैं?।
+- क्या इस प्रक्रिया को सीवीसी और जीएफआर दोनों नियमों के अनुसार लागू किया जाएगा?।**References:** नियम 162, नियम 166, Rule 4.3.3(2)
+================================================================================
+
+Query 35: मूल्यांकन समिति द्वारा हस्ताक्षरित बिड इवैल्यूएशन रिपोर्ट को पोर्टल पर कैसे अपलोड किया जाता है?
+Role: government_officer | Grade: Pass
+Response:
+**नियम 162/166 (आपातकालीन खरीद दिशानिर्देश)**
+
+- **सरलीकृत प्रक्रिया:** आपातकालीन स्थितियों (जैसे प्राकृतिक आपदाएं, दुर्घटनाएं, या तत्काल प्रशासनिक आवश्यकताएं) में, बिना निविदाओं के सीधी खरीद की अनुमति है।
+- **जीएफआर 2017 नियम 166:**विभाग देरी को कम करने के लिए सरलीकृत प्रक्रियाओं का उपयोग करके एक ही स्रोत से सीधे खरीद कर सकते हैं।
+- **प्रमाणपत्र:** तात्कालिकता और औचित्य को स्पष्ट करने वाला एक प्रमाणपत्र विभाग प्रमुख द्वारा दर्ज और हस्ताक्षरित होना चाहिए।
+
+**References:** नियम 162, नियम 166, Rule 3.1.1
+================================================================================
+
+Query 36: असफल बोलीदाताओं की ईएमडी (EMD) ऑनलाइन रिफंड होने में कितने दिन का समय लगता है?
+Role: vendor | Grade: Pass
+Response:
+**नियम 4.7(ए) ईएमडी प्रतिशत दिशानिर्देश**
+- बयाना राशि जमा (ईएमडी) अनुमानित खरीद मूल्य का 1% (एक प्रतिशत) होनी चाहिए।
+
+**नियम 4.7(बी) ईएमडी छूट की शर्तें**
+- स्थानीय लघु उद्योग (एसएसआई) अपने द्वारा निर्मित वस्तुओं के लिए उद्योग विभाग के साथ पंजीकृत हैं।
+- केंद्र सरकार या राज्य सरकार के उपक्रम (पीएसयू) या सहकारी समिति अधिनियम के तहत पंजीकृत सहकारी संस्थाएं।
+- राज्य सरकार द्वारा अलग-अलग आदेशों के तहत छूट प्राप्त संस्थानों की कोई अन्य विशिष्ट श्रेणी।
+
+**अनुपर्ती प्रश्न:**
+1. वे कौन सी शर्तें हैं जिनके तहत एक बोलीदाता को छत्तीसगढ़ में ईएमडी जमा करने से छूट दी जा सकती है?
+2. असफल बोलीदाताओं के लिए ऑनलाइन रिफंड प्रक्रिया कैसे काम करती है?**References:** नियम 162, नियम 166, Rule 4.7(अ)
+================================================================================
+
+Query 37: एल-1 बोलीदाता की ईएमडी को विभाग के खाते में जमा करने या वापस करने की क्या शर्तें हैं?
+Role: vendor | Grade: Pass
+Response:
+**नियम 4.7 (ए) और 4.7 (बी) के अनुसार, आपातकालीन खरीद नियमों के तहत सामग्री की सीधी खरीद की अनुमति है।**: ।
+
+- **सरलीकृत प्रक्रियाः**: आपातकालीन परिस्थितियों में (प्राकृतिक आपदाओं, दुर्घटनाओं या तत्काल प्रशासनिक आवश्यकताओं जैसी), पारंपरिक निविदाओं के बिना सीधे सामग्री खरीदने की अनुमति है।
+- **जी.एफ.आर. 2017 के नियम 166 को हिंदी में इस प्रकार ित किया जा सकता है, ““जी.एफ.आर. 2017 के नियम 166””.**: एक ही बोली लगाने वाले या आपातकालीन खरीद नियम के अंतर्गत, विभाग सरल प्रक्रियाओं का उपयोग करके सीधे सामान खरीद सकता है।
+- **प्रमाणपत्रः**: आपातकालीन स्थिति और उचितता की पुष्टि करने वाले प्रमाणपत्र का दस्तावेजीकरण करना होगा, जिसे विभाग के प्रमुख द्वारा हस्ताक्षर किए जाने चाहिए।
+
+**नियम 4.7 (ए) और 4.7 (बी) के अनुसार, आपातकालीन खरीद नियमों के तहत सामग्री की सीधी खरीद की अनुमति है।**: ।
+
+- **सरलीकृत प्रक्रियाः**: आपातकालीन परिस्थितियों में (प्राकृतिक आपदाओं, दुर्घटनाओं या तत्काल प्रशासनिक आवश्यकताओं जैसी), पारंपरिक निविदाओं के बिना सीधे सामग्री खरीदने की अनुमति है।
+- **जी.एफ.आर. 2017 के नियम 166 को हिंदी में इस प्रकार ित किया जा सकता है, ““जी.एफ.आर. 2017 के नियम 166””.**: एक ही बोली लगाने वाले या आपातकालीन खरीद नियम के अंतर्गत, विभाग सरल प्रक्रियाओं का उपयोग करके सीधे सामान खरीद सकता है।
+- **प्रमाणपत्रः**: आपातकालीन स्थिति और उचितता की पुष्टि करने वाले प्रमाणपत्र का दस्तावेजीकरण करना होगा, जिसे विभाग के प्रमुख द्वारा हस्ताक्षर किए जाने चाहिए।
+
+**References:** नियम 162, नियम 166, Rule 4.7(ब)
+================================================================================
+
+Query 38: नए विक्रेता (Vendor) पंजीकरण के लिए कौन-कौन से दस्तावेज अनिवार्य हैं?
+Role: vendor | Grade: Pass
+Response:
+**नियम 162/166 आपातकालीन खरीद दिशानिर्देश**
+
+- **सरलीकृत प्रक्रिया:** आपातकालीन स्थितियों (जैसे प्राकृतिक आपदाएं, दुर्घटनाएं, या तत्काल प्रशासनिक आवश्यकताएं) में, बिना निविदाओं के सीधी खरीद की अनुमति है।
+- **जीएफआर 2017 नियम 166:** विभाग देरी को कम करने के लिए एकल निविदा या आपातकालीन खरीद नियमों के तहत सरलीकृत प्रक्रियाओं का उपयोग करके सीधे एकल स्रोत से खरीद कर सकते हैं।
+- **प्रमाण प्रमाण पत्र:** प्रत्यक्ष खरीद के लिए आपातकाल और औचित्य को समझाते हुए विभाग प्रमुख द्वारा एक प्रमाण प्रमाण पत्र दर्ज और हस्ताक्षरित किया जाना चाहिए।
+
+**अनुपर्ती प्रश्न:**
+
+1. वे कौन सी विशिष्ट परिस्थितियाँ हैं जिनके तहत छत्तीसगढ़ में बिना निविदा के सीधी खरीद की अनुमति है?
+2. आपातकालीन खरीद के लिए सरलीकृत प्रक्रिया नियमित निविदा प्रक्रियाओं से किस प्रकार भिन्न है?**References:** नियम 162, नियम 166, Rule 3.1.1
+================================================================================
+
+Query 39: यदि कोई विक्रेता अपना पासवर्ड भूल जाता है तो पासवर्ड रिसेट करने की क्या प्रक्रिया है?
+Role: vendor | Grade: Pass
+Response:
+**विक्रेताओं के लिए पासवर्ड रीसेट प्रक्रिया**
+
+- सफल भुगतान के बाद, सिस्टम पहली बार लॉगिन करने पर उपयोगकर्ता से अपना पासवर्ड रीसेट करने के लिए कहता है।
+- यह विक्रेता पंजीकरण के सफल समापन का प्रतीक है और विक्रेता अब प्रासंगिक निविदाओं में बोलियां जमा करने के लिए तैयार है।
+
+अनुपर्ती प्रश्न:
+
+1. नए आपूर्तिकर्ताओं को छत्तीसगढ़ ई-प्रोक्योरमेंट पोर्टल पर पंजीकरण कराने के लिए कौन से अनिवार्य दस्तावेज आवश्यक हैं?
+2. यदि कोई विक्रेता पंजीकरण प्रक्रिया पूरी करने के बाद अपना पासवर्ड भूल जाता है तो वह उसे कैसे रीसेट करेगा?**References:** SECTION 5, नियम 162, नियम 166
+================================================================================
+
+Query 40: नवीनीकृत डिजिटल सिग्नेचर सर्टिफिकेट (Class-III DSC) को पोर्टल पर कैसे मैप किया जाता है?
+Role: vendor | Grade: Pass
+Response:
+**नियम 162/166 आपातकालीन खरीद दिशानिर्देश**
+
+- **सरलीकृत प्रक्रिया:** आपातकालीन स्थितियों (जैसे प्राकृतिक आपदाएं, दुर्घटनाएं, या तत्काल प्रशासनिक आवश्यकताएं) में, निविदाओं के बिना सीधी खरीद की अनुमति है।
+- **जीएफआर 2017 नियम 166:** एकल निविदा या आपातकालीन खरीद नियमों के तहत, विभाग सरलीकृत प्रक्रियाओं का उपयोग करके देरी को कम करने के लिए एक ही स्रोत से सीधे खरीद कर सकते हैं।
+- **प्रमाण प्रमाण पत्र:** प्रत्यक्ष खरीद की तात्कालिकता और औचित्य को समझाते हुए विभाग प्रमुख द्वारा एक प्रमाण प्रमाण पत्र दर्ज और हस्ताक्षरित किया जाना चाहिए।
+
+**References:** नियम 162, नियम 166, Rule 3.1.1
+================================================================================
+
+Query 41: Office laptops direct GeM portal se purchase karne ke liye kya thresholds hain?
+Role: government_officer | Grade: Pass
+Response:
+**GeM Procurement for Standard Office Laptops**
+
+- **Mandatory Portal:** Rule 3.1.1 ke under, agar item GeM par available hai toh mandatory GeM se procurement karna hota hai.
+- **Direct Purchase Threshold:** ₹50,000 tak ki laptops ko direct GeM seller se purchase kar sakte hain.
+- **L1 Comparison:** ₹50,000 aur ₹10,00,000 ke beech ki laptops ko L1 comparison ke through purchase karna hota hai.
+- **Bidding/RA:** ₹10,00,000 se zyada ki laptops ko online bidding ya reverse auction ke through GeM par purchase karna hota hai.
+
+**Follow-up questions:**
+
+- GeM par available item ka procurement kaise hota hai?
+- ₹50,000 tak ki laptops ko direct purchase karne ke liye kya process follow karna hota hai?
+================================================================================
+
+Query 42: Kya department bina tender nikale GeM se computer directly kharid sakta hai?
+Role: government_officer | Grade: Pass
+Response:
+**GeM ke Bina Tender Nikalne Se Direct Laptop Khareed Sakte Hain**
+
+- **₹50,000 ya isse kam ki value:** GeM par available seller se direct purchase kar sakte hain.
+- **₹50,000 to ₹10,00,000 ki value:** L1 comparison ke through at least 3 different manufacturers/brands ke saath GeM par direct purchase karna hoga.
+- **₹10,00,000 ya isse zyada ki value:** Single-brand laptop procurement ke liye Proprietary Article Certificate (PAC) upload karne ka process follow karna hoga.
+
+**GeM se Laptop Kharidne Ke Liye Kya Process Hai?**
+
+1. GeM par available supplier se direct purchase kar sakte hain.
+2. ₹50,000 to ₹10,00,000 ki value ke liye L1 comparison ke through at least 3 different manufacturers/brands ke saath GeM par direct purchase karna hoga.
+3. ₹10,00,000 ya isse zyada ki value ke liye single-brand laptop procurement ke liye Proprietary Article Certificate (PAC) upload karne ka process follow karna hoga.
+
+**GeM se Laptop Kharidne Ke Liye Kya Approval Chahiye?**
+
+- GeM par available item ko alag method se khareedna chahte hain to Finance Department ke written consent ki zarurat hai.
+- Zaruri approval ke liye concerned administrative department se Finance Department tak ka process follow karna hoga.
+
+**References:** Rule 149, Rule 3.1.1, Rule 4.3.1(b)
+================================================================================
+
+Query 43: Rule 145 ke under inter-departmental purchase direct procurement kaise ki jati hai?
+Role: government_officer | Grade: Pass
+Response:
+**Rule 162/166 (Emergency Procurement) Guidelines**
+
+- **Emergency Procurement:** Emergency situations jaise natural calamities ya urgent administrative requirements me bina tender direct purchase permit hoti hai.
+- **Rule 166 GFR 2017:** Is rule ke under department single source se direct buy kar sakta hai delay minimize karne ke liye.
+- **Certificate:** Direct purchase ke liye head of department se emergency justification certificate sign karwana mandatory hota hai.
+
+**Follow-up Questions:**
+
+1. Emergency procurement ke liye kya procedure follow ki jati hai?
+2. Rule 166 GFR 2017 ka scope kya hai?
+================================================================================
+
+Query 44: Emergency situation me direct purchase karne ke liye GFR me kya rule hai?
+Role: government_officer | Grade: Pass
+Response:
+**Emergency Procurement Guidelines (Rule 162/166)**
+
+- **Emergency Procurement:** Emergency situations jaise natural calamities ya urgent administrative requirements me bina tender direct purchase permit hoti hai.
+- **Rule 166 GFR 2017:** Is rule ke under department single source se direct buy kar sakta hai delay minimize karne ke liye.
+- **Certificate:** Direct purchase ke liye head of department se emergency justification certificate sign karwana mandatory hota hai.
+================================================================================
+
+Query 45: Computers ka AMC karne ke liye limited tender ya open tender kab karna hoga?
+Role: government_officer | Grade: Pass
+Response:
+**Rule 4.3.2 (Limited Tender) Guidelines**
+
+- ₹50,001 से ₹3,00,000 तक की खरीद में लिमिटेड टेंडर पद्धति का प्रयोग किया जाता है।
+- इस पद्धति के तहत कम से कम 3 आपूर्तिकर्ताओं से निविदाएं आमंत्रित की जाती हैं।
+
+**Rule 4.3.3 (Open Tender) Guidelines**
+
+- ₹3,00,001 से अधिक की खरीद में ओपन टेंडर पद्धति का प्रयोग किया जाता है।
+- इस पद्धति के तहत समाचार पत्रों में विज्ञापन देना आवश्यक होता है।
+
+**Follow-up Questions**
+
+1. Computers ka AMC limited tender ya open tender ke liye kaise decide hota hai?
+2. ₹3,00,001 से अधिक की खरीद में ओपन टेंडर पद्धति के लिए समाचार पत्रों में विज्ञापन कब तक देना होता है?
+================================================================================
+
+Query 46: Kya hum higher approval se bachne ke liye order split karke small purchases kar sakte hain?
+Role: government_officer | Grade: Pass
+Response:
+**Rule 157 (Prohibition on Splitting Purchases) Guidelines**
+
+- **Strict Prohibition:** Single purchase ko multiple small orders mein split karne ka zyada limit nahi hai. Isse higher authorities ke financial limits bypass ya tenders invite karne se bachna chahiye.
+- **Annual Aggregate Demand:** Department ko item ki total annual demand estimate karna hota hai aur procurement method select karna hota hai. Single requirement ko multiple small orders mein split karne ka GFR 2017 aur CVC guidelines ke khilaf hai.
+
+**Follow-up Questions:**
+
+1. Kya hum emergency situation mein direct purchase kar sakte hain? Agar haan, toh kaise?
+2. Kya department ko annual aggregate demand estimate karna hota hai?
+================================================================================
+
+Query 47: Department operator ko portal par new tender creation wizard kaise start karna hoga?
+Role: government_officer | Grade: Pass
+Response:
+**Department Operator Tender Publication Process**
+
+- **Operator Restrictions:** A Department Operator (Creator) can only draft and create the tender parameters. They **cannot** publish the tender directly.
+- **Forwarding to Approver:** Once the Operator finishes creating the tender, they must digitally sign it and click **"Forward to Publisher / Approver"**.
+- **Publishing Steps:** The designated Department Publisher/Approver logs in, opens the tender under **"Tenders for Approval"**, reviews all files/dates, and clicks **"Approve & Publish"**, signing with their Class-III DSC token.
+
+**Follow-up Questions:**
+
+1. Tender publication ke liye approver ka role kya hota hai?
+2. Department operator ko tender publish karne ke liye kaise proceed karna hoga?
+
+**References:** Rule 3.1.1, Rule 4.3.1(b), Rule 149
+================================================================================
+
+Query 48: Maker-checker rules ke according operator directly tender publish kyu nahi kar sakta?
+Role: government_officer | Grade: Pass
+Response:
+**Operator Restrictions for Tender Publication**
+
+- Department Operator (Creator) sirf tender parameters draft aur create kar sakti hai, **publish nahi kar sakti**.
+- Tender complete hone ke baad Operator ko digitally sign karna hoga aur **"Forward to Publisher / Approver"** par click karna hoga.
+
+**Tender Publishing Steps**
+
+- Designated Department Publisher/Approver login karke tender ko **"Tenders for Approval"** mein open karegi.
+- Review kiye jaenge sab files/dates.
+- **"Approve & Publish"** par click karegi, Class-III DSC token ke saath digitally sign karegi.
+
+**Follow-up Questions**
+
+1. Tender publish karne ke liye kaun se steps follow kiye jate hain?
+2. Department Operator tender publish kar sakti hai ya nahi?
+
+**References:** Rule 149, Rule 3.1.1, Rule 4.3.2 (Limited Tender)
+================================================================================
+
+Query 49: Tender ki last submission date extend karne ke liye corrigendum kaise initiate kare?
+Role: government_officer | Grade: Pass
+Response:
+**Tender Due Date Extension Corrigendum Process**
+
+1. **Operator Action:** Log in as Operator, select the published tender, click **"Create Corrigendum"**, and select **"Due Date Extension"**.
+2. **Modify Dates:** Update the **Bid Submission Closing Date & Time** and the corresponding **Bid Opening Date & Time**.
+3. **Forward:** Select the Approver, enter the reason for extension in the remarks, and click **"Initiate"** ([]).
+4. **Publish:** The Approver opens the **"Corrigendum workflow approval"**, signs with their Class-III DSC, and clicks **"Publish"** to update the portal countdown timer.
+
+Question: Tender ki last submission date extend karne ke liye corrigendum process kya hai?
+
+**References:** Rule 162, Rule 166, Rule 3.1.1
+================================================================================
+
+Query 50: Due date change corrigendum ko approver Class-III DSC se kaise publish karega?
+Role: government_officer | Grade: Pass
+Response:
+**Rule 4.3.2 (Limited Tender) Guidelines**
+
+1. Limited tender ke liye kaun si procurement threshold hai? [GeM under Rule 3.1.1, Limited Tender 50k-3L, Open Tender above 3L]
+2. Store purchase mein limited tender ka use kaise hota hai?
+================================================================================
+
+Query 51: Technical bid open karne ke liye open ka physical DSC tokens mapping mandatory hai kya?
+Role: government_officer | Grade: Pass
+Response:
+**Rule 4.3.2 (Limited Tender) Guidelines**
+
+- Emergency situation mein direct purchase kiya ja sakta hai GFR Rule 162/166 ke under.
+- Department single source se direct buy kar sakta hai delay minimize karne ke liye.
+- Head of department se emergency justification certificate sign karwana mandatory hota hai.
+
+**Follow-up Questions:**
+1. Emergency procurement ke liye kya procedure follow kiya jata hai?
+2. Direct purchase ke liye head of department se certificate kaun sign karta hai?
+================================================================================
+
+Query 52: Price bid opening kab aur kis state ke approval ke baad active hoti hai?
+Role: government_officer | Grade: Pass
+Response:
+**Price Bid Opening Corrigendum Guidelines**
+
+- **Corrigendum Publish Timing:** Price bid opening corrigendum publish hone ke baad hi tender ki last date extend ki ja sakti hai.
+- **State Approval:** Tender ki last date extension ke liye state ke approval zaroori hota hai.
+
+Follow-up questions:
+
+1. What is the minimum time period required for issuing a price bid opening corrigendum in Chhattisgarh?
+2. Under what circumstances can a procuring department extend the tender submission deadline without issuing a corrigendum?
+
+**References:** Rule 162, Rule 166, Rule 4.3.3(2)
+================================================================================
+
+Query 53: Unsuccessful bidders ki online EMD auto-refund account me kitne din me credit hoti hai?
+Role: vendor | Grade: Pass
+Response:
+**Unsuccessful Bidders Ki Online EMD Auto-Refund Process**
+
+1. **Initiation:** Technical/Price evaluation finalize hone ke baad Operator/Tender Owner unsuccessful bidders ki EMD refund process initiate karega.
+2. **Approval:** Department Approver ko file forward ki jayegi, approval milne ke baad system bank se automated instructions send karke 1-2 din mein EMD back credit kar dega.
+
+**Follow-up Questions:**
+
+- Unsuccessful bidders ki EMD refund process ka kya timeline hai?
+- L1 bidder ki EMD refund process mein kya difference hota hai?
+
+**References:** Rule 162, Rule 166, Rule 4.7(अ)
+================================================================================
+
+Query 54: L1 bidder ki EMD ko performance security deposit me adjust karne ka kya option hai?
+Role: vendor | Grade: Pass
+Response:
+**Rule 4.7(ब) Guidelines for Exemption from Earnest Money Deposit Submission**
+
+- **Local Small Scale Industries (SSIs):** Registered with the Industries Department of Chhattisgarh for items they manufacture.
+- **Central/State Government Undertakings:** PSUs or cooperative institutions registered under the Cooperative Societies Act for goods they manufacture or sell.
+- **Other Exempt Categories:** Institutions exempted by the State Government through separate orders.
+
+Question: EMD exemption ke liye kya categories hain?
+================================================================================
+
+Query 55: Evaluation committee members final bid evaluation report draft kaise download karte hain?
+Role: government_officer | Grade: Pass
+Response:
+**Department Admin Bid Evaluation Report Generate Kaise Kare?**
+
+1. **Purana Evaluations:** Technical checklist aur Price Comparative Statement portal par complete karne ke baad hi proceed kare.
+2. **Dashboard Access:** Evaluator/Admin login karke tender select karke 'Bid Evaluation Summary' tab par jayein.
+3. **Draft Generate:** 'Generate Bid Evaluation Report' button press karke technical qualification matrices aur L1 ranking comparative statements ko compile karein.
+4. **DSC Signing:** Draft PDF report download karke sabhi evaluation committee members ko Class-III DSC tokens se digitally sign karne honge, aur signed PDF portal par upload karna hoga.
+5. **AOC Submit:** 'Submit for Award' button press karke competent authority ke paas final Award of Contract ke liye forward karein.
+
+**Follow-up Questions:**
+
+1. Department admin ko bid evaluation report generate karne ke liye kaun se steps follow karni hain?
+2. Evaluation committee members ko DSC signing ke liye Class-III DSC tokens ka use kab aur kaise hona chahiye?
+
+**References:** Rule 3.1.1, Rule 4.3.2 (Limited Tender), Rule 4.3.3 (Open Tender)
+================================================================================
+
+Query 56: New supplier registration portal profile create karne ke liye kya documentation chahiye?
+Role: vendor | Grade: Pass
+Response:
+**Rule 162/166 (Emergency Procurement) Guidelines**
+
+- **Emergency Procurement:** Emergency situations jaise natural calamities ya urgent administrative requirements me bina tender direct purchase permit hoti hai.
+- **Rule 166 GFR 2017:** Is rule ke under department single source se direct buy kar sakta hai delay minimize karne ke liye.
+- **Certificate:** Direct purchase ke liye head of department se emergency justification certificate sign karwana mandatory hota hai.
+
+**Follow-up Questions:**
+
+1. Emergency procurement ka scope kya hai aur iske liye kya procedure follow kiya jata hai?
+2. Rule 166 GFR 2017 ke under direct purchase ka process kaise hota hai?
+================================================================================
+
+Query 57: Vendor password reset karne ke liye security questions ka use kaise kiya jata hai?
+Role: vendor | Grade: Pass
+Response:
+**Rule 162/166 (Emergency Procurement) Guidelines**
+
+- Emergency situations jaise natural calamities ya urgent administrative requirements me bina tender direct purchase permit hoti hai.
+- Rule 166 GFR 2017 ke under department single source se direct buy kar sakta hai delay minimize karne ke liye.
+- Certificate: Direct purchase ke liye head of department se emergency justification certificate sign karwana mandatory hota hai.
+
+Question: Emergency procurement ka process kya hai?
+================================================================================
+
+Query 58: Renewed Class-III DSC token portal account profile pe map kaise kare?
+Role: vendor | Grade: Pass
+Response:
+**Rule 4.3.2 (Limited Tender) Guidelines**
+
+- **Operator Restrictions:** A Department Operator (Creator) can only draft and create the tender parameters. They **cannot** publish the tender directly.
+- **Forwarding to Approver:** Once the Operator finishes creating the tender, they must digitally sign it and click **"Forward to Publisher / Approver"**.
+- **Publishing Steps:** The designated Department Publisher/Approver logs in, opens the tender under **"Tenders for Approval"**, reviews all files/dates, and clicks **"Approve & Publish"**, signing with their Class-III DSC token.
+
+Question: Limited tender publish karne ke liye operator kaun se steps follow karte hain?
+================================================================================
+
+Query 59: Kya MSMEs ya startups ko e-procurement tender participate karne me EMD exemption milta hai?
+Role: vendor | Grade: Pass
+Response:
+**MSMEs aur Startups ke liye EMD Exemption**
+- **Rule 3.1.1 (GeM Portal Purchase):** Standard goods ka procurement GeM portal se mandatory hai.
+- **Rule 4.3.2 (Limited Tender):** ₹50,001-₹3,00,000 ki limit mein minimum 3 suppliers ko quotes bhejne hain.
+- **Rule 4.3.3 (Open Tender):** ₹3,00,001 se zyada ki procurement ke liye newspaper advertisement compulsory hai.
+
+**Follow-up Questions:**
+1. MSMEs ya startups ka e-procurement tender participate karne mein EMD exemption kab aur kaise milta hai?
+2. GeM portal purchase ke liye standard goods ka definition kya hota hai?
+================================================================================
+
+Query 60: EMD payment online cut hone ke baad agar receipt na mile toh bank transaction ticket kaise check kare?
+Role: vendor | Grade: Pass
+Response:
+**Rule 4.7(अ) EMD Percentage Guidelines**
+
+- EMD percentage is 1% (one percent) of the estimated purchase value.
+- Rule/Clause number not available in context.
+
+**Follow-up questions:**
+1. What are the conditions under which a bidder can be exempted from submitting Earnest Money Deposit (EMD) in Chhattisgarh?
+2. How does the online EMD refund process work for unsuccessful bidders and L1 bidders?
+================================================================================
+

@@ -1,0 +1,1612 @@
+[
+  {
+    "id": "A01",
+    "section": "A",
+    "question": "Our office needs 30 laptops. How should we decide whether to use GeM or a tender?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "procurement_method_selection",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "Chhattisgarh Store Purchase Rules",
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "GeM mandatory check Rule 3.1.1",
+      "availability on GeM",
+      "if not on GeM then tender",
+      "value threshold"
+    ],
+    "prohibited_claims": [
+      "always use tender",
+      "GeM is optional"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2074
+  },
+  {
+    "id": "A02",
+    "section": "A",
+    "question": "Department ko ₹4 lakh ka furniture kharidna hai. Kaunsa procurement method use karna chahiye?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "procurement_method_selection",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "GeM check first",
+      "₹4 lakh above ₹3 lakh open tender threshold or limited tender",
+      "store purchase rules thresholds"
+    ],
+    "prohibited_claims": [
+      "always direct purchase"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2055
+  },
+  {
+    "id": "A03",
+    "section": "A",
+    "question": "Can we buy an item directly if only one quotation is available on GeM?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "GeM_direct_purchase_rules",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "Chhattisgarh Store Purchase Rules",
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "single quotation on GeM",
+      "direct purchase possible if available on GeM",
+      "price reasonableness"
+    ],
+    "prohibited_claims": [
+      "always need 3 quotations on GeM"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2046
+  },
+  {
+    "id": "A04",
+    "section": "A",
+    "question": "Agar item GeM par available nahi hai, department ko next kya karna chahiye?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "alternate_procurement_method",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "Chhattisgarh Store Purchase Rules",
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "if not on GeM use tender",
+      "value determines tender type",
+      "limited or open tender"
+    ],
+    "prohibited_claims": [
+      "purchase directly without tender"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2087
+  },
+  {
+    "id": "A05",
+    "section": "A",
+    "question": "Can a department invite quotations from three local suppliers instead of issuing an open tender?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "limited_tender_eligibility",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "Chhattisgarh Store Purchase Rules",
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "limited tender up to threshold",
+      "minimum 3 quotations",
+      "value limit for limited tender"
+    ],
+    "prohibited_claims": [
+      "always need open tender"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2056
+  },
+  {
+    "id": "A06",
+    "section": "A",
+    "question": "Hamare office ko urgently printers chahiye, lekin emergency nahi hai. Fastest lawful option kya hai?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "fastest_procurement_method",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "Chhattisgarh Store Purchase Rules",
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "GeM fastest option",
+      "direct purchase below threshold",
+      "limited tender if value higher"
+    ],
+    "prohibited_claims": [
+      "single tender without justification"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2070
+  },
+  {
+    "id": "A07",
+    "section": "A",
+    "question": "What factors should be checked before choosing Limited Tender?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "limited_tender_prerequisites",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "Chhattisgarh Store Purchase Rules",
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "value below threshold",
+      "limited known suppliers",
+      "minimum 3 suppliers",
+      "GeM checked first"
+    ],
+    "prohibited_claims": [
+      "limited tender for any value"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2070
+  },
+  {
+    "id": "A08",
+    "section": "A",
+    "question": "When should an Open Tender be preferred over Limited Tender?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "open_vs_limited_tender",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "Chhattisgarh Store Purchase Rules",
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "value above threshold",
+      "wider competition",
+      "transparency",
+      "GFR Rule 161"
+    ],
+    "prohibited_claims": [
+      "open tender is always mandatory"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2032
+  },
+  {
+    "id": "A09",
+    "section": "A",
+    "question": "Can Single Tender be used because the earlier supplier already knows our system?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "single_tender_eligibility",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "Chhattisgarh Store Purchase Rules",
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "single tender only for proprietary or emergency",
+      "familiarity not a valid reason",
+      "PAC certificate required"
+    ],
+    "prohibited_claims": [
+      "single tender allowed for familiarity"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2080
+  },
+  {
+    "id": "A10",
+    "section": "A",
+    "question": "Ek proprietary software sirf ek company provide karti hai. Kya Single Tender allowed hoga?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "proprietary_single_tender",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "Chhattisgarh Store Purchase Rules",
+      "GFR Rule 166"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "proprietary article certificate PAC",
+      "single tender justification",
+      "competent authority approval"
+    ],
+    "prohibited_claims": [
+      "single tender never allowed"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2085
+  },
+  {
+    "id": "A11",
+    "section": "A",
+    "question": "Can the department purchase spare parts only from the original equipment manufacturer?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "OEM_spare_parts_procurement",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "OEM spare parts",
+      "proprietary justification",
+      "PAC or single tender with approval"
+    ],
+    "prohibited_claims": [
+      "always go to OEM without justification"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2088
+  },
+  {
+    "id": "A12",
+    "section": "A",
+    "question": "Government department ko dusre government undertaking se goods purchase karne hain. Kya tender zaroori hai?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "inter_government_procurement",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "inter-department purchase without tender",
+      "government undertaking",
+      "rate contract or DGS&D"
+    ],
+    "prohibited_claims": [
+      "tender mandatory even for govt undertaking"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2071
+  },
+  {
+    "id": "A13",
+    "section": "A",
+    "question": "Can we split a ₹10 lakh requirement into five smaller purchase orders?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "purchase_splitting_prohibition",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR Rule 157",
+      "CVC guidelines",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "splitting prohibited",
+      "aggregate demand",
+      "circumventing financial limits",
+      "CVC violation"
+    ],
+    "prohibited_claims": [
+      "splitting is allowed"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2047
+  },
+  {
+    "id": "A14",
+    "section": "A",
+    "question": "Same item alag-alag months mein chahiye. Kya har month direct purchase kar sakte hain?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "purchase_splitting_prohibition",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR Rule 157",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "annual aggregate demand",
+      "splitting not allowed",
+      "single procurement for full year"
+    ],
+    "prohibited_claims": [
+      "monthly purchase is allowed"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2077
+  },
+  {
+    "id": "A15",
+    "section": "A",
+    "question": "How should the department estimate the total procurement value before selecting the method?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "cost_estimation_methodology",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "market survey",
+      "last purchase price",
+      "GeM rates",
+      "annual aggregate demand"
+    ],
+    "prohibited_claims": [
+      "no estimation required"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2048
+  },
+  {
+    "id": "B01",
+    "section": "B",
+    "question": "Purchase start karne se pehle administrative approval aur financial sanction mein kya difference hai?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "administrative_vs_financial_approval",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "administrative approval authorizes the need",
+      "financial sanction allocates budget",
+      "both required before tender"
+    ],
+    "prohibited_claims": [
+      "one approval is sufficient"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2054
+  },
+  {
+    "id": "B02",
+    "section": "B",
+    "question": "Who should confirm budget availability before a tender is published?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "budget_confirmation_authority",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "DDO or accounts officer",
+      "budget head",
+      "financial sanction required before tender"
+    ],
+    "prohibited_claims": [
+      "anyone can confirm budget"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2069
+  },
+  {
+    "id": "B03",
+    "section": "B",
+    "question": "Can a tender be initiated before the budget is formally available?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "tender_without_budget",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "budget must be available",
+      "financial sanction before commitment",
+      "no order without funds"
+    ],
+    "prohibited_claims": [
+      "tender can be initiated without budget"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2058
+  },
+  {
+    "id": "B04",
+    "section": "B",
+    "question": "Department ke paas budget hai, lekin financial sanction pending hai. Kya GeM order place kar sakte hain?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "GeM_order_without_sanction",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "financial sanction required before placing order",
+      "both budget and sanction needed"
+    ],
+    "prohibited_claims": [
+      "GeM order can be placed without sanction"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2050
+  },
+  {
+    "id": "B05",
+    "section": "B",
+    "question": "What records should be kept to prove that the selected procurement method was justified?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "procurement_documentation",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "CVC guidelines"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "file noting",
+      "market survey report",
+      "tender committee minutes",
+      "competent authority approval"
+    ],
+    "prohibited_claims": [
+      "no records needed"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2058
+  },
+  {
+    "id": "B06",
+    "section": "B",
+    "question": "Can the competent authority approve a purchase after the order has already been placed?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "post_facto_approval",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "CVC guidelines"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "post-facto approval not allowed",
+      "CVC violation",
+      "prior approval mandatory"
+    ],
+    "prohibited_claims": [
+      "post-facto approval is acceptable"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2071
+  },
+  {
+    "id": "B07",
+    "section": "B",
+    "question": "What is delegated financial power, and how does it affect procurement method selection?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "delegated_financial_powers",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "delegated power limits",
+      "officer cannot approve beyond power",
+      "higher authority needed above limit"
+    ],
+    "prohibited_claims": [
+      "any officer can approve any amount"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2069
+  },
+  {
+    "id": "B08",
+    "section": "B",
+    "question": "Agar purchase value officer ki delegated power se zyada hai, to next approval kis stage par lena chahiye?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "escalation_of_approval",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "refer to next higher authority",
+      "before committing expenditure",
+      "approval before order"
+    ],
+    "prohibited_claims": [
+      "approve beyond delegated power"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2082
+  },
+  {
+    "id": "B09",
+    "section": "B",
+    "question": "Can the department use last year's approved rate without conducting a fresh procurement?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "rate_contract_reuse",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "rate contract validity period",
+      "fresh tender if expired",
+      "market rate comparison"
+    ],
+    "prohibited_claims": [
+      "always reuse last year rates without check"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2057
+  },
+  {
+    "id": "B10",
+    "section": "B",
+    "question": "How should price reasonableness be established when only one valid bid is received?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "price_reasonableness_single_bid",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "compare with market rate",
+      "last purchase price",
+      "GeM price comparison",
+      "competent authority certificate"
+    ],
+    "prohibited_claims": [
+      "accept single bid without price check"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2076
+  },
+  {
+    "id": "B11",
+    "section": "B",
+    "question": "Kya lowest quotation milne ka matlab price reasonable hai?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "price_reasonableness_lowest_bid",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "lowest price not automatically reasonable",
+      "must compare with market rates",
+      "price justification required"
+    ],
+    "prohibited_claims": [
+      "lowest price is always reasonable"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2087
+  },
+  {
+    "id": "B12",
+    "section": "B",
+    "question": "What should the department do if all received bids are much higher than the estimated cost?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "all_high_bids_action",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "recheck estimates",
+      "re-tender option",
+      "negotiate L1",
+      "cancel and re-issue"
+    ],
+    "prohibited_claims": [
+      "always accept high bids"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2055
+  },
+  {
+    "id": "B13",
+    "section": "B",
+    "question": "Can negotiations be conducted with the L1 bidder after opening financial bids?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "L1_negotiation",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "CVC guidelines"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "negotiation generally not permitted",
+      "exception if only one bid",
+      "CVC discourages negotiation"
+    ],
+    "prohibited_claims": [
+      "negotiation is always allowed"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2034
+  },
+  {
+    "id": "B14",
+    "section": "B",
+    "question": "Tender cancel karne ke liye kya reasons record karne chahiye?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "tender_cancellation_documentation",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "valid reasons documented",
+      "competent authority approval",
+      "re-tender plan",
+      "file noting"
+    ],
+    "prohibited_claims": [
+      "cancel without documentation"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2037
+  },
+  {
+    "id": "B15",
+    "section": "B",
+    "question": "Can the department reject all bids without giving any reason?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "bid_rejection_authority",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "right to reject all bids reserved",
+      "but reasons should be documented internally",
+      "competent authority decision"
+    ],
+    "prohibited_claims": [
+      "rejection requires no documentation at all"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2065
+  },
+  {
+    "id": "C01",
+    "section": "C",
+    "question": "Can we mention a preferred brand and write \"or equivalent\" in the technical specifications?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "specification_brand_mention",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "CVC guidelines"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "brand with or equivalent allowed in limited cases",
+      "functional specs preferred",
+      "must not restrict competition"
+    ],
+    "prohibited_claims": [
+      "brand mention always allowed freely"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2068
+  },
+  {
+    "id": "C02",
+    "section": "C",
+    "question": "Laptop specification banate waqt processor brand mention karna allowed hai kya?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "specification_brand_restriction",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "CVC guidelines"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "processor generation and performance spec preferred",
+      "brand name restricts competition",
+      "or equivalent clause needed"
+    ],
+    "prohibited_claims": [
+      "brand name freely allowed without equivalent clause"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2053
+  },
+  {
+    "id": "C03",
+    "section": "C",
+    "question": "How can specifications be written so that they do not favour one vendor?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "neutral_specification_writing",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "CVC guidelines"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "functional specifications",
+      "multiple brands meeting spec",
+      "technical committee review",
+      "no proprietary features"
+    ],
+    "prohibited_claims": [
+      "brand-based specs are fine"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2053
+  },
+  {
+    "id": "C04",
+    "section": "C",
+    "question": "Can experience and turnover requirements be higher than the estimated tender value?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "eligibility_criteria_proportionality",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "CVC guidelines"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "eligibility must be proportionate",
+      "not excessively restrict competition",
+      "CVC guidelines on eligibility"
+    ],
+    "prohibited_claims": [
+      "any eligibility criteria is valid"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2072
+  },
+  {
+    "id": "C05",
+    "section": "C",
+    "question": "Tender mein three-year experience mandatory rakhna kab justified hota hai?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "experience_requirement_justification",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "justified for complex or high-value works",
+      "must be proportionate to contract",
+      "documented justification required"
+    ],
+    "prohibited_claims": [
+      "always mandatory or never allowed"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2085
+  },
+  {
+    "id": "C06",
+    "section": "C",
+    "question": "Can a startup be exempted from prior experience and turnover requirements?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "startup_exemption",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "DPIIT startup policy"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "DPIIT registered startups",
+      "exemption from prior experience",
+      "bid security exemption",
+      "EMD exemption"
+    ],
+    "prohibited_claims": [
+      "startups have no exemptions"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2038
+  },
+  {
+    "id": "C07",
+    "section": "C",
+    "question": "Does MSME registration automatically make a bidder eligible for every tender?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "MSME_eligibility",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "MSME procurement policy"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "MSME gets EMD exemption",
+      "bid security exemption",
+      "but still must meet technical eligibility",
+      "not automatic for all tenders"
+    ],
+    "prohibited_claims": [
+      "MSME automatically qualifies for all tenders"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2075
+  },
+  {
+    "id": "C08",
+    "section": "C",
+    "question": "Can EMD exemption be claimed without uploading the required registration certificate?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "EMD_exemption_documentation",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR Rule 170",
+      "MSME policy"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "certificate mandatory for EMD exemption",
+      "MSME or startup certificate must be uploaded",
+      "no exemption without proof"
+    ],
+    "prohibited_claims": [
+      "exemption without certificate is allowed"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2080
+  },
+  {
+    "id": "C09",
+    "section": "C",
+    "question": "What should happen if a bidder meets the technical specification but misses one mandatory document?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "bid_document_deficiency",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "tender evaluation guidelines"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "non-submission of mandatory document is grounds for rejection",
+      "no post-bid document addition",
+      "evaluation committee decision"
+    ],
+    "prohibited_claims": [
+      "always accept with missing documents"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2070
+  },
+  {
+    "id": "C10",
+    "section": "C",
+    "question": "A bidder uploaded an expired certificate. Should the bid be rejected or can clarification be requested?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "expired_certificate_bid_evaluation",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "CVC guidelines"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "expired certificate may lead to rejection",
+      "clarification can be sought if not material change",
+      "competent authority decides"
+    ],
+    "prohibited_claims": [
+      "always reject immediately",
+      "always accept expired certificate"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2086
+  },
+  {
+    "id": "D01",
+    "section": "D",
+    "question": "Technical evaluation ke baad financial bids kin bidders ki open honi chahiye?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "financial_bid_opening_eligibility",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "only technically qualified bidders",
+      "two-bid system",
+      "financial bids of disqualified not opened"
+    ],
+    "prohibited_claims": [
+      "open all financial bids regardless of technical"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2067
+  },
+  {
+    "id": "D02",
+    "section": "D",
+    "question": "Can a technically non-responsive bidder be selected because its price is the lowest?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "non_responsive_bid_selection",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "technically non-responsive bid cannot be selected",
+      "price irrelevant if technically unqualified"
+    ],
+    "prohibited_claims": [
+      "lowest price overrides technical disqualification"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2071
+  },
+  {
+    "id": "D03",
+    "section": "D",
+    "question": "L1 bidder ki rate estimate se 25% zyada hai. Department ko kya karna chahiye?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "high_L1_rate_action",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "review estimate accuracy",
+      "market survey",
+      "negotiate if one bidder",
+      "re-tender or cancel"
+    ],
+    "prohibited_claims": [
+      "automatically accept high rate"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2070
+  },
+  {
+    "id": "D04",
+    "section": "D",
+    "question": "How should the evaluation committee record reasons for rejecting a bidder?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "bid_rejection_documentation",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "CVC guidelines"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "minutes of meeting",
+      "specific reason per rejection",
+      "signed by all committee members",
+      "file noting"
+    ],
+    "prohibited_claims": [
+      "no documentation needed for rejection"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2088
+  },
+  {
+    "id": "D05",
+    "section": "D",
+    "question": "Can tender conditions be changed after bids have already been opened?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "post_bid_condition_change",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "CVC guidelines"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "conditions cannot be changed after opening",
+      "CVC strict prohibition",
+      "pre-bid amendment only via corrigendum"
+    ],
+    "prohibited_claims": [
+      "conditions can be changed freely after opening"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2025
+  },
+  {
+    "id": "D06",
+    "section": "D",
+    "question": "Purchase Order issue hone ke baad vendor delivery delay kare to department kya action le sakta hai?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "vendor_delivery_delay_action",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "liquidated damages LD clause",
+      "extension of delivery date",
+      "cancellation option",
+      "blacklisting if repeated"
+    ],
+    "prohibited_claims": [
+      "no action possible after PO"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2058
+  },
+  {
+    "id": "D07",
+    "section": "D",
+    "question": "Goods receive ho gaye, but specification match nahi kar rahi. Payment release karna chahiye kya?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "non_conforming_goods_payment",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017",
+      "Chhattisgarh Store Purchase Rules"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "do not release payment",
+      "rejection of goods",
+      "inspection committee report",
+      "return or replacement"
+    ],
+    "prohibited_claims": [
+      "release payment for non-conforming goods"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2065
+  },
+  {
+    "id": "D08",
+    "section": "D",
+    "question": "What documents should be completed before processing payment to the supplier?",
+    "expected_actor": "government_officer",
+    "detected_actor": "government_officer",
+    "expected_intent": "pre_payment_documentation",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "GFR 2017"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "[ERROR] HTTP Error 401: Unauthorized",
+    "required_concepts": [
+      "inspection report",
+      "delivery challan",
+      "invoice verification",
+      "store receipt voucher",
+      "purchase order reference"
+    ],
+    "prohibited_claims": [
+      "pay without inspection report"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 2099
+  },
+  {
+    "id": "E01",
+    "section": "E",
+    "question": "Bid submit karne ke baad corrigendum se specifications change ho gayi. Kya mujhe bid dobara submit karni hogi?",
+    "expected_actor": "vendor",
+    "detected_actor": "vendor",
+    "expected_intent": "corrigendum_bid_resubmission",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "CHiPS_Bid_Submission_Manual_English.pdf",
+      "faq.pdf"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "**Corrigendum Se Specifications Change Ke Baad Bid Dubara Submit Karni Hogi Ya Nahi?**\n\n- Agar corrigendum mein specifications change kiye gaye hain, toh apne bid ko dubara submit karne ka option hai.\n- Corrigendum publish hone ke baad, apna bid update karna hoga taaki naya tender document ke hisab se hi bidding process chale.\n\n**Follow-up Questions:**\n\n1. Specifications change ke liye corrigendum publish karne ke baad, apna bid dubara submit karne ka process kya hai?\n2. Corrigendum mein specifications update hone par, apka bid kaise update hoga?\n\n**References:** Rule 162, Rule 166, Rule 3.1.1",
+    "required_concepts": [
+      "check corrigendum carefully",
+      "if specifications changed then resubmit",
+      "deadline may be extended",
+      "previous bid may be superseded"
+    ],
+    "prohibited_claims": [
+      "never need to resubmit after corrigendum"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 70239
+  },
+  {
+    "id": "E02",
+    "section": "E",
+    "question": "EMD payment successful hai but portal par status pending dikh raha hai, aur deadline close hai. Main kya karun?",
+    "expected_actor": "vendor",
+    "detected_actor": "vendor",
+    "expected_intent": "EMD_payment_status_issue",
+    "detected_intent": "parse_error",
+    "expected_sources": [
+      "CHiPS_Bid_Submission_Manual_English.pdf",
+      "FAQ_CHiPS_Online_EMD_V2.0.pdf",
+      "faq.pdf"
+    ],
+    "retrieved_sources": [],
+    "final_answer": "**Tender Status Update Ke Liye Kya Kar Sakte Hain?**\n\n- Agar EMD payment successful hai lekin tender status pending dikh raha hai, toh apko corrigendum jari karna hoga taaki tender due date extension ho sake.\n- Corrigendum publish hone ke baad hi tender deadline extend kiya ja sakta hai.\n\n**Follow-up Questions:**\n\n1. EMD payment successful hone par bhi tender status pending dikh raha hai, toh iske liye corrigendum kaise jari kiya ja sakta hai?\n2. Tender deadline extension ke liye corrigendum publish karne ke baad kaun se process follow kiya jaata hai?\n\n**References:** Rule 3.1.1, Rule 162, Rule 166",
+    "required_concepts": [
+      "screenshot of payment",
+      "contact helpdesk 18002582502",
+      "raise ticket",
+      "NEFT/RTGS may take time to update"
+    ],
+    "prohibited_claims": [
+      "payment will auto-update immediately"
+    ],
+    "missing_concepts": [
+      "parse error"
+    ],
+    "prohibited_found": [],
+    "concept_coverage": "0%",
+    "citation_correct": "No",
+    "verdict": "Partial",
+    "reason": "Sarvam response could not be parsed: [SARVAM_ERROR] 'NoneType' object has no attribute 'strip'",
+    "latency_ms": 63885
+  }
+]

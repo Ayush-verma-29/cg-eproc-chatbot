@@ -29,9 +29,9 @@ function parseBold(text = '') {
     });
 }
 
-function parseInlineMarkdown(text = '') {
+function parseInlineMarkdown(text = '', sourceRefs = [], ruleCitations = [], onPdfLinkClick = null) {
     if (!text) return '';
-    const parts = text.split(/(\*\*.*?\*\*|__.*?__|`.*?`)/g);
+    const parts = text.split(/(\*\*.*?\*\*|__.*?__|`.*?`|\[Page\s*\d+(?:-\d+)?\])/g);
     return parts.map((part, i) => {
         if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('__') && part.endsWith('__'))) {
             return <strong key={i}>{part.slice(2, -2)}</strong>;
@@ -39,11 +39,48 @@ function parseInlineMarkdown(text = '') {
         if (part.startsWith('`') && part.endsWith('`')) {
             return <code key={i} style={{ background: '#f1f5f9', padding: '2px 4px', borderRadius: '4px', fontSize: '90%', fontFamily: 'monospace', color: '#0f172a' }}>{part.slice(1, -1)}</code>;
         }
+        const pageMatch = part.match(/^\[Page\s*(\d+)(?:-(\d+))?\]$/i);
+        if (pageMatch && sourceRefs && sourceRefs.length > 0 && onPdfLinkClick) {
+            const firstRef = sourceRefs[0];
+            if (firstRef && firstRef.file !== 'Learned satisfied Q&As') {
+                const docBaseUrl = `${API_BASE.replace('/api/v1', '')}/docs/${firstRef.category}/${firstRef.file}`;
+                const highlightTerm = ruleCitations && ruleCitations.length > 0 ? ruleCitations[0] : '';
+                const pageNum = parseInt(pageMatch[1], 10);
+                
+                return (
+                    <a
+                        key={i}
+                        href="#"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            onPdfLinkClick(docBaseUrl, pageNum, highlightTerm);
+                        }}
+                        style={{
+                            color: '#3b82f6',
+                            textDecoration: 'none',
+                            fontWeight: '600',
+                            background: '#eff6ff',
+                            padding: '1px 4px',
+                            borderRadius: '4px',
+                            fontSize: '11px',
+                            border: '1px solid #bfdbfe',
+                            margin: '0 2px',
+                            display: 'inline-block',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease'
+                        }}
+                        className="cg-inline-citation"
+                    >
+                        {part}
+                    </a>
+                );
+            }
+        }
         return part;
     });
 }
 
-function parseMarkdownToReact(text = '') {
+function parseMarkdownToReact(text = '', sourceRefs = [], ruleCitations = [], onPdfLinkClick = null) {
     if (!text) return null;
 
     const lines = text.split('\n');
@@ -56,7 +93,7 @@ function parseMarkdownToReact(text = '') {
                 elements.push(
                     <ul key={key} style={{ paddingLeft: '20px', margin: '8px 0', listStyleType: 'disc' }}>
                         {currentList.items.map((item, index) => (
-                            <li key={index} style={{ marginBottom: '6px' }}>{parseInlineMarkdown(item)}</li>
+                            <li key={index} style={{ marginBottom: '6px' }}>{parseInlineMarkdown(item, sourceRefs, ruleCitations, onPdfLinkClick)}</li>
                         ))}
                     </ul>
                 );
@@ -64,7 +101,7 @@ function parseMarkdownToReact(text = '') {
                 elements.push(
                     <ol key={key} style={{ paddingLeft: '20px', margin: '8px 0' }}>
                         {currentList.items.map((item, index) => (
-                            <li key={index} style={{ marginBottom: '6px' }}>{parseInlineMarkdown(item)}</li>
+                            <li key={index} value={item.value} style={{ marginBottom: '6px' }}>{parseInlineMarkdown(item.text, sourceRefs, ruleCitations, onPdfLinkClick)}</li>
                         ))}
                     </ol>
                 );
@@ -99,11 +136,11 @@ function parseMarkdownToReact(text = '') {
                 lineHeight: '1.3'
             };
             if (level === 1) {
-                elements.push(<h2 key={`h-${elementKey++}`} style={{ ...headerStyle, fontSize: '18px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>{parseInlineMarkdown(titleText)}</h2>);
+                elements.push(<h2 key={`h-${elementKey++}`} style={{ ...headerStyle, fontSize: '18px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>{parseInlineMarkdown(titleText, sourceRefs, ruleCitations, onPdfLinkClick)}</h2>);
             } else if (level === 2) {
-                elements.push(<h3 key={`h-${elementKey++}`} style={{ ...headerStyle, fontSize: '16px' }}>{parseInlineMarkdown(titleText)}</h3>);
+                elements.push(<h3 key={`h-${elementKey++}`} style={{ ...headerStyle, fontSize: '16px' }}>{parseInlineMarkdown(titleText, sourceRefs, ruleCitations, onPdfLinkClick)}</h3>);
             } else {
-                elements.push(<h4 key={`h-${elementKey++}`} style={{ ...headerStyle, fontSize: '14px' }}>{parseInlineMarkdown(titleText)}</h4>);
+                elements.push(<h4 key={`h-${elementKey++}`} style={{ ...headerStyle, fontSize: '14px' }}>{parseInlineMarkdown(titleText, sourceRefs, ruleCitations, onPdfLinkClick)}</h4>);
             }
             continue;
         }
@@ -123,7 +160,7 @@ function parseMarkdownToReact(text = '') {
                     color: '#475569',
                     fontStyle: 'italic'
                 }}>
-                    {parseInlineMarkdown(quoteText)}
+                    {parseInlineMarkdown(quoteText, sourceRefs, ruleCitations, onPdfLinkClick)}
                 </blockquote>
             );
             continue;
@@ -143,7 +180,7 @@ function parseMarkdownToReact(text = '') {
         }
 
         // 5. Check for numbered list item
-        const numberMatch = line.match(/^(\s*)\d+\.\s+(.*)$/);
+        const numberMatch = line.match(/^(\s*)(\d+)\.\s+(.*)$/);
         if (numberMatch) {
             if (currentList && currentList.type !== 'ol') {
                 flushList(`list-${elementKey++}`);
@@ -151,7 +188,7 @@ function parseMarkdownToReact(text = '') {
             if (!currentList) {
                 currentList = { type: 'ol', items: [] };
             }
-            currentList.items.push(numberMatch[2]);
+            currentList.items.push({ text: numberMatch[3], value: parseInt(numberMatch[2], 10) });
             continue;
         }
 
@@ -164,7 +201,7 @@ function parseMarkdownToReact(text = '') {
         flushList(`list-${elementKey++}`);
         elements.push(
             <p key={`p-${elementKey++}`} style={{ margin: '0 0 8px 0', lineHeight: '1.5' }}>
-                {parseInlineMarkdown(line)}
+                {parseInlineMarkdown(line, sourceRefs, ruleCitations, onPdfLinkClick)}
             </p>
         );
     }
@@ -1143,7 +1180,7 @@ const ChatWidget = () => {
                                 {messages.map((msg, idx) => (
                                     <div key={idx} className={`cg-message ${msg.role}`}>
                                         <div className="cg-message-bubble">
-                                            {parseMarkdownToReact(msg.content)}
+                                            {parseMarkdownToReact(msg.content, msg.sourceRefs, msg.ruleCitations, openPdfViewer)}
                                             
                                               {msg.role === 'assistant' && ((msg.sourceRefs && msg.sourceRefs.length > 0) || (msg.sources && msg.sources.length > 0)) && (
                                                 <div className="cg-sources-box" style={{ marginTop: '10px' }}>

@@ -752,9 +752,6 @@ class RAGEngine:
         """Detects budget/quantity procurement requests and formats GeM catalog L1 matrix & DFP authority."""
         q_lower = query.lower()
         
-        budget_match = re.search(r'(?:₹|rs\.?|inr)?\s*(\d+(?:\.\d+)?)\s*(lakh|lakhs|lac|lacs|k|thousand|crore)?', q_lower)
-        qty_match = re.search(r'(\d+)\s*([a-zA-Z\s]+)', q_lower)
-        
         has_budget_signal = any(w in q_lower for w in ["lakh", "lakhs", "lac", "lacs", "budget", "cost", "rupees", "rs", "₹", "price", "kharidna", "purchase", "need", "chahiye", "requirement", "require"])
         
         matched_category = None
@@ -769,20 +766,45 @@ class RAGEngine:
             
         category = matched_category if matched_category else "laptop"
         
-        total_budget = 400000.0
-        if budget_match:
-            val = float(budget_match.group(1))
-            unit = (budget_match.group(2) or "").lower()
+        # 1. Target Quantity extraction (e.g. "10 laptops", "15 units", "20 chairs")
+        qty_match = re.search(r'(\d+)\s*(?:units?|pcs?|nos?|pieces?|laptops?|desktops?|printers?|copiers?|chairs?|beds?|cameras?|pumps?|equipment)?', q_lower)
+        target_qty = int(qty_match.group(1)) if qty_match and qty_match.group(1).isdigit() else None
+
+        # 2. Precision Budget extraction (prioritize explicit lakh/lac/thousand/currency matches)
+        total_budget = None
+        
+        lakh_match = re.search(r'(\d+(?:\.\d+)?)\s*(lakh|lakhs|lac|lacs|crore|k|thousand)', q_lower)
+        if lakh_match:
+            val = float(lakh_match.group(1))
+            unit = lakh_match.group(2).lower()
             if "lakh" in unit or "lac" in unit:
                 total_budget = val * 100000.0
             elif "crore" in unit:
                 total_budget = val * 10000000.0
             elif "k" in unit or "thousand" in unit:
                 total_budget = val * 1000.0
-            elif val > 100:
-                total_budget = val
-                
-        target_qty = int(qty_match.group(1)) if qty_match and qty_match.group(1).isdigit() else None
+
+        if not total_budget:
+            curr_match = re.search(r'(?:₹|rs\.?|inr|rupees?)\s*([\d,]+(?:\.\d+)?)', q_lower) or re.search(r'([\d,]+(?:\.\d+)?)\s*(?:rupees?|inr|rs)', q_lower)
+            if curr_match:
+                raw_val = curr_match.group(1).replace(",", "")
+                try:
+                    val = float(raw_val)
+                    if val > 100:
+                        total_budget = val
+                except ValueError:
+                    pass
+
+        if not total_budget:
+            num_matches = re.findall(r'\b\d+(?:\.\d+)?\b', q_lower)
+            for num_str in num_matches:
+                val = float(num_str)
+                if val > 1000 and (target_qty is None or int(val) != target_qty):
+                    total_budget = val
+                    break
+
+        if not total_budget:
+            total_budget = 400000.0
 
         res = gem_catalog_db.find_products_in_budget(category, total_budget, target_qty)
         matrix = res.get("comparative_matrix", [])

@@ -26,10 +26,6 @@ langdetect==1.0.9
 # This package IS available on PyPI
 indic-transliteration==1.0
 
-# Utilities
-requests==2.31.0
-numpy==1.24.3
-tiktoken==0.5.1
-
-# Additional utilities for Hindi text processing
-regex==2023.12.25
+# Background Jobs & Web Scraping
+apscheduler>=3.10.0
+playwright>=1.40.0

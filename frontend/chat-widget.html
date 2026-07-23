@@ -88,12 +88,12 @@
 
         /* ---------- CHAT WINDOW ---------- */
         #chatWindow {
-            width: 400px;
-            max-width: calc(100vw - 30px);
-            height: 630px;
-            max-height: calc(100vh - 110px);
+            width: 440px;
+            max-width: calc(100vw - 20px);
+            height: 600px;
+            max-height: calc(100vh - 90px);
             background: #fff;
-            border-radius: 14px;
+            border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.28);
             display: none;
             /* hidden by default */
@@ -576,7 +576,7 @@
         .cg-msg-col {
             display: flex;
             flex-direction: column;
-            max-width: 82%;
+            max-width: 92%;
         }
 
         .cg-msg-row.user .cg-msg-col {
@@ -588,27 +588,28 @@
         }
 
         .cg-bubble {
-            padding: 10px 14px;
-            border-radius: 18px;
-            font-size: 14px;
-            line-height: 1.55;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 12.5px;
+            line-height: 1.45;
             word-wrap: break-word;
             white-space: pre-wrap;
         }
 
         .cg-msg-row.user .cg-bubble {
-            background: #628ec8;
+            background: #4a74aa;
             color: white;
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 3px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
         }
 
         .cg-msg-row.assistant .cg-bubble {
-            background: white;
-            color: #222;
-            border: 1px solid #e0e0e0;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+            background: #f8fafc;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 3px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .04);
+            white-space: normal;
         }
 
         .cg-bubble strong {
@@ -2946,13 +2947,13 @@
                         const bodyStartIdx = (tableLines.length > 1 && tableLines[1].includes('---')) ? 2 : 1;
                         const bodyRows = tableLines.slice(bodyStartIdx).map(parseRow);
 
-                        let tableHtml = '<div class="cg-table-wrapper" style="overflow-x: auto; margin: 14px 0; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.06); background: #ffffff;">';
-                        tableHtml += '<table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; table-layout: auto;">';
+                        let tableHtml = '<div class="cg-table-wrapper" style="overflow-x: auto; margin: 8px 0; border-radius: 6px; border: 1px solid #cbd5e1; box-shadow: 0 2px 6px rgba(0,0,0,0.05); background: #ffffff;">';
+                        tableHtml += '<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; table-layout: auto;">';
                         
                         // Header
                         tableHtml += '<thead><tr style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: #ffffff;">';
                         headerCells.forEach(cell => {
-                            tableHtml += `<th style="padding: 10px 12px; border: 1px solid #334155; font-weight: 600; white-space: nowrap; text-transform: uppercase; font-size: 11px; letter-spacing: 0.4px;">${parseInlineMarkdownToHtml(cell, sourceRefs, ruleCitations)}</th>`;
+                            tableHtml += `<th style="padding: 6px 8px; border: 1px solid #334155; font-weight: 600; white-space: nowrap; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.3px;">${parseInlineMarkdownToHtml(cell, sourceRefs, ruleCitations)}</th>`;
                         });
                         tableHtml += '</tr></thead>';
 
@@ -2962,7 +2963,7 @@
                             const bg = (rIdx % 2 === 0) ? '#ffffff' : '#f8fafc';
                             tableHtml += `<tr style="background: ${bg}; border-bottom: 1px solid #e2e8f0;">`;
                             row.forEach(cell => {
-                                tableHtml += `<td style="padding: 9px 12px; border: 1px solid #e2e8f0; color: #1e293b; font-size: 12px; line-height: 1.4;">${parseInlineMarkdownToHtml(cell, sourceRefs, ruleCitations)}</td>`;
+                                tableHtml += `<td style="padding: 6px 8px; border: 1px solid #e2e8f0; color: #1e293b; font-size: 11px; line-height: 1.35;">${parseInlineMarkdownToHtml(cell, sourceRefs, ruleCitations)}</td>`;
                             });
                             tableHtml += '</tr>';
                         });
@@ -2976,7 +2977,7 @@
                 // Horizontal Rule
                 if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
                     closeAllLists();
-                    htmlElements.push('<hr style="border: none; border-top: 1px solid #e2e8f0; margin: 14px 0;">');
+                    htmlElements.push('<hr style="border: none; border-top: 1px solid #e2e8f0; margin: 10px 0;">');
                     continue;
                 }
 
@@ -2987,11 +2988,11 @@
                     let level = headerMatch[1].length;
                     let titleHtml = parseInlineMarkdownToHtml(headerMatch[2], sourceRefs, ruleCitations);
                     if (level === 1) {
-                        htmlElements.push(`<h2 style="margin: 14px 0 6px 0; font-weight: 700; color: #1e293b; font-size: 17px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">${titleHtml}</h2>`);
+                        htmlElements.push(`<h2 style="margin: 10px 0 4px 0; font-weight: 700; color: #1e293b; font-size: 14px; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px;">${titleHtml}</h2>`);
                     } else if (level === 2) {
-                        htmlElements.push(`<h3 style="margin: 10px 0 5px 0; font-weight: 700; color: #1e293b; font-size: 15px;">${titleHtml}</h3>`);
+                        htmlElements.push(`<h3 style="margin: 8px 0 4px 0; font-weight: 700; color: #1e293b; font-size: 13px;">${titleHtml}</h3>`);
                     } else {
-                        htmlElements.push(`<h4 style="margin: 8px 0 4px 0; font-weight: 600; color: #334155; font-size: 13px;">${titleHtml}</h4>`);
+                        htmlElements.push(`<h4 style="margin: 6px 0 3px 0; font-weight: 600; color: #334155; font-size: 12px;">${titleHtml}</h4>`);
                     }
                     continue;
                 }
@@ -3000,7 +3001,7 @@
                 if (trimmed.indexOf('>') === 0) {
                     closeAllLists();
                     let quoteHtml = parseInlineMarkdownToHtml(trimmed.replace(/^>\s*/, ''), sourceRefs, ruleCitations);
-                    htmlElements.push(`<blockquote style="margin: 10px 0; padding: 8px 12px; background: #f8fafc; border-left: 4px solid #cbd5e1; border-radius: 4px; font-size: 13px; color: #475569; font-style: italic;">${quoteHtml}</blockquote>`);
+                    htmlElements.push(`<blockquote style="margin: 8px 0; padding: 6px 10px; background: #f8fafc; border-left: 3px solid #cbd5e1; border-radius: 4px; font-size: 11.5px; color: #475569; font-style: italic;">${quoteHtml}</blockquote>`);
                     continue;
                 }
 
@@ -3013,7 +3014,7 @@
                     if (listStack.length === 0 || listStack[listStack.length - 1].indent < indent) {
                         openList('ul', indent);
                     }
-                    htmlElements.push(`<li style="margin-bottom: 5px; list-style-type: circle;">${parseInlineMarkdownToHtml(itemContent, sourceRefs, ruleCitations)}</li>`);
+                    htmlElements.push(`<li style="margin-bottom: 4px; list-style-type: circle;">${parseInlineMarkdownToHtml(itemContent, sourceRefs, ruleCitations)}</li>`);
                     continue;
                 }
 
@@ -3032,7 +3033,7 @@
                         }
                         openList('ol', indent);
                     }
-                    htmlElements.push(`<li value="${numberMatch[2]}" style="margin-bottom: 6px;">${parseInlineMarkdownToHtml(itemContent, sourceRefs, ruleCitations)}</li>`);
+                    htmlElements.push(`<li value="${numberMatch[2]}" style="margin-bottom: 4px;">${parseInlineMarkdownToHtml(itemContent, sourceRefs, ruleCitations)}</li>`);
                     continue;
                 }
 
@@ -3050,7 +3051,7 @@
                         }
                         openList('ul', indent);
                     }
-                    htmlElements.push(`<li style="margin-bottom: 6px;">${parseInlineMarkdownToHtml(itemContent)}</li>`);
+                    htmlElements.push(`<li style="margin-bottom: 4px;">${parseInlineMarkdownToHtml(itemContent)}</li>`);
                     continue;
                 }
 
@@ -3061,7 +3062,7 @@
 
                 // Normal Paragraph
                 closeAllLists();
-                htmlElements.push(`<p style="margin: 0 0 8px 0; line-height: 1.6;">${parseInlineMarkdownToHtml(line, sourceRefs, ruleCitations)}</pblank>`);
+                htmlElements.push(`<p style="margin: 0 0 5px 0; line-height: 1.45;">${parseInlineMarkdownToHtml(line, sourceRefs, ruleCitations)}</pblank>`);
             }
 
             closeAllLists();
@@ -3083,7 +3084,7 @@
             // Downloadable link button parser [Label](URL)
             escaped = escaped.replace(/(?:📥\s*)?\[(.*?)\]\((.*?)\)/g, (match, label, url) => {
                 const fullUrl = url.startsWith('/') ? `${API.replace('/api/v1', '')}${url}` : url;
-                return `<a href="${fullUrl}" target="_blank" rel="noopener noreferrer" download style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 13px; text-decoration: none; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); margin: 8px 0; cursor: pointer; transition: all 0.2s ease;" class="gem-pdf-download-btn">📥 ${label}</a>`;
+                return `<a href="${fullUrl}" target="_blank" rel="noopener noreferrer" download style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: #ffffff; padding: 5px 12px; border-radius: 6px; font-weight: 600; font-size: 11px; text-decoration: none; box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25); margin: 4px 0; cursor: pointer; transition: all 0.2s ease;" class="gem-pdf-download-btn">📥 ${label}</a>`;
             });
 
             // Clickable inline citations [Page N] or [Page N-M]

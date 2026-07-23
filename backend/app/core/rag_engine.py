@@ -13,6 +13,8 @@ from app.core.config import settings
 from app.core.language import language_service
 from app.services.gem_catalog_db import gem_catalog_db
 from app.services.sanction_pdf_service import sanction_pdf_service
+from app.services.gem_scraper_service import MAXIMUM_TARGET_CATEGORIES
+
 
 
 STOPWORDS = {
@@ -723,19 +725,50 @@ class RAGEngine:
         re.IGNORECASE
     )
 
+    def _clean_no_rule_noise(self, text: str) -> str:
+        """Strip 'No specific rule number' and similar phrases from LLM output, and correct common GFR hallucinations."""
+        forbidden_output_patterns = [
+            r'system\s+is\s+useless',
+            r'system\s+is\s+a\s+joke',
+            r'rules\s+are\s+useless',
+            r'rules\s+are\s+a\s+joke',
+            r'here(?:\'s|\s+is)\s+a\s+joke',
+            r'tell\s+a\s+funny\s+joke'
+        ]
+        for pat in forbidden_output_patterns:
+            if re.search(pat, text, flags=re.IGNORECASE):
+                print(f"⚠️ Forbidden hostile/joke phrase detected in LLM output ({pat}) — replacing with neutral domain response.")
+                return (
+                    "Please ask a question related to the Chhattisgarh e-Procurement Portal.\n"
+                    "Example: *'How do I register as a vendor?'* or *'What is the EMD rate?'*"
+                )
+
+        text = re.sub(r'\[\s*(?:No specific rule(?: number)?(?:[:\s]+(?:provided|mentioned|available|found|cited|given|stated)?)?|No rule number|Rule not specified|No rule cited|No applicable rule|Rule/Clause not specified|No Clause number|No specific clause|not applicable to any specific rule|no specific Rule|no rule provided|rule number not provided|no applicable rules)[^\]\n]*\]', '', text, flags=re.IGNORECASE)
+        
+        cleaned = self._NO_RULE_NOISE.sub('', text)
+        return cleaned
+
     def evaluate_gem_budget_query(self, query: str) -> Optional[str]:
         """Detects budget/quantity procurement requests and formats GeM catalog L1 matrix & DFP authority."""
         q_lower = query.lower()
         
         budget_match = re.search(r'(?:₹|rs\.?|inr)?\s*(\d+(?:\.\d+)?)\s*(lakh|lakhs|lac|lacs|k|thousand|crore)?', q_lower)
-        qty_match = re.search(r'(\d+)\s*(laptops?|desktops?|printers?|copiers?|chairs?|furniture|pcs?|units?)', q_lower)
+        qty_match = re.search(r'(\d+)\s*([a-zA-Z\s]+)', q_lower)
         
-        is_procurement_query = any(w in q_lower for w in ["laptop", "desktop", "printer", "furniture", "ac", "copier", "vehicle", "pump", "bed", "cctv", "equipment"])
-        has_budget_signal = any(w in q_lower for w in ["lakh", "lakhs", "lac", "budget", "cost", "rupees", "rs", "₹", "price", "kharidna", "purchase", "need", "chahiye"])
+        has_budget_signal = any(w in q_lower for w in ["lakh", "lakhs", "lac", "lacs", "budget", "cost", "rupees", "rs", "₹", "price", "kharidna", "purchase", "need", "chahiye", "requirement", "require"])
         
-        if not (is_procurement_query and has_budget_signal):
+        matched_category = None
+        for cat_kw in MAXIMUM_TARGET_CATEGORIES:
+            cat_words = cat_kw.split()
+            if any(w in q_lower for w in cat_words if len(w) > 3):
+                matched_category = cat_kw
+                break
+                
+        if not matched_category and not (has_budget_signal and any(w in q_lower for w in ["buy", "procure", "purchase", "need", "requirement"])):
             return None
             
+        category = matched_category if matched_category else "laptop"
+        
         total_budget = 400000.0
         if budget_match:
             val = float(budget_match.group(1))
@@ -749,12 +782,7 @@ class RAGEngine:
             elif val > 100:
                 total_budget = val
                 
-        target_qty = int(qty_match.group(1)) if qty_match else None
-        category = "laptop"
-        for cat_kw in ["laptop", "desktop", "printer", "copier", "furniture", "ac", "pump", "cctv"]:
-            if cat_kw in q_lower:
-                category = cat_kw
-                break
+        target_qty = int(qty_match.group(1)) if qty_match and qty_match.group(1).isdigit() else None
 
         res = gem_catalog_db.find_products_in_budget(category, total_budget, target_qty)
         matrix = res.get("comparative_matrix", [])

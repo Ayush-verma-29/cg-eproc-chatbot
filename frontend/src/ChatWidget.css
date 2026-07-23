@@ -185,6 +185,7 @@
     border: 1px solid #e0e0e0;
     border-bottom-left-radius: 4px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    white-space: normal;
 }
 
 .cg-message-bubble strong {
@@ -904,4 +905,52 @@
     .cg-chat-window.with-pdf .cg-chat-main-panel {
         display: none;
     }
+}
+
+/* ─── Markdown HTML Table Styling ─────────────────────── */
+.cg-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 14px 0;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    background: #ffffff;
+}
+
+.cg-table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    text-align: left;
+    table-layout: auto;
+}
+
+.cg-table-wrapper th {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    color: #ffffff;
+    padding: 10px 12px;
+    border: 1px solid #334155;
+    font-weight: 600;
+    white-space: nowrap;
+    text-transform: uppercase;
+    font-size: 11px;
+    letterSpacing: 0.4px;
+}
+
+.cg-table-wrapper td {
+    padding: 9px 12px;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.cg-table-wrapper tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+.cg-table-wrapper tr:nth-child(odd) {
+    background: #ffffff;
 }

@@ -122,7 +122,16 @@ MAXIMUM_TARGET_CATEGORIES = [
     "file folders", "cobra files", "ring binders"
 ]
 
-GEM_SEARCH_URL_TEMPLATE = "https://mkp.gem.gov.in/search?q={category}&page={page}"
+CATEGORY_DEEP_LINKS = {
+    "laptop": "https://mkp.gem.gov.in/computers-high-end-laptop-notebook/search#/?q=laptops",
+    "laptops": "https://mkp.gem.gov.in/computers-high-end-laptop-notebook/search#/?q=laptops",
+    "desktop": "https://mkp.gem.gov.in/computers-desktop-computer/search#/?q=desktops",
+    "desktops": "https://mkp.gem.gov.in/computers-desktop-computer/search#/?q=desktops",
+    "printer": "https://mkp.gem.gov.in/office-equipment-printers/search#/?q=printers",
+    "printers": "https://mkp.gem.gov.in/office-equipment-printers/search#/?q=printers",
+    "chair": "https://mkp.gem.gov.in/office-chairs/search#/?q=chairs",
+    "chairs": "https://mkp.gem.gov.in/office-chairs/search#/?q=chairs",
+}
 
 class GeMScraperService:
     def __init__(self, delay_seconds: float = 2.0, max_pages_per_category: int = 10):
@@ -163,7 +172,11 @@ class GeMScraperService:
                 page = await context.new_page()
 
                 for current_page in range(start_page, self.max_pages_per_category + 1):
-                    url = GEM_SEARCH_URL_TEMPLATE.format(category=category.replace(" ", "+"), page=current_page)
+                    cat_clean = category.lower().strip()
+                    if cat_clean in CATEGORY_DEEP_LINKS:
+                        url = CATEGORY_DEEP_LINKS[cat_clean]
+                    else:
+                        url = GEM_SEARCH_URL_TEMPLATE.format(category=category.replace(" ", "+"), page=current_page)
                     
                     try:
                         await page.goto(url, wait_until="domcontentloaded", timeout=15000)

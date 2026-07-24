@@ -155,11 +155,13 @@
             opacity: 1;
         }
 
-        /* Maximised: window fills its container (which is centered dynamically) */
+        /* Maximised: window fills container with expanded 82vh height */
         #chatWindow.maximised {
             width: 100% !important;
+            height: 82vh !important;
+            max-height: calc(100vh - 50px) !important;
             border-radius: 14px !important;
-            margin-bottom: 75px !important;
+            margin-bottom: 0px !important;
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
         }
 
@@ -2227,11 +2229,12 @@
             const w = document.getElementById('chatWindow');
 
             w.classList.remove('minimised');
-
-            // Do not enable backdrop overlay (no background blur/dim)
             
-            // Just increase width of the chatbot in-place, keeping standard bottom-right placement
-            c.style.width = '850px';
+            // Expand both width and height in-place
+            c.style.width = '880px';
+            c.style.maxWidth = 'calc(100vw - 30px)';
+            c.style.height = '82vh';
+            c.style.maxHeight = 'calc(100vh - 40px)';
             c.style.right = '20px';
             c.style.bottom = '20px';
             c.style.left = 'auto';
@@ -2254,10 +2257,12 @@
             // Restore container to its default bottom-right anchor and standard size
             c.style.top = 'auto';
             c.style.right = '20px';
-            c.style.bottom = '20px';
+            c.style.bottom = '30px';
             c.style.left = 'auto';
             c.style.width = 'auto';
             c.style.height = 'auto';
+            c.style.maxWidth = 'none';
+            c.style.maxHeight = 'none';
         }
 
         // ───────────────────────────────────────────────────

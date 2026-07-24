@@ -68,6 +68,14 @@
     animation: slideUp 0.28s ease;
 }
 
+.cg-chat-window.maximised {
+    width: 880px !important;
+    max-width: calc(100vw - 30px) !important;
+    height: 82vh !important;
+    max-height: calc(100vh - 40px) !important;
+    border-radius: 14px !important;
+}
+
 @keyframes slideUp {
     from {
         opacity: 0;

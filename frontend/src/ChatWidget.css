@@ -166,10 +166,13 @@
 .cg-messages-area {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden !important;
     padding: 14px;
     background: #f9f9f9;
     min-height: 0;
     scroll-behavior: smooth;
+    width: 100%;
+    max-width: 100%;
 }
 
 .cg-messages-area::-webkit-scrollbar {
@@ -185,6 +188,8 @@
 .cg-message {
     margin-bottom: 14px;
     display: flex;
+    width: 100%;
+    max-width: 100%;
 }
 
 .cg-message.user {
@@ -198,12 +203,14 @@
 /* ─── Bubbles ────────────────────────────────────── */
 .cg-message-bubble {
     max-width: 92%;
+    min-width: 0;
     padding: 8px 12px;
     border-radius: 12px;
     font-size: 12.5px;
     line-height: 1.45;
     white-space: pre-wrap;
     word-wrap: break-word;
+    box-sizing: border-box;
 }
 
 .cg-message.user .cg-message-bubble {
@@ -220,6 +227,8 @@
     border-bottom-left-radius: 3px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     white-space: normal;
+    width: 100%;
+    max-width: 100%;
 }
 
 .cg-message-bubble strong {

@@ -507,11 +507,14 @@
         #chatMessages {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden !important;
             padding: 14px 14px 6px;
             background: #f7f7f7;
             min-height: 0;
             scroll-behavior: smooth;
             position: relative;
+            width: 100%;
+            max-width: 100%;
         }
 
         /* ── Start Overlay Translucent Info ── */
@@ -590,6 +593,8 @@
         .cg-msg-row {
             margin-bottom: 12px;
             display: flex;
+            width: 100%;
+            max-width: 100%;
         }
 
         .cg-msg-row.user {
@@ -603,7 +608,8 @@
         .cg-msg-col {
             display: flex;
             flex-direction: column;
-            max-width: 92%;
+            max-width: 95%;
+            min-width: 0;
         }
 
         .cg-msg-row.user .cg-msg-col {
@@ -612,6 +618,8 @@
 
         .cg-msg-row.assistant .cg-msg-col {
             align-items: flex-start;
+            max-width: 100%;
+            width: 100%;
         }
 
         .cg-bubble {
@@ -621,6 +629,9 @@
             line-height: 1.45;
             word-wrap: break-word;
             white-space: pre-wrap;
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .cg-msg-row.user .cg-bubble {
@@ -637,6 +648,7 @@
             border-bottom-left-radius: 3px;
             box-shadow: 0 1px 4px rgba(0, 0, 0, .04);
             white-space: normal;
+            width: 100%;
         }
 
         .cg-bubble strong {

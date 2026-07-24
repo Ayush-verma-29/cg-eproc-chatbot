@@ -56,9 +56,9 @@
 /* ─── Chat window ────────────────────────────────── */
 .cg-chat-window {
     position: relative;
-    width: 400px;
+    width: 460px;
     max-width: calc(100vw - 20px);
-    height: 480px;
+    height: 540px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);

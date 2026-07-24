@@ -873,8 +873,9 @@ class RAGEngine:
         for item in matrix[:3]:
             rank_emoji = "🥇" if item["rank"] == "L1" else ("🥈" if item["rank"] == "L2" else "🥉")
             status_str = "✅ Fits Budget" if item.get("target_qty_fits", True) else "⚠️ Exceeds Budget"
+            gem_link = item.get("gem_url") or "https://mkp.gem.gov.in"
             lines.append(
-                f"| **{item['title']}** | Rs. {item['unit_price']:,.2f} | **{item['max_purchasable_qty']} Units** | Rs. {item['calculated_total_cost']:,.2f} | {rank_emoji} **{item['rank']}** | {item['seller_type']} | {status_str} |"
+                f"| [**{item['title']}**]({gem_link}) | Rs. {item['unit_price']:,.2f} | **{item['max_purchasable_qty']} Units** | Rs. {item['calculated_total_cost']:,.2f} | {rank_emoji} **{item['rank']}** | {item['seller_type']} | {status_str} |"
             )
             
         lines.append("\n---")

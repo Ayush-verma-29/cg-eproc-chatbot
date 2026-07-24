@@ -202,6 +202,12 @@ class GeMCatalogDB:
                 
                 fits_budget = total_cost <= total_budget
                 
+                raw_url = r.get("gem_product_url") or ""
+                if not raw_url or "test-" in raw_url or raw_url == "https://mkp.gem.gov.in":
+                    real_gem_url = f"https://mkp.gem.gov.in/search?q={category.replace(' ', '+')}"
+                else:
+                    real_gem_url = raw_url
+                
                 matches.append({
                     "rank": f"L{rank}",
                     "title": r["title"],
@@ -213,7 +219,7 @@ class GeMCatalogDB:
                     "target_qty_fits": fits_budget,
                     "seller_type": r["seller_type"],
                     "mse_eligible": r["seller_type"] in ["MSE", "OEM"],
-                    "gem_url": r["gem_product_url"]
+                    "gem_url": real_gem_url
                 })
 
             l1_item = matches[0] if matches else None

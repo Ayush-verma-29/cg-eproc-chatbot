@@ -261,12 +261,13 @@ class GeMScraperService:
         return products
 
     def scrape_category_sync(self, category: str) -> int:
-        """Synchronous wrapper for live real-time GeM portal scraping."""
+        """Synchronous wrapper for live real-time GeM portal scraping using Playwright Chromium."""
         try:
             import concurrent.futures
             with concurrent.futures.ThreadPoolExecutor() as pool:
-                future = pool.submit(asyncio.run, self._scrape_fallback_http(category, 1))
-                return future.result(timeout=6)
+                future = pool.submit(asyncio.run, self.scrape_category(category))
+                res = future.result(timeout=10)
+                return res.get("total_items_saved", 0) if isinstance(res, dict) else 0
         except Exception as e:
             logger.warning(f"[GeM Scraper Sync] Exception for '{category}': {e}")
             return 0

@@ -774,13 +774,11 @@ class RAGEngine:
             
         category = matched_category if matched_category else "laptop"
         
-        # Extract specific item phrase if available in query (e.g. "solar street lights", "substation transformers")
-        item_match = re.search(r'(?:buy|procure|purchase|need)?\s*([a-zA-Z\s]{3,35}?)\s*(?:of|for|with|budget|cost|price|rupees|rs|lakh|lakhs|₹|\d|$)', q_lower)
-        if item_match:
-            raw_item = item_match.group(1).strip()
-            raw_item = re.sub(r'^(?:i\s+|want\s+|to\s+|buy\s+|procure\s+|purchase\s+|need\s+)+', '', raw_item, flags=re.IGNORECASE).strip()
-            if len(raw_item) > 3 and raw_item not in ["office", "our", "system", "equipment"]:
-                category = raw_item
+        # Cleanly extract product noun phrase (e.g. "diesel generator set", "solar street lights")
+        clean_q = re.sub(r'^(?:i\s+)?(?:want\s+)?(?:to\s+)?(?:buy\s+)?(?:procure\s+)?(?:purchase\s+)?(?:need\s+)?', '', q_lower, flags=re.IGNORECASE).strip()
+        clean_q = re.sub(r'\s*(?:upto|under|for|with|of|budget|cost|price|rupees|rs|lakh|lakhs|lac|lacs|₹|\d).*$', '', clean_q, flags=re.IGNORECASE).strip()
+        if len(clean_q) >= 3 and clean_q not in ["office", "our", "system", "equipment"]:
+            category = clean_q
         
         # 1. Target Quantity extraction (e.g. "10 laptops", "15 units", "20 chairs")
         qty_match = re.search(r'(\d+)\s*(?:units?|pcs?|nos?|pieces?|laptops?|desktops?|printers?|copiers?|chairs?|beds?|cameras?|pumps?|equipment)?', q_lower)

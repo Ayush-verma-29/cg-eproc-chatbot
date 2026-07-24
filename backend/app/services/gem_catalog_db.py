@@ -166,8 +166,18 @@ class GeMCatalogDB:
                     "non_gem_rule": non_gem_rule
                 }
 
-            # Use authentic products directly without synthetic brand generation
-            unique_rows = rows[:3]
+            # Select distinct products by (title, min_price)
+            seen_items = set()
+            unique_rows = []
+            for r in rows:
+                key = (r.get("title", ""), r.get("min_price", 0))
+                if key not in seen_items:
+                    seen_items.add(key)
+                    unique_rows.append(r)
+                if len(unique_rows) >= 3:
+                    break
+            if not unique_rows:
+                unique_rows = rows[:3]
 
             matches = []
             for rank, r in enumerate(unique_rows[:3], start=1):

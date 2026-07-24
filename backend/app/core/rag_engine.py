@@ -803,18 +803,46 @@ class RAGEngine:
                 except ValueError:
                     pass
 
-        if not total_budget:
-            num_matches = re.findall(r'\b\d+(?:\.\d+)?\b', q_lower)
-            for num_str in num_matches:
-                val = float(num_str)
-                if val > 1000 and (target_qty is None or int(val) != target_qty):
-                    total_budget = val
-                    break
+        if not total_budget and not target_qty:
+            # If user asks a general purchase query without explicit budget/qty, return exact Store Purchase Rule Threshold Guidance
+            formatted_cat = category.capitalize() if category else "Items"
+            return (
+                f"### 📋 Procurement Guidelines & Threshold Rules for **{formatted_cat}**\n\n"
+                f"As per **Rule 3.1.1** of the Chhattisgarh Store Purchase Rules, checking the **Government e-Marketplace (GeM Portal)** is mandatory. If the required item is listed on GeM, purchase must be done through GeM.\n\n"
+                f"If the required item is **not available on GeM**, the applicable non-GeM procurement method depends dynamically on your purchase budget threshold:\n\n"
+                f"| Purchase Budget Threshold | Applicable Procurement Method | Applicable Rule & Authority |\n"
+                f"| :--- | :--- | :--- |\n"
+                f"| **Up to ₹50,000** | **Direct Purchase** without quotation | Rule 4.3.1 / GFR 144 *(Head of Office)* |\n"
+                f"| **₹50,001 to ₹3,00,000** | **Local Purchase Committee (LPC)** / 3 Quotations | Rule 4.3.2 / GFR 155 *(3-Member LPC Committee)* |\n"
+                f"| **₹3,00,001 to ₹5,00,000** | **Limited / Open Tender** (2 State Newspaper Ads) | Rule 4.3.3 *(Head of Department - HOD)* |\n"
+                f"| **Exceeding ₹5,00,000** | **Open e-Tender** on CG e-Procurement Portal | Rule 4.3.3 *(Secretariat / FD Concurrence)* |\n\n"
+                f"👉 **To calculate an exact quotation breakdown or generate a Financial Sanction Note**, please specify your estimated budget or quantity (e.g. *'10 {category} for 2 Lakhs budget'* or *'5 {category} for 40,000 rupees'*)."
+            )
 
-        if not total_budget:
-            total_budget = 400000.0
+        # Default fallback budget only if target_qty exists without explicit budget (assume benchmark unit pricing)
+        if not total_budget and target_qty:
+            base_unit_price = 38500.0 if "laptop" in category.lower() else 7500.0
+            total_budget = target_qty * base_unit_price
 
         res = gem_catalog_db.find_products_in_budget(category, total_budget, target_qty)
+        
+        # Check if item is NOT available on GeM
+        if res.get("catalog_available") == False:
+            non_gem = res.get("non_gem_rule", {})
+            return (
+                f"### 📋 Non-GeM Procurement Guidance for **{category.capitalize()}**\n\n"
+                f"**Mandatory Channel Check (Rule 3.1.1)**: The required `{category}` items are currently **not available on the GeM Portal**.\n\n"
+                f"### ⚖️ Suitable Non-GeM Procurement Method: **{non_gem.get('method')}**\n"
+                f"- **Applicable Rule**: `{non_gem.get('rule')}`\n"
+                f"- **Sanctioning Authority**: **{non_gem.get('authority')}**\n"
+                f"- **Procurement Budget**: **₹{total_budget:,.2f}**\n\n"
+                f"📌 **Mandatory Action Requirement**:\n"
+                f"{non_gem.get('action')}\n\n"
+                f"---\n\n"
+                f"📄 **Official Document Actions**\n"
+                f"📥 [Download Non-GeM Sanction & Procurement Approval Note (PDF)](/api/v1/download-sanction-pdf/non_gem_sanction_note.pdf)"
+            )
+
         matrix = res.get("comparative_matrix", [])
         dfp_auth = res.get("dfp_authority", "Head of Department (HOD)")
         dfp_desc = res.get("dfp_description", "")

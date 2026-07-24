@@ -140,6 +140,17 @@ class GeMCatalogDB:
             rows = [dict(r) for r in cursor.fetchall()]
             
             if not rows:
+                # Check if it's a known benchmark category or unlisted item
+                known_cats = ["laptop", "desktop", "table", "chair", "furniture", "printer", "copier", "projector"]
+                if not any(k in category.lower() for k in known_cats):
+                    non_gem_rule = self.get_non_gem_procurement_rule(total_budget)
+                    return {
+                        "category": category,
+                        "total_budget": total_budget,
+                        "target_qty": target_qty,
+                        "catalog_available": False,
+                        "non_gem_rule": non_gem_rule
+                    }
                 return self._generate_fallback_budget_estimate(category, total_budget, target_qty)
 
             # Deduplicate by brand/title to ensure L1, L2, L3 show distinct brands/models
@@ -231,6 +242,37 @@ class GeMCatalogDB:
             return {
                 "authority": "Finance Department (FD Concurrence Required)",
                 "description": "Requires Finance Department written concurrence & Minister Approval (> ₹20 Lakhs)."
+            }
+
+    def get_non_gem_procurement_rule(self, total_budget: float) -> Dict[str, str]:
+        """Calculates exact suitable non-GeM Store Purchase Rule based on budget threshold."""
+        if total_budget <= 50000.0:
+            return {
+                "rule": "Rule 4.3.1 (Parishisht 4) & GFR Rule 144",
+                "method": "Direct Purchase without Quotation",
+                "authority": "Head of Office (HOO)",
+                "action": f"Since the required item is not available on GeM and total value (₹{total_budget:,.2f}) is up to ₹50,000, Direct Local Purchase without quotation is permitted under Rule 4.3.1 with HOO sanction."
+            }
+        elif total_budget <= 300000.0:
+            return {
+                "rule": "Rule 4.3.2 & GFR Rule 155",
+                "method": "Local Purchase Committee (LPC)",
+                "authority": "Head of Office (HOO) / Head of Department (HOD)",
+                "action": f"Since the item is not on GeM and budget (₹{total_budget:,.2f}) is between ₹50,001 and ₹3,00,000, procurement must be conducted by a 3-member Local Purchase Committee (LPC) obtaining minimum 3 local market quotations."
+            }
+        elif total_budget <= 500000.0:
+            return {
+                "rule": "Rule 4.3.3 (Limited / Open Tender)",
+                "method": "Newspaper Advertisement Tender",
+                "authority": "Head of Department (HOD)",
+                "action": f"Since the item is not available on GeM and value (₹{total_budget:,.2f}) is between ₹3 Lakhs and ₹5 Lakhs, procurement requires publishing a brief tender notice in 2 state-level newspapers and on the CG e-Procurement Portal."
+            }
+        else:
+            return {
+                "rule": "Rule 4.3.3 & GFR Rule 161",
+                "method": "Open e-Tender via CG e-Procurement Portal",
+                "authority": "Administrative Department / Finance Department Concurrence",
+                "action": f"Since value (₹{total_budget:,.2f}) exceeds ₹5 Lakhs and item is not on GeM, full Open e-Tender must be published on `eproc.cgstate.gov.in` with state/national newspaper publicity and Finance Department concurrence."
             }
 
     def check_pac_single_supplier(self, category: str, item_count: int) -> Optional[Dict[str, str]]:

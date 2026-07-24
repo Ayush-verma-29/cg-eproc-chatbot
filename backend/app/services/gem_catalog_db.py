@@ -166,31 +166,8 @@ class GeMCatalogDB:
                     "non_gem_rule": non_gem_rule
                 }
 
-            # Deduplicate by brand/title to ensure L1, L2, L3 show distinct brands/models
-            unique_rows = []
-            seen_brands = set()
-            for r in rows:
-                brand_key = r.get("brand") or r.get("title", "")
-                if brand_key not in seen_brands:
-                    seen_brands.add(brand_key)
-                    unique_rows.append(r)
-                if len(unique_rows) >= 3:
-                    break
-
-            if len(unique_rows) < 3 and len(rows) >= 3:
-                # Assign distinct ranks/brands if database rows have identical brands
-                for idx, r in enumerate(rows[:3]):
-                    r_copy = dict(r)
-                    if idx == 1:
-                        r_copy["title"] = r_copy["title"].replace("HP", "Lenovo").replace("hp", "lenovo") if "hp" in r_copy["title"].lower() else f"Lenovo {r_copy['title']}"
-                        r_copy["brand"] = "Lenovo"
-                        r_copy["min_price"] = float(r_copy["min_price"]) * 1.05
-                    elif idx == 2:
-                        r_copy["title"] = r_copy["title"].replace("HP", "Dell").replace("hp", "dell") if "hp" in r_copy["title"].lower() else f"Dell {r_copy['title']}"
-                        r_copy["brand"] = "Dell"
-                        r_copy["min_price"] = float(r_copy["min_price"]) * 1.12
-                    unique_rows.append(r_copy)
-                unique_rows = unique_rows[:3]
+            # Use authentic products directly without synthetic brand generation
+            unique_rows = rows[:3]
 
             matches = []
             for rank, r in enumerate(unique_rows[:3], start=1):

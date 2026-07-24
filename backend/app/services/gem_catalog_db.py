@@ -140,7 +140,23 @@ class GeMCatalogDB:
             rows = [dict(r) for r in cursor.fetchall()]
             
             if not rows:
-                # Check if it's a known benchmark category or unlisted item
+                # 1. Attempt real-time live scrape from GeM Portal (mkp.gem.gov.in)
+                try:
+                    from app.services.gem_scraper_service import gem_scraper_service
+                    scraped_count = gem_scraper_service.scrape_category_sync(category)
+                    if scraped_count > 0:
+                        cursor.execute("""
+                        SELECT * FROM gem_catalog_products 
+                        WHERE category LIKE ? AND in_stock = 1 AND min_price > 0
+                        ORDER BY min_price ASC
+                        LIMIT 10
+                        """, (cat_query,))
+                        rows = [dict(r) for r in cursor.fetchall()]
+                except Exception as scrape_err:
+                    print(f"⚠️ Live GeM scraper fallback exception for '{category}': {scrape_err}")
+
+            if not rows:
+                # 2. Check if it's a known benchmark category or unlisted non-GeM item
                 known_cats = ["laptop", "desktop", "table", "chair", "furniture", "printer", "copier", "projector"]
                 if not any(k in category.lower() for k in known_cats):
                     non_gem_rule = self.get_non_gem_procurement_rule(total_budget)

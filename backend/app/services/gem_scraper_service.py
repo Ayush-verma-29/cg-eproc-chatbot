@@ -260,6 +260,17 @@ class GeMScraperService:
 
         return products
 
+    def scrape_category_sync(self, category: str) -> int:
+        """Synchronous wrapper for live real-time GeM portal scraping."""
+        try:
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as pool:
+                future = pool.submit(asyncio.run, self._scrape_fallback_http(category, 1))
+                return future.result(timeout=6)
+        except Exception as e:
+            logger.warning(f"[GeM Scraper Sync] Exception for '{category}': {e}")
+            return 0
+
     async def fetch_on_demand_gem_item(self, query_term: str) -> Dict[str, Any]:
         """Live on-demand 3-second scrape for uncached items requested by users."""
         clean_term = query_term.lower().strip()

@@ -157,7 +157,10 @@ class GeMCatalogDB:
 
             if not rows:
                 # 2. Check if it's a known benchmark category or unlisted non-GeM item
-                known_cats = ["laptop", "desktop", "table", "chair", "furniture", "printer", "copier", "projector"]
+                known_cats = [
+                    "laptop", "desktop", "table", "chair", "furniture", "printer", "copier", "projector", 
+                    "cctv", "camera", "surveillance", "generator", "ac", "air conditioner", "solar", "purifier", "inverter"
+                ]
                 if not any(k in category.lower() for k in known_cats):
                     non_gem_rule = self.get_non_gem_procurement_rule(total_budget)
                     return {
@@ -330,6 +333,13 @@ class GeMCatalogDB:
             "printer": (14500.0, [("HP", "LaserJet Pro Multifunction Printer", "OEM / MSE"), ("Canon", "imageCLASS Laser Printer", "OEM"), ("Epson", "EcoTank All-in-One Inkjet Printer", "OEM / MSE")]),
             "copier": (85000.0, [("Canon", "imageRUNNER Multifunction Copier", "OEM / MSE"), ("Ricoh", "Multi-Function Digital Copier", "OEM"), ("Konica Minolta", "bizhub Digital Copier", "OEM / MSE")]),
             "projector": (35000.0, [("Epson", "3LCD Full HD Multimedia Projector", "OEM / MSE"), ("BenQ", "DLP High-Brightness Projector", "OEM"), ("Sony", "VPL Laser Cinema Projector", "OEM / MSE")]),
+            "cctv": (18500.0, [("Hikvision", "4K IP Dome & Bullet CCTV Camera Kit", "OEM / MSE"), ("CP Plus", "8-Channel HD Surveillance CCTV Kit", "OEM"), ("Dahua", "Professional IP CCTV Security System", "OEM / MSE")]),
+            "camera": (18500.0, [("Hikvision", "4K IP Dome & Bullet CCTV Camera Kit", "OEM / MSE"), ("CP Plus", "8-Channel HD Surveillance CCTV Kit", "OEM"), ("Dahua", "Professional IP CCTV Security System", "OEM / MSE")]),
+            "surveillance": (18500.0, [("Hikvision", "4K IP Dome & Bullet CCTV Camera Kit", "OEM / MSE"), ("CP Plus", "8-Channel HD Surveillance CCTV Kit", "OEM"), ("Dahua", "Professional IP CCTV Security System", "OEM / MSE")]),
+            "generator": (95000.0, [("Kirloskar", "Silent Diesel Generator Set (10 kVA)", "OEM / MSE"), ("Cummins", "Commercial Silent DG Set (15 kVA)", "OEM"), ("Ashok Leyland", "Heavy Duty Diesel Generator Set", "OEM / MSE")]),
+            "ac": (36000.0, [("Voltas", "1.5 Ton 5-Star Inverter Split AC", "OEM / MSE"), ("Daikin", "1.5 Ton 5-Star Heavy Duty Inverter Split AC", "OEM"), ("Blue Star", "1.5 Ton 5-Star Commercial Inverter Split AC", "OEM / MSE")]),
+            "solar": (45000.0, [("Tata Power Solar", "3kW Rooftop Solar Power System", "OEM / MSE"), ("Waaree", "High-Efficiency Solar Panel & Inverter System", "OEM"), ("Vikram Solar", "Commercial Monocrystalline Solar System", "OEM / MSE")]),
+            "purifier": (24500.0, [("Kent", "Commercial RO + UV Industrial Water Purifier", "OEM / MSE"), ("Eureka Forbes", "Aquaguard Commercial RO Plant", "OEM"), ("Blue Star", "Industrial Water Cooler Cum Purifier", "OEM / MSE")]),
         }
         
         cat_lower = category.lower()

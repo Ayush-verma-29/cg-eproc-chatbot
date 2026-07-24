@@ -142,6 +142,24 @@ class GeMScraperService:
     def get_total_configured_categories_count(self) -> int:
         return len(MAXIMUM_TARGET_CATEGORIES)
 
+    def get_official_gem_node_url(self, category: str) -> Optional[str]:
+        """Looks up official GeM browse node search URL from ingested browse list."""
+        try:
+            with self.db.get_connection() as conn:
+                cursor = conn.cursor()
+                cat_clean = f"%{category.lower().strip()}%"
+                cursor.execute("""
+                SELECT node_url FROM gem_category_nodes 
+                WHERE LOWER(category_name) LIKE ? OR LOWER(node_url) LIKE ?
+                LIMIT 1
+                """, (cat_clean, cat_clean))
+                row = cursor.fetchone()
+                if row:
+                    return row[0]
+        except Exception:
+            pass
+        return None
+
     async def scrape_category(self, category: str) -> Dict[str, Any]:
         """Scrapes product catalog for a given category with checkpoint resumption."""
         category = category.lower().strip()
@@ -173,7 +191,10 @@ class GeMScraperService:
 
                 for current_page in range(start_page, self.max_pages_per_category + 1):
                     cat_clean = category.lower().strip()
-                    if cat_clean in CATEGORY_DEEP_LINKS:
+                    official_node_url = self.get_official_gem_node_url(cat_clean)
+                    if official_node_url:
+                        url = official_node_url
+                    elif cat_clean in CATEGORY_DEEP_LINKS:
                         url = CATEGORY_DEEP_LINKS[cat_clean]
                     else:
                         url = GEM_SEARCH_URL_TEMPLATE.format(category=category.replace(" ", "+"), page=current_page)

@@ -92,11 +92,18 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
+        /* HIDE LAUNCHER BUTTON INSTANTLY WHEN CHAT WINDOW IS OPEN */
+        #chatWindow.open ~ #chatToggleBtn,
         #chatToggleBtn.open-state {
             display: none !important;
             visibility: hidden !important;
             opacity: 0 !important;
             pointer-events: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden !important;
         }
 
         /* ---------- CHAT WINDOW (Exact GeM 407px x 468px Specs) ---------- */

@@ -109,12 +109,13 @@
             overflow: hidden !important;
         }
 
-        /* ---------- CHAT WINDOW (Compact 400px GeM Specs) ---------- */
+        /* ---------- CHAT WINDOW (.gemmy-popup Specs) ---------- */
         #chatWindow {
-            width: 400px;
-            max-width: calc(100vw - 20px);
-            height: 480px;
-            max-height: calc(100vh - 40px);
+            width: min(45vw, 440px);
+            min-width: 380px;
+            max-width: calc(100vw - 25px);
+            height: 70vh;
+            max-height: 520px;
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);

@@ -140,7 +140,7 @@ class GeMCatalogDB:
             rows = [dict(r) for r in cursor.fetchall()]
             
             if not rows:
-                # 1. Attempt real-time live scrape from GeM Portal (mkp.gem.gov.in)
+                # 1. Real-time live scrape from GeM Portal (mkp.gem.gov.in)
                 try:
                     from app.services.gem_scraper_service import gem_scraper_service
                     scraped_count = gem_scraper_service.scrape_category_sync(category)
@@ -156,21 +156,15 @@ class GeMCatalogDB:
                     print(f"⚠️ Live GeM scraper fallback exception for '{category}': {scrape_err}")
 
             if not rows:
-                # 2. Check if it's a known benchmark category or unlisted non-GeM item
-                known_cats = [
-                    "laptop", "desktop", "table", "chair", "furniture", "printer", "copier", "projector", 
-                    "cctv", "camera", "surveillance", "generator", "ac", "air conditioner", "solar", "purifier", "inverter"
-                ]
-                if not any(k in category.lower() for k in known_cats):
-                    non_gem_rule = self.get_non_gem_procurement_rule(total_budget)
-                    return {
-                        "category": category,
-                        "total_budget": total_budget,
-                        "target_qty": target_qty,
-                        "catalog_available": False,
-                        "non_gem_rule": non_gem_rule
-                    }
-                return self._generate_fallback_budget_estimate(category, total_budget, target_qty)
+                # 2. If item is not found on GeM portal after live search, dynamically apply Store Purchase Rule thresholds
+                non_gem_rule = self.get_non_gem_procurement_rule(total_budget)
+                return {
+                    "category": category,
+                    "total_budget": total_budget,
+                    "target_qty": target_qty,
+                    "catalog_available": False,
+                    "non_gem_rule": non_gem_rule
+                }
 
             # Deduplicate by brand/title to ensure L1, L2, L3 show distinct brands/models
             unique_rows = []

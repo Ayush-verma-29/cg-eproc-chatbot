@@ -263,23 +263,26 @@ class GeMCatalogDB:
         target_qty: Optional[int]
     ) -> Dict[str, Any]:
         """Provides realistic benchmark estimations when GeM DB is building initial cache."""
-        category_base_prices = {
-            "laptop": 38500.0,
-            "desktop": 32000.0,
-            "printer": 14500.0,
-            "copier": 85000.0,
-            "furniture": 6500.0
+        category_configs = {
+            "laptop": (38500.0, [("HP", "ProBook 445 G10 Series", "OEM / MSE"), ("Lenovo", "ThinkBook 15 G4 Series", "OEM"), ("Dell", "Vostro 15 3520 Series", "OEM / MSE")]),
+            "desktop": (32000.0, [("HP", "ProDesk 400 G9 Tower", "OEM / MSE"), ("Lenovo", "ThinkCentre M70t Tower", "OEM"), ("Dell", "OptiPlex 3000 Desktop", "OEM / MSE")]),
+            "table": (7500.0, [("Godrej Interio", "Steel Office Workstation Table", "OEM / MSE"), ("Durian", "Modular Executive Office Desk", "OEM"), ("Featherlite", "Ergonomic Office Desk Table", "OEM / MSE")]),
+            "chair": (4500.0, [("Godrej Interio", "Ergonomic High-Back Executive Chair", "OEM / MSE"), ("Featherlite", "Mesh Executive Swivel Chair", "OEM"), ("Nilkamal", "High Back Commercial Office Chair", "OEM / MSE")]),
+            "furniture": (6500.0, [("Godrej Interio", "Commercial Steel Storage & Workstation", "OEM / MSE"), ("Durian", "Modular Commercial Office Suite", "OEM"), ("Nilkamal", "Executive Office Furniture", "OEM / MSE")]),
+            "printer": (14500.0, [("HP", "LaserJet Pro Multifunction Printer", "OEM / MSE"), ("Canon", "imageCLASS Laser Printer", "OEM"), ("Epson", "EcoTank All-in-One Inkjet Printer", "OEM / MSE")]),
+            "copier": (85000.0, [("Canon", "imageRUNNER Multifunction Copier", "OEM / MSE"), ("Ricoh", "Multi-Function Digital Copier", "OEM"), ("Konica Minolta", "bizhub Digital Copier", "OEM / MSE")]),
+            "projector": (35000.0, [("Epson", "3LCD Full HD Multimedia Projector", "OEM / MSE"), ("BenQ", "DLP High-Brightness Projector", "OEM"), ("Sony", "VPL Laser Cinema Projector", "OEM / MSE")]),
         }
         
-        cat_key = next((k for k in category_base_prices if k in category.lower()), "laptop")
-        base_p = category_base_prices[cat_key]
+        cat_lower = category.lower()
+        cat_key = next((k for k in category_configs if k in cat_lower), "laptop")
+        base_p, brands = category_configs[cat_key]
         
         l1_p = base_p
-        l2_p = base_p * 1.05
-        l3_p = base_p * 1.12
+        l2_p = base_p * 1.06
+        l3_p = base_p * 1.14
         
         matrix = []
-        brands = [("HP", "ProBook Series", "OEM / MSE"), ("Lenovo", "ThinkCentre Series", "OEM"), ("Dell", "Vostro Series", "Authorized Reseller")]
         prices = [l1_p, l2_p, l3_p]
         
         for idx, ((b, m, st), p) in enumerate(zip(brands, prices), start=1):
@@ -287,7 +290,7 @@ class GeMCatalogDB:
             req_q = target_qty if target_qty else max_q
             matrix.append({
                 "rank": f"L{idx}",
-                "title": f"{b} Commercial {category.capitalize()} ({m})",
+                "title": f"{b} {m}",
                 "brand": b,
                 "model": m,
                 "unit_price": p,
